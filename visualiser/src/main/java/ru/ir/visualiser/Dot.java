@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class Dot {
     private final String irsPath;
-    private final File dots;
+    private final File dotDir;
     private String fileName;
 
     /**
@@ -26,7 +26,7 @@ public class Dot {
     public Dot() throws IOException {
         fileName = "";
         irsPath = Objects.requireNonNull(getClass().getResource("/ir")).getPath();
-        dots = new ClassPathResource("dot_files").getFile();
+        dotDir = new ClassPathResource("dot_files").getFile();
     }
 
     /**
@@ -37,7 +37,7 @@ public class Dot {
      */
     public boolean generateDotFiles() throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder("opt", "-passes=dot-cfg", "../ir/" + fileName);
-        processBuilder.directory(dots);
+        processBuilder.directory(dotDir);
         processBuilder.inheritIO();
         Process process = processBuilder.start();
         try {
@@ -57,8 +57,8 @@ public class Dot {
     }
 
     private void cleanDirectory() throws IOException {
-        if (dots.exists()) {
-            FileUtils.cleanDirectory(dots);
+        if (dotDir.exists()) {
+            FileUtils.cleanDirectory(dotDir);
         }
     }
 
