@@ -36,15 +36,15 @@ public class MainController {
     public ResponseEntity<String> buildSVGByPath(
             @Parameter(description = "Ключ") @RequestParam("folder") String folder,
             @Parameter(description = "Имя opt") @RequestParam("opt") int opt,
-            @Parameter(description = "Путь к файлу") @RequestParam("filePath") String filePath
+            @Parameter(description = "Путь к файлу") @RequestParam("filePath") String strFilePath
     ) {
         try {
-            File file = new File(filePath);
-            String filename = file.getName();
+            Path filePath = Path.of(strFilePath);
+            String filename = filePath.getFileName().toString();
             String folderName = FileWorker.getFolderName(filename);
             String path = folder + File.separator + folderName;
             String optPath = Config.getInstance().getOptsPath()[opt];
-            Ir ir = new Ir(filename);
+            Ir ir = new Ir(filePath);
             irService.create(ir);
             FileWorker.createPath(
                     "",
@@ -62,7 +62,7 @@ public class MainController {
             );
             FileWorker.copy(path+"/ir_files/"+folderName,
                     filename,
-                    Files.readAllBytes(file.toPath())
+                    Files.readAllBytes(filePath)
             );
             if (Opt.validateOpt(optPath)) {
                 if (Opt.generateDotFiles(
@@ -95,8 +95,6 @@ public class MainController {
             String folderName = FileWorker.getFolderName(filename);
             String path = folder + File.separator + folderName;
             String optPath = Config.getInstance().getOptsPath()[opt];
-            Ir ir = new Ir(filename);
-            irService.create(ir);
             FileWorker.createPath(
                     "",
                     path
@@ -115,6 +113,12 @@ public class MainController {
                     filename,
                     file.getBytes()
             );
+
+            // TODO: make normal
+            // Based on FileWorker.addFile
+            Ir ir = new Ir(Path.of(FileWorker.absolutePath(path) + File.separator + filename));
+            irService.create(ir);
+
             if (Opt.validateOpt(optPath)) {
                 if (Opt.generateDotFiles(
                         optPath,

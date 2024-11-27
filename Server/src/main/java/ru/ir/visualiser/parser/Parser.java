@@ -1,12 +1,15 @@
 package ru.ir.visualiser.parser;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
 
-    public static int getLineNumber(String text, int index) {
+    private static int getLineNumber(String text, int index) {
         int line = 1;
         for (int i = 0; i < index; i++) {
             if (text.charAt(i) == '\n') {
@@ -15,7 +18,13 @@ public class Parser {
         }
         return line;
     }
-    public ModuleIR parseModule(String input) {
+
+    public static ModuleIR parseModule(Path filePath) throws IOException {
+        String content = Files.readString(filePath);
+        return parseModule(content);
+    }
+
+    public static ModuleIR parseModule(String input) { 
         String moduleID = "";
         String regexModuleName = "; ModuleID = (.*)";
         Pattern patternName = Pattern.compile(regexModuleName);
@@ -41,7 +50,7 @@ public class Parser {
         return moduleIR;
     }
 
-    public FunctionIR parseFunction(String input, int startLine, int endLine) {
+    private static FunctionIR parseFunction(String input, int startLine, int endLine) {
         String regexFuncName = "(define|declare)[^@]* @(\\w*)";
         Pattern patternName = Pattern.compile(regexFuncName);
 
@@ -70,7 +79,7 @@ public class Parser {
         return functionIR;
     }
 
-    public BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
+    private static BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
         if (initial) {
             return new BlockIR(initial, input, startLine, endLine);
         }
