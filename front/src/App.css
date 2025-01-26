@@ -96,22 +96,13 @@
     border-radius: 5px;
     background-color: snow;
     max-width: 899px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 h2 {
     margin-block: 0;
-}
-
-.txt-win {
-    text-align: left;
-    white-space: pre;
-    padding: 10px;
-    max-height: 730px;
-    overflow-y: auto;
-    overflow-x: auto;
-    line-height: 1.8;
-    font-size: x-large;
-    cursor: pointer;
 }
 
 .line-number {
