@@ -3,7 +3,7 @@ import Editor from '@monaco-editor/react';
 import {handleMount} from './MonacoMount'
 
 
-const TXTpart = ({ title, content, onLineClick }) => {
+const TXTpart = ({content, onLineClick }) => {
     const [lineIndex, setLineIndex] = useState(null);
 
     const handleEditorMount = (editor, monaco) => {
@@ -19,35 +19,32 @@ const TXTpart = ({ title, content, onLineClick }) => {
       };
 
     return (
-        <div className="window" >
-            <h2>{title}</h2>
-            {content ? (
-                <Editor
-                    height="100%"
-                    language={"LLVM IR"}
-                    value={content}
-
-                    options={{
-                      fontSize: 24,
-                      readOnly: true,
-                    }}
-                    beforeMount={handleMount}
-                    onMount={handleEditorMount}
-                />
-            ) : (
-                <p
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '100%',
-                    height: '300px',
-                    border: '2px dashed #ccc',
-                    color: '#888',
-                    fontSize: '16px'
-                }}> Загрузите файл .ll для отображения содержимого.
-                </p>
-            )}
+        <div className="window">
+          {content ? (
+              <Editor
+                height="100%"
+                language={"LLVM IR"}
+                value={content}
+                options={{
+                  fontSize: 24,
+                  readOnly: true,
+                }}
+                beforeMount={handleMount}
+                onMount={handleEditorMount}
+              />
+          ) : (
+              <p
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '300px',
+                border: '2px dashed #ccc',
+                color: '#888',
+                fontSize: '16px'
+              }}> Загрузите файл .ll для отображения содержимого.</p>
+          )}
         </div>
     );
 };
