@@ -59,4 +59,21 @@ public class GetterController {
         return ResponseEntity.ofNullable(null);
     }
 
+    @Operation(summary = "Получение svg по имени функции")
+    @PostMapping(value = "/code")
+    @ResponseBody
+    public ResponseEntity<byte[]> getCode(
+            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
+    ) {
+        Ir ir = irService.get(id);
+        String path = ir.getIrPath() + File.separator + ir.getFilename();
+        try {
+            Path dirPath = Paths.get(path);
+            return ResponseEntity.ok(Files.readAllBytes(dirPath));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return ResponseEntity.ofNullable(null);
+    }
+
 }

@@ -59,12 +59,8 @@ public class BuilderController {
         ir.setSvgPath(path + File.separator + "svg_files");
         ir.setDotPath(path + File.separator + "dot_files");
 
-        FileWorker.createPaths(path,
-                new String[]{
-                        "dot_files",
-                        "svg_files"
-                }
-        );
+        FileWorker.createPath(ir.getSvgPath());
+        FileWorker.createPath(ir.getDotPath());
         FileWorker.copy(ir.getIrPath(),
                 filename,
                 content

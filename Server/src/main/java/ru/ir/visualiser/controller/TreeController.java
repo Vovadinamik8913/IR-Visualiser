@@ -36,12 +36,8 @@ public class TreeController {
     ) {
         Ir parent = irService.get(file);
         Ir child = new Ir(parent, optimization);
-        FileWorker.createPaths(child.getIrPath(),
-                new String[]{
-                        "dot_files",
-                        "svg_files"
-                }
-        );
+        FileWorker.createPath(child.getDotPath());
+        FileWorker.createPath(child.getSvgPath());
         String optPath = Config.getInstance().getOptsPath()[opt];
         try {
             Opt.optimizeOpt(optPath, parent, child);
