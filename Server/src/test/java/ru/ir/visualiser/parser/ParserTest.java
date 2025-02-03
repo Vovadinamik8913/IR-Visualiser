@@ -1,6 +1,10 @@
 package ru.ir.visualiser.parser;
 
 import org.junit.jupiter.api.Test;
+import ru.ir.visualiser.logic.parser.Parser;
+import ru.ir.visualiser.model.classes.ir.Dot;
+import ru.ir.visualiser.model.classes.ir.FunctionIR;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
 
 import java.io.IOException;
 import java.net.URI;

@@ -12,10 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
-import ru.ir.visualiser.files.llvm.Opt;
-import ru.ir.visualiser.files.llvm.Svg;
-import ru.ir.visualiser.files.model.Ir;
-import ru.ir.visualiser.files.model.IrService;
+import ru.ir.visualiser.logic.llvm.Opt;
+import ru.ir.visualiser.logic.llvm.Svg;
+import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.service.IrService;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,16 +25,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import ru.ir.visualiser.parser.ModuleIR;
-import ru.ir.visualiser.parser.Parser;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
+import ru.ir.visualiser.logic.parser.Parser;
+import ru.ir.visualiser.model.service.ModuleService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/files/build")
+@RequestMapping("/files")
 public class BuilderController {
     private final IrService irService;
+    private final ModuleService moduleService;
 
-    private void generate(String optPath, Ir ir) throws IOException {
+    private void generate(int opt, Ir ir) throws IOException {
+        String optPath = Config.getInstance().getOptsPath()[opt];
         if (Opt.validateOpt(optPath)) {
             if (Opt.generateDotFiles(
                     optPath,
@@ -49,15 +52,15 @@ public class BuilderController {
         }
     }
 
-    private Ir create(String folder, int opt, String filename, byte[] content) throws IOException {
+    private Ir create(String folder, String filename, byte[] content) throws IOException {
         String folderName = FileWorker.getFolderName(filename);
         String path = FileWorker.absolutePath(folder + File.separator + folderName);
-        String optPath = Config.getInstance().getOptsPath()[opt];
 
-        Ir ir = new Ir(filename);
-        ir.setIrPath(path);
-        ir.setSvgPath(path + File.separator + "svg_files");
-        ir.setDotPath(path + File.separator + "dot_files");
+
+        Ir ir = new Ir(filename,
+                path,
+                path + File.separator + "svg_files",
+                path + File.separator + "dot_files");
 
         FileWorker.createPath(ir.getSvgPath());
         FileWorker.createPath(ir.getDotPath());
@@ -65,7 +68,6 @@ public class BuilderController {
                 filename,
                 content
         );
-        generate(optPath, ir);
 
         String moduleContent = new String(content, StandardCharsets.UTF_8);
         DirectoryStream<Path> dotsDirectory = Files.newDirectoryStream(Path.of(ir.getDotPath()));
@@ -74,23 +76,24 @@ public class BuilderController {
             dots.add(Files.readString(dotPath));
         }
 
+        ir = irService.create(ir);
         ModuleIR module = Parser.parseModule(moduleContent, dots);
-        irService.create(ir, module);
+        module.setIr(ir);
+        moduleService.create(module);
 
         return ir;
     }
 
-    @Operation(summary = "Создание svg и dot по пути до ir файла на сервере")
-    @PostMapping(value = "/path")
-    public ResponseEntity<Long> buildSVGByPath(
+    @Operation(summary = "Сохранение файла по пути до него")
+    @PostMapping(value = "/save/path")
+    public ResponseEntity<Long> saveByPath(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "Path of file", required = true) @RequestParam("filePath") String filePath
     ) {
         try {
             File file = new File(filePath);
             String filename = file.getName();
-            Ir ir = create(folder, opt, filename, Files.readAllBytes(file.toPath()));
+            Ir ir = create(folder, filename, Files.readAllBytes(file.toPath()));
             return ResponseEntity.ok(ir.getId());
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
@@ -98,20 +101,38 @@ public class BuilderController {
         return ResponseEntity.ofNullable(null);
     }
 
-    @Operation(summary = "Создание svg и dot по переданному файлу")
-    @PostMapping(value = "/file")
-    public ResponseEntity<Long> buildSVGByFile(
+    @Operation(summary = "Сохранение переданного файла")
+    @PostMapping(value = "/save/file")
+    public ResponseEntity<Long> saveByFile(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "File to load", required = true) @RequestParam("file") MultipartFile file
     ) {
         try {
             String filename = file.getOriginalFilename();
-            Ir ir = create(folder, opt, filename, file.getBytes());
+            Ir ir = create(folder, filename, file.getBytes());
             return ResponseEntity.ok(ir.getId());
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
         }
         return ResponseEntity.ofNullable(null);
+    }
+
+    @Operation(summary = "Создание svg и dot")
+    @PostMapping(value = "/generate")
+    public ResponseEntity<?> buildSVGByFile(
+            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
+            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt
+    ) {
+        Ir ir = irService.get(id);
+        if (ir == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            generate(opt, ir);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

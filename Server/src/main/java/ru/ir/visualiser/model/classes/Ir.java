@@ -1,42 +1,51 @@
-package ru.ir.visualiser.files.model;
+package ru.ir.visualiser.model.classes;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "ir")
-@Getter
+
+@NoArgsConstructor
 public class Ir {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
     private Long id;
+    @Getter
     private String flags;
+    @Getter
     private String filename;
-    @Setter
+    @Getter
     private String dotPath;
-    @Setter
+    @Getter
     private String svgPath;
-    @Setter
+    @Getter
     private String irPath;
     @ManyToOne @JoinColumn(name = "parent_id")
+    @Getter
     private Ir parent;
     @OneToMany(mappedBy = "parent")
     private List<Ir> children;
-//    @Setter
-//    @OneToOne @JoinColumn(name = "id")
-//    private ModuleIR module;
+    @OneToOne(mappedBy = "ir")
+    @Getter
+    private ModuleIR moduleIR;
 
-    public Ir(String filename) {
+    public Ir(String filename, String irPath, String svgPath, String dotPath) {
         this.flags = "init";
         this.filename = filename;
         this.parent = null;
         this.children = new ArrayList<>();
+        this.dotPath = dotPath;
+        this.svgPath = svgPath;
+        this.irPath = irPath;
     }
 
     public Ir(Ir parent, String flags) {
@@ -50,7 +59,11 @@ public class Ir {
         this.children = new ArrayList<>();
     }
 
-    public Ir() {
+    public void addChild(Ir child) {
+        children.add(child);
+    }
 
+    public Collection<Ir> getChildren() {
+        return children;
     }
 }

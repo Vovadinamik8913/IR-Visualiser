@@ -1,7 +1,11 @@
-package ru.ir.visualiser.parser;
+package ru.ir.visualiser.logic.parser;
+
+import ru.ir.visualiser.model.classes.ir.BlockIR;
+import ru.ir.visualiser.model.classes.ir.Dot;
+import ru.ir.visualiser.model.classes.ir.FunctionIR;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,8 +151,6 @@ public class Parser {
      *
      * @param input - body of a block
      *
-     * @param initial - true if block is first in function body(don`t have name)
-     *
      * @param startLine - number of first line of that block(counting from start of module).
      *
      * @param endLine - number of last line of that block(counting from start of module).
@@ -159,9 +161,9 @@ public class Parser {
         String regexId = "(\\d+):";
         Pattern patternId = Pattern.compile(regexId);
         Matcher matcher = patternId.matcher(input);
-        Optional<String> label = Optional.empty();
+        String label = "";
         if (matcher.find()) {
-            label = Optional.of(matcher.group(1));
+            label = matcher.group(1);
         }
         return new BlockIR(label, input, startLine, endLine);
     }

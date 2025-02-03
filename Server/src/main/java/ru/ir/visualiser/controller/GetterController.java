@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ir.visualiser.files.model.Ir;
-import ru.ir.visualiser.files.model.IrService;
+import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.service.IrService;
 
 import java.io.File;
 import java.io.IOException;

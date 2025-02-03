@@ -1,7 +1,6 @@
-package ru.ir.visualiser.files.llvm;
+package ru.ir.visualiser.logic.llvm;
 
-import ru.ir.visualiser.files.FileWorker;
-import ru.ir.visualiser.files.model.Ir;
+import ru.ir.visualiser.model.classes.Ir;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,7 @@ public class Opt {
         }
     }
 
-    public static boolean optimizeOpt(String opt, Ir parent, Ir result) throws IOException {
+    public static boolean optimizate(String opt, Ir parent, Ir result) throws IOException {
         File dir = new File(result.getIrPath());
         ProcessBuilder processBuilder = new ProcessBuilder(
                 opt,
