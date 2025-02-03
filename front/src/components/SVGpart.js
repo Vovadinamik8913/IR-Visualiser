@@ -1,8 +1,15 @@
 import React, {useState} from 'react';
 
-const SVGpart = ({ svgContent, functions, setFuncName, llContent, onGetRequest }) => {
+const SVGpart = ({ 
+    svgContent,
+    functions,
+    selectedFunction,
+    setSelectedFunction,
+    llContent, 
+    onGetRequest 
+}) => {
 
-    const [selectedFunction, setSelectedFunction] = useState('');// выбранное значение
+    
 
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
@@ -23,7 +30,7 @@ const SVGpart = ({ svgContent, functions, setFuncName, llContent, onGetRequest }
 
     const handleDropdownChange = (event) => {
         setSelectedFunction(event.target.value);// Обновляем выбранное значение
-        onGetRequest(selectedFunction);
+        onGetRequest(event.target.value);
     };
 
     

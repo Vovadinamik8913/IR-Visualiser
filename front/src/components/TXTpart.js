@@ -4,16 +4,13 @@ import {handleMount} from './MonacoMount'
 
 
 const TXTpart = ({content, onLineClick }) => {
-    const [lineIndex, setLineIndex] = useState(null);
 
     const handleEditorMount = (editor, monaco) => {
         // Подписываемся на событие мыши — нажатие (mouseDown)
         editor.onMouseDown((mouseEvent) => {
           if (mouseEvent.target && mouseEvent.target.position) {
             const { lineNumber, column } = mouseEvent.target.position;
-            console.log('Clicked line:', lineNumber);
-            setLineIndex(lineNumber);
-            onLineClick(lineIndex);
+            onLineClick(lineNumber);
           }
         });
       };

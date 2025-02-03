@@ -28,12 +28,12 @@ export const getSvgByFunction = async (irId, funcName) => {
 export const getSvgByLine = async (irId, index) => {
     const lineFormData = new FormData();
     lineFormData.append("file", irId);
-    lineFormData.append("line", index);
+    lineFormData.append("line", index - 1);
     const response = await fetch('/fromline/get/svg', {
         method: 'POST',
         body: lineFormData,
     });
     if(!response.ok) throw new Error("/fromline/get/svg bad request");
-    const svgName = await response.text();
-    return svgName;
+    const info = await response.json();
+    return info;
 }
