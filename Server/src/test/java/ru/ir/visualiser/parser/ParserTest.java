@@ -59,6 +59,8 @@ public class ParserTest {
         URI path = getClass().getClassLoader().getResource("dot/test1.dot").toURI();
         String content = Files.readString(Path.of(path));
         Dot dot = Parser.parseDot(content);
+        assertEquals("Node0x55cdef5b4ad0", dot.getSvgIdByLabel(null));
+        assertEquals("Node0x55cdef5b4ad0", dot.getSvgIdByLabel(""));
         assertEquals("Node0x55cdef5b4ad0", dot.getSvgIdByLabel("2"));
         assertEquals("Node0x55cdef5b5320", dot.getSvgIdByLabel("14"));
         assertEquals("Node0x55cdef5b5380", dot.getSvgIdByLabel("20"));

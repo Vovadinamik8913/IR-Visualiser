@@ -65,14 +65,33 @@ public class Dot {
      * @return - svg id
      */
     public String getSvgIdByLabel(String label) {
-        if (label == null) {
-            String smallestLabel = null;
+        if (label == null || label.isEmpty()) {
+            label = null;
             for (String labelNow : labelToSvgId.keySet()) {
-                if (smallestLabel == null || Integer.decode(labelToSvgId.get(labelNow)) < Integer.decode(labelToSvgId.get(smallestLabel))) {
-                    smallestLabel = labelNow;
+                if (label == null) {
+                    label = labelNow;
+                    continue;
+                }
+
+                int labelInt;
+                try {
+                    labelInt = Integer.decode(label);
+                } catch (NumberFormatException e) {
+                    label = labelNow;
+                    continue;
+                }
+                
+                int labelNowInt;
+                try {
+                    labelNowInt = Integer.decode(labelNow);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+
+                if (labelNowInt < labelInt) {
+                    label = labelNow;
                 }
             }
-            return smallestLabel;
         }
         return labelToSvgId.get(label);
     }
