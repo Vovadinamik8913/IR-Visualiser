@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import Upload from './Upload';
+import './styles/Header.css';
 
 const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +17,7 @@ const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
     return (
         <header className="header">
             <div className="header-center">
-                <button onClick={handleOpenOverlay} className="upload-button">
+                <button onClick={handleOpenOverlay} className="open-upload-button">
                   Открыть окно загрузки
                 </button>
             </div>

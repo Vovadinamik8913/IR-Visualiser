@@ -23,24 +23,25 @@ const TXTpart = ({content, onLineClick }) => {
                 language={"LLVM IR"}
                 value={content}
                 options={{
-                  fontSize: 24,
+                  fontSize: 16,
                   readOnly: true,
                 }}
                 beforeMount={handleMount}
                 onMount={handleEditorMount}
               />
           ) : (
-              <p
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                height: '300px',
-                border: '2px dashed #ccc',
-                color: '#888',
-                fontSize: '16px'
-              }}> Загрузите файл .ll для отображения содержимого.</p>
+            <div className="ir-placeholder" style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '300px',
+              border: '2px dashed #ccc',
+              color: '#888',
+              fontSize: '16px'
+          }}>
+              Загрузите файл с расширением .ll
+          </div>
           )}
         </div>
     );
