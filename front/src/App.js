@@ -1,15 +1,30 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Header from './components/Header';
 import SVGpart from './components/SVGpart';
 import TXTpart from "./components/TXTpart";
 import './App.css';
+import {buildByFile, buildByPath, generateSvg, saveByFile, saveByPath} from './components/api/build-api'
+import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/svg-api';
+import { getCode } from './components/api/code-api';
 
 function App() {
     const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
     const [listOfFunctions, setListOfFunctions] = useState([]);
     const [svgContent, setSvgContent] = useState(''); // Содержимое SVG
-    const [funcFromLine, setFuncFromLine] = useState('');
     const [irId, setIrId] = useState(0);
+    const [selectedFunction, setSelectedFunction] = useState('');// выбранное значение
+    const irIdRef = useRef(irId);
+
+    useEffect(() => {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'auto';
+      };
+    }, []);
+
+    useEffect(() => {
+      irIdRef.current = irId
+    }, [irId]);
 
     // Функция для загрузки .ll файла
     const handleFileUpload = (file) => {
@@ -26,22 +41,9 @@ function App() {
         }
     };
 
-
-    const handleDoneRequest = async (folder, file) => {
+    const handleBuildByFileRequest = async (folder, file) => {
         try {
-            const buildFormData = new FormData();
-            buildFormData.append("folder", folder);
-            buildFormData.append("opt", 0);
-            buildFormData.append("file", file);
-
-            const buildResponse = await fetch('http://localhost:8080/files/build/file', {
-                method: 'POST',
-                body: buildFormData,
-            });
-
-            const doneRes = await buildResponse.text();
-            console.log(doneRes);
-
+            const doneRes = await saveByFile(folder, file);
             if (!doneRes) {
                 alert('Произошла ошибка при отправке файла');
             } else {
@@ -51,16 +53,9 @@ function App() {
                     throw new Error('Сервер вернул некорректный ID');
                 }
                 setIrId(id);
-
                 if (id) {
-                    const getFunctionsFormData = new FormData();
-                    getFunctionsFormData.append("file", id);
-
-                    const getSvgsResponse = await fetch('http://localhost:8080/files/get/functions', {
-                        method: 'POST',
-                        body: getFunctionsFormData,
-                    });
-                    const svgsNames = await getSvgsResponse.json()
+                    await generateSvg(id);
+                    const svgsNames = await getFunctions(id);
                     setListOfFunctions(svgsNames);
                 } else {
                     alert('Ошибка: не удалось получить имена функций');
@@ -72,19 +67,39 @@ function App() {
         }
     };
 
-    const handleBuildRequest = async (funcName) => {
+    const handleBuildByPathRequest = async (folder, path) => {
         try {
-            const svgFormData = new FormData();
-            svgFormData.append("file", irId);
-            svgFormData.append("function", funcName);
-            const svgResponse = await fetch('http://localhost:8080/files/get/svg', {
-                method: 'POST',
-                body: svgFormData,
-            });
-            const svgText = await svgResponse.text();
-            console.log(svgResponse);
+            const doneRes = await saveByPath(folder, path);
+            if (!doneRes) {
+                alert('Произошла ошибка при отправке файла');
+            } else {
+                const id = parseInt(doneRes, 10);// Преобразуем строку в целое число
+                console.log(id);
+                if (isNaN(id)) {
+                    throw new Error('Сервер вернул некорректный ID');
+                }
+                setIrId(id);
+                if (id) {
+                    await generateSvg(id);
+                    const content = await getCode(id);
+                    setLlContent(content);
+                    const svgsNames = await getFunctions(id);
+                    setListOfFunctions(svgsNames);
+                } else {
+                    alert('Ошибка: не удалось получить имена функций');
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка запроса:', error);
+            alert('Произошла ошибка при выполнении запроса "/build/file"');
+        }
+    };
+
+    const handleGetRequest = async (funcName) => {
+        try {
+            console.log(irId);
+            const svgText = await getSvgByFunction(irId, funcName);
             setSvgContent(svgText);
-            setFuncFromLine('');
         } catch (error) {
             console.error('Ошибка запроса:', error);
             alert('Произошла ошибка при выполнении запроса');
@@ -93,26 +108,10 @@ function App() {
 
     const handleLineClick = async (index) => {
         try {
-            const lineFormData = new FormData();
-            lineFormData.append("file", irId);
-            lineFormData.append("line", index);
-            const svgResponse = await fetch('http://localhost:8080/fromline/get/svg', {
-                method: 'POST',
-                body: lineFormData,
-            });
-            const svgName = await svgResponse.text();
-            setFuncFromLine(svgName);
-
+            const info = await getSvgByLine(irIdRef.current, index);
+            setSelectedFunction(info[0]);
             try {
-                const svgFormData = new FormData();
-                svgFormData.append("file", irId);
-                svgFormData.append("function", svgName);
-                const svgResponse = await fetch('http://localhost:8080/files/get/svg', {
-                    method: 'POST',
-                    body: svgFormData,
-                });
-                const svgText = await svgResponse.text();
-                console.log(svgResponse);
+                const svgText = await getSvgByFunction(irIdRef.current, info[0]);
                 setSvgContent(svgText);
             } catch (error) {
                 console.error('Ошибка запроса:', error);
@@ -127,19 +126,24 @@ function App() {
 
     return (
         <div className="App">
-            <Header onFileUpload={handleFileUpload}
-                    onDoneRequest={handleDoneRequest}
-                    functions={listOfFunctions}
-                    funcFromLIne={funcFromLine}
-                    onBuildRequest={handleBuildRequest}
+            <Header 
+                onFileUpload={handleFileUpload}
+                onBuildByFileRequest={handleBuildByFileRequest}
+                onBuildByPathRequest={handleBuildByPathRequest}
             />
             <div className="main-container">
                 <TXTpart
-                    title="LLVM IR"
                     content={llContent}
                     onLineClick={handleLineClick}
                 />
-                <SVGpart title="SVG" svgContent={svgContent}/>
+                <SVGpart    
+                    functions={listOfFunctions}
+                    selectedFunction={selectedFunction}
+                    setSelectedFunction={setSelectedFunction}
+                    llContent={llContent}
+                    svgContent={svgContent}
+                    onGetRequest={handleGetRequest}
+                />
             </div>
         </div>
     );

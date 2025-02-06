@@ -1,6 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-const SVGpart = ({ title, svgContent }) => {
+const SVGpart = ({ 
+    svgContent,
+    functions,
+    selectedFunction,
+    setSelectedFunction,
+    llContent, 
+    onGetRequest 
+}) => {
+
+    
+
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
         const edge = event.target.closest('.edge');
@@ -18,15 +28,41 @@ const SVGpart = ({ title, svgContent }) => {
         }
     };
 
+    const handleDropdownChange = (event) => {
+        setSelectedFunction(event.target.value);// Обновляем выбранное значение
+        onGetRequest(event.target.value);
+    };
+
+    
     return (
         <div className="window">
-            <h2>{title}</h2>
+            { llContent &&
+            <div>
+                <select
+                value={selectedFunction}
+                onChange={handleDropdownChange}
+                className="dropdown"
+                 >
+                <option value="start">Выберите функцию</option>
+                {functions.length > 0 ? (
+                    functions.map((func, index) => (
+                        <option key={index} value={func}>
+                            {func}
+                        </option>
+                    ))
+                ) : (
+                    <option disabled>Нет доступных функций</option>
+                )}
+                </select>
+            </div>}
             {svgContent ? (
-                <div className="svg-win"
-                    onClick={handleSvgClick}
-                    dangerouslySetInnerHTML={{ __html: svgContent }}
-                     style={{cursor: "pointer"}}
-                />
+                <div>
+                    <div className="svg-win"
+                        onClick={handleSvgClick}
+                        dangerouslySetInnerHTML={{ __html: svgContent }}
+                         style={{cursor: "pointer"}}
+                    />
+                </div>
             ) : (
                 <div className="svg-placeholder" style={{
                     display: 'flex',
