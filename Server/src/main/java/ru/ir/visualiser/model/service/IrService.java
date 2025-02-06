@@ -2,6 +2,7 @@ package ru.ir.visualiser.model.service;
 
 
 import jakarta.annotation.Nullable;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Map;
@@ -25,10 +26,12 @@ public class IrService {
         return irRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void update(Ir ir) {
         irRepository.save(ir);
     }
 
+    @Transactional
     public void deleteById(long id) {
         Ir ir = irRepository.findById(id).orElse(null);
         if (ir != null) {

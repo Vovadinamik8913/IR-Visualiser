@@ -23,7 +23,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
 import ru.ir.visualiser.logic.parser.Parser;
@@ -68,19 +70,6 @@ public class BuilderController {
                 filename,
                 content
         );
-
-        String moduleContent = new String(content, StandardCharsets.UTF_8);
-        DirectoryStream<Path> dotsDirectory = Files.newDirectoryStream(Path.of(ir.getDotPath()));
-        List<String> dots = new java.util.ArrayList<>();
-        for (Path dotPath : dotsDirectory) {
-            dots.add(Files.readString(dotPath));
-        }
-
-        ir = irService.create(ir);
-        ModuleIR module = Parser.parseModule(moduleContent, dots);
-        module.setIr(ir);
-        moduleService.create(module);
-
         return ir;
     }
 
@@ -88,7 +77,8 @@ public class BuilderController {
     @PostMapping(value = "/save/path")
     public ResponseEntity<Long> saveByPath(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
-            @Parameter(description = "Path of file", required = true) @RequestParam("filePath") String filePath
+            @Parameter(description = "Path of file", required = true) @RequestParam("filePath") String filePath,
+            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt
     ) {
         try {
             File file = new File(filePath);
@@ -105,7 +95,8 @@ public class BuilderController {
     @PostMapping(value = "/save/file")
     public ResponseEntity<Long> saveByFile(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
-            @Parameter(description = "File to load", required = true) @RequestParam("file") MultipartFile file
+            @Parameter(description = "File to load", required = true) @RequestParam("file") MultipartFile file,
+            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt
     ) {
         try {
             String filename = file.getOriginalFilename();
@@ -129,6 +120,29 @@ public class BuilderController {
         }
         try {
             generate(opt, ir);
+
+            List<String> list = new ArrayList<>();
+            File file = new File(ir.getSvgPath());
+            if (file.exists()) {
+                for (File f : Objects.requireNonNull(file.listFiles())) {
+                    String name = f.getName();
+                    list.add(name.substring(name.indexOf(".") + 1, name.lastIndexOf(".")));
+                }
+            }
+            ir.setFunctions(list);
+            irService.update(ir);
+
+            file = new File(ir.getIrPath() + File.separator + ir.getFilename());
+            byte[] content = Files.readAllBytes(file.toPath());
+            String moduleContent = new String(content, StandardCharsets.UTF_8);
+            DirectoryStream<Path> dotsDirectory = Files.newDirectoryStream(Path.of(ir.getDotPath()));
+            List<String> dots = new java.util.ArrayList<>();
+            for (Path dotPath : dotsDirectory) {
+                dots.add(Files.readString(dotPath));
+            }
+            ModuleIR module = Parser.parseModule(moduleContent, dots);
+            module.setIr(ir);
+            moduleService.create(module);
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();

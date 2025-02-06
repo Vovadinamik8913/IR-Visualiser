@@ -29,6 +29,9 @@ public class Ir {
     private String svgPath;
     @Getter
     private String irPath;
+    @Getter
+    @Setter
+    private List<String> functions;
     @ManyToOne @JoinColumn(name = "parent_id")
     @Getter
     private Ir parent;

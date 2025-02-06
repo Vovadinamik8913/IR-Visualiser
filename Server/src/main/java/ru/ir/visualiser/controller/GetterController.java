@@ -26,19 +26,14 @@ public class GetterController {
     @PostMapping(value = "/functions")
     @Operation(summary = "Получение всех имен функций")
     @ResponseBody
-    public List<String> getFunctions(
+    public ResponseEntity<List<String>> getFunctions(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
     ) {
         Ir ir = irService.get(id);
-        List<String> list = new ArrayList<>();
-        File file = new File(ir.getSvgPath());
-        if (file.exists()) {
-            for (File f : Objects.requireNonNull(file.listFiles())) {
-                String name = f.getName();
-                list.add(name.substring(name.indexOf(".") + 1, name.lastIndexOf(".")));
-            }
+        if (ir == null) {
+            return ResponseEntity.notFound().build();
         }
-        return list;
+        return ResponseEntity.ok(ir.getFunctions());
     }
 
     @Operation(summary = "Получение svg по имени функции")
