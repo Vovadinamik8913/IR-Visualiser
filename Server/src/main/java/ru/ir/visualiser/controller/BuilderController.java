@@ -121,18 +121,7 @@ public class BuilderController {
         try {
             generate(opt, ir);
 
-            List<String> list = new ArrayList<>();
-            File file = new File(ir.getSvgPath());
-            if (file.exists()) {
-                for (File f : Objects.requireNonNull(file.listFiles())) {
-                    String name = f.getName();
-                    list.add(name.substring(name.indexOf(".") + 1, name.lastIndexOf(".")));
-                }
-            }
-            ir.setFunctions(list);
-            irService.update(ir);
-
-            file = new File(ir.getIrPath() + File.separator + ir.getFilename());
+            File file = new File(ir.getIrPath() + File.separator + ir.getFilename());
             byte[] content = Files.readAllBytes(file.toPath());
             String moduleContent = new String(content, StandardCharsets.UTF_8);
             DirectoryStream<Path> dotsDirectory = Files.newDirectoryStream(Path.of(ir.getDotPath()));

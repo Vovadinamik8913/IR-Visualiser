@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.classes.ir.FunctionIR;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
 import ru.ir.visualiser.model.service.IrService;
+import ru.ir.visualiser.model.service.ModuleService;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +25,7 @@ import java.util.Objects;
 @RequestMapping("/files/get")
 public class GetterController {
     private final IrService irService;
+    private final ModuleService moduleService;
 
     @PostMapping(value = "/functions")
     @Operation(summary = "Получение всех имен функций")
@@ -29,11 +33,16 @@ public class GetterController {
     public ResponseEntity<List<String>> getFunctions(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
     ) {
-        Ir ir = irService.get(id);
-        if (ir == null) {
+        ModuleIR moduleIR = moduleService.find(id);
+        if (moduleIR == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(ir.getFunctions());
+        List<FunctionIR> functions = moduleIR.getFunctions().stream().toList();
+        List<String> result = new ArrayList<>();
+        for (FunctionIR func : functions) {
+            result.add(func.getFunctionName());
+        }
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "Получение svg по имени функции")
