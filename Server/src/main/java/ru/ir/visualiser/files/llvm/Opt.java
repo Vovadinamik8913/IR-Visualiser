@@ -1,10 +1,11 @@
 package ru.ir.visualiser.files.llvm;
 
-import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.files.model.Ir;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Opt {
     public static boolean generateDotFiles(String opt, String dotPath, String filename) throws IOException {
@@ -51,5 +52,32 @@ public class Opt {
             throw new IOException("Interrupted while waiting for process to finish");
         }
         return process.exitValue() == 0;
+    }
+    public static String printLoops(String opt, Ir ir) throws IOException {
+        String pathToIr = ir.getIrPath() + File.separator + ir.getFilename();
+        ProcessBuilder processBuilder = new ProcessBuilder(
+                opt,
+                "-passes=print<loops>", pathToIr, "-disable-output");
+        processBuilder.redirectErrorStream(true); // Перенаправляем stderr в stdout
+
+        Process process = processBuilder.start();
+
+        // Читаем вывод процесса
+        StringBuilder output = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        }
+
+        // Ожидаем завершения процесса
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            throw new IOException("Process was interrupted", e);
+        }
+
+        return output.toString();
     }
 }
