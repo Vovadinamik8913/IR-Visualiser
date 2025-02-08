@@ -10,7 +10,6 @@ const SVGpart = ({
 }) => {
 
     
-
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
         const edge = event.target.closest('.edge');
@@ -74,7 +73,7 @@ const SVGpart = ({
                     color: '#888',
                     fontSize: '16px'
                 }}>
-                    SVG пока нет
+                    Здесть будет CFG-граф.
                 </div>
             )}
         </div>
