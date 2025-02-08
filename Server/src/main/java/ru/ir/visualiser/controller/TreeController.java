@@ -10,16 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
-import ru.ir.visualiser.files.llvm.Opt;
-import ru.ir.visualiser.files.model.Ir;
-import ru.ir.visualiser.files.model.IrService;
-import ru.ir.visualiser.parser.ModuleIR;
-import ru.ir.visualiser.parser.Parser;
+import ru.ir.visualiser.logic.llvm.Opt;
+import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.service.IrService;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,17 +32,13 @@ public class TreeController {
     ) {
         Ir parent = irService.get(file);
         Ir child = new Ir(parent, optimization);
-        FileWorker.createPaths(child.getIrPath(),
-                new String[]{
-                        "dot_files",
-                        "svg_files"
-                }
-        );
+        FileWorker.createPath(child.getDotPath());
+        FileWorker.createPath(child.getSvgPath());
         String optPath = Config.getInstance().getOptsPath()[opt];
         try {
             Opt.optimizeOpt(optPath, parent, child);
             File res = new File(child.getIrPath() + File.separator + child.getFilename());
-            irService.create(child, null);
+            irService.create(child);
             return ResponseEntity.ok(child.getId());
         } catch (IOException e) {
             System.out.println(e.getMessage());

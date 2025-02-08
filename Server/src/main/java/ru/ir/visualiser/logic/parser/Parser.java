@@ -1,13 +1,20 @@
-package ru.ir.visualiser.parser;
+package ru.ir.visualiser.logic.parser;
+
+import ru.ir.visualiser.model.classes.ir.BlockIR;
+import ru.ir.visualiser.model.classes.ir.Dot;
+import ru.ir.visualiser.model.classes.ir.FunctionIR;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
+import ru.ir.visualiser.logic.parser.LoopIR;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class that performs parsing of llvm ir\dot\opt output files.
+ * Class that performs parsing of llvm ir files.
  */
 public class Parser {
 
@@ -130,15 +137,19 @@ public class Parser {
         Pattern patternBlock = Pattern.compile(regexBlock);
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {
+            String check1 = matcher.group(1);
+            String check2 = matcher.group(2);
             if (matcher.group(1) != null) {
-                functionIR.addBlock(parseBlock(matcher.group(1),
+                BlockIR blockIR = parseBlock(matcher.group(1),
                         startLine + getLineNumber(input, matcher.start()),
-                        startLine + getLineNumber(input, matcher.end())));
+                        startLine + getLineNumber(input, matcher.end()));
+                functionIR.addBlock(blockIR);
                 continue;
             }
-            functionIR.addBlock(parseBlock(matcher.group(2),
-                    startLine + matcher.start(), startLine + matcher.end()));
-
+            BlockIR blockIR = parseBlock(matcher.group(2),
+                    startLine + getLineNumber(input, matcher.start()),
+                    startLine + getLineNumber(input, matcher.end()));
+            functionIR.addBlock(blockIR);
         }
         return functionIR;
     }
@@ -158,13 +169,13 @@ public class Parser {
         String regexId = "(\\d+):";
         Pattern patternId = Pattern.compile(regexId);
         Matcher matcher = patternId.matcher(input);
-        Optional<String> label = Optional.empty();
+        String label = "entry";
         if (matcher.find()) {
-            label = Optional.of(matcher.group(1));
+            String check = matcher.group(1);
+            label = matcher.group(1);
         }
-        return new BlockIR(label, input, startLine, endLine);
+        return new BlockIR(label, startLine, endLine);
     }
-
 
     /**
      * Function that extracts Loop info for certain function from Opt output
@@ -226,7 +237,17 @@ public class Parser {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(now);
             if (matcher.find()) {
-                BlockIR blockIR = function.getBlock(Optional.ofNullable(matcher.group(1)));
+                String check = matcher.group(1);
+                Collection<BlockIR> blocksIR = function.getBlocks();
+                BlockIR blockIR = null;
+                for(BlockIR block: blocksIR) {
+                    if(block.getLabel().equals(check)) {
+                        blockIR = block;
+                    }
+                }
+                if(blockIR == null) {
+                    throw new IllegalArgumentException("Can't find block");
+                }
                 LoopBlock block = new LoopBlock(blockIR);
                 if(now.contains("<exiting>")) {
                     block.setExit(true);

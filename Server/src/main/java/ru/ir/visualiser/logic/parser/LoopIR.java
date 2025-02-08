@@ -1,7 +1,9 @@
-package ru.ir.visualiser.parser;
+package ru.ir.visualiser.logic.parser;
 
 import lombok.Getter;
+import ru.ir.visualiser.logic.parser.LoopBlock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoopIR {
@@ -10,7 +12,7 @@ public class LoopIR {
     @Getter
     private final int depth;
 
-    public LoopIR(List<LoopBlock> blocks, int depth) {
+    public LoopIR(ArrayList<LoopBlock> blocks, int depth) {
         this.blocks = blocks;
         this.depth = depth;
     }

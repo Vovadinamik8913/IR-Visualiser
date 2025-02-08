@@ -9,18 +9,25 @@ import org.jsoup.nodes.Element;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ir.visualiser.files.Config;
-import ru.ir.visualiser.files.llvm.Opt;
-import ru.ir.visualiser.files.model.Ir;
-import ru.ir.visualiser.files.model.IrService;
-import ru.ir.visualiser.parser.*;
+import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.classes.ir.BlockIR;
+import ru.ir.visualiser.model.classes.ir.Dot;
+import ru.ir.visualiser.model.classes.ir.FunctionIR;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
+import ru.ir.visualiser.model.service.IrService;
+import ru.ir.visualiser.logic.parser.*;
 import org.jsoup.Jsoup;
-
+import ru.ir.visualiser.logic.parser.LoopBlock;
+import ru.ir.visualiser.logic.parser.LoopIR;
+import ru.ir.visualiser.logic.llvm.Opt;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -42,12 +49,22 @@ public class LoopsController {
         if(ir == null) {
             return ResponseEntity.notFound().build();
         }
-        Dot dot = irService.getModule(id).getDot(functionName);
+        ModuleIR moduleIr = ir.getModuleIR();
+        Collection<Dot> dots = moduleIr.getDots();
+        Dot dot = null;
+        for(Dot nowDot : dots) {
+            if(nowDot.getFunctionName().equals(functionName)) {
+                dot = nowDot;
+            }
+        }
+        if(dot == null) {
+            return ResponseEntity.notFound().build();
+        }
         String svgPath = ir.getSvgPath() +  File.separator + "." + functionName + ".svg";
         String optPath = Config.getInstance().getOptsPath()[opt];
         String loopInfoRaw = Opt.printLoops(optPath, ir);
         FunctionIR function;
-        function = irService.getModule(id).getFunction(functionName);
+        function = moduleIr.getFunction(functionName);
         if(function == null) {
             return ResponseEntity.notFound().build();
         }
@@ -89,12 +106,13 @@ public class LoopsController {
         if(ir == null) {
             return "IR not found";
         }
+        ModuleIR moduleIR = ir.getModuleIR();
         String optPath = Config.getInstance().getOptsPath()[opt];
         String loopInfoRaw = Opt.printLoops(optPath, ir);
-        if(irService.getModule(id).getFunction(functionName) == null) {
+        if(moduleIR.getFunction(functionName) == null) {
             return "Function not found";
         }
-        List<LoopIR> loops = Parser.findLoopInfofromOpt(irService.getModule(id).getFunction(functionName), loopInfoRaw);
+        List<LoopIR> loops = Parser.findLoopInfofromOpt(moduleIR.getFunction(functionName), loopInfoRaw);
         int maxDepth = 0;
         LoopIR neighbors = null;
         for(LoopIR loop : loops) {

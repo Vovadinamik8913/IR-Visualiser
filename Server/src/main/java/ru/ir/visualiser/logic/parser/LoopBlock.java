@@ -1,7 +1,8 @@
-package ru.ir.visualiser.parser;
+package ru.ir.visualiser.logic.parser;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.ir.visualiser.model.classes.ir.BlockIR;
 
 @Getter
 public class LoopBlock {

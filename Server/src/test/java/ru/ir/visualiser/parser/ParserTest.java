@@ -1,6 +1,10 @@
 package ru.ir.visualiser.parser;
 
 import org.junit.jupiter.api.Test;
+import ru.ir.visualiser.logic.parser.Parser;
+import ru.ir.visualiser.model.classes.ir.Dot;
+import ru.ir.visualiser.model.classes.ir.FunctionIR;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
 
 import java.io.IOException;
 import java.net.URI;
@@ -9,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -56,12 +59,12 @@ public class ParserTest {
         URI path = getClass().getClassLoader().getResource("dot/test1.dot").toURI();
         String content = Files.readString(Path.of(path));
         Dot dot = Parser.parseDot(content);
-        assertEquals("Node0x55cdef5b4ad0", dot.getSvgIdByLabel(Optional.of("2")));
-        assertEquals("Node0x55cdef5b5320", dot.getSvgIdByLabel(Optional.of("14")));
-        assertEquals("Node0x55cdef5b5380", dot.getSvgIdByLabel(Optional.of("20")));
-        assertEquals("Node0x55cdef5b5900", dot.getSvgIdByLabel(Optional.of("21")));
-        assertEquals("Node0x55cdef5b5d60", dot.getSvgIdByLabel(Optional.of("28")));
-        assertEquals("Node0x55cdef5b5dc0", dot.getSvgIdByLabel(Optional.of("32")));
-        assertEquals("Node0x55cdef5b5830", dot.getSvgIdByLabel(Optional.of("44")));
+        assertEquals("Node0x55cdef5b4ad0", dot.getSvgIdByLabel("2"));
+        assertEquals("Node0x55cdef5b5320", dot.getSvgIdByLabel("14"));
+        assertEquals("Node0x55cdef5b5380", dot.getSvgIdByLabel("20"));
+        assertEquals("Node0x55cdef5b5900", dot.getSvgIdByLabel("21"));
+        assertEquals("Node0x55cdef5b5d60", dot.getSvgIdByLabel("28"));
+        assertEquals("Node0x55cdef5b5dc0", dot.getSvgIdByLabel("32"));
+        assertEquals("Node0x55cdef5b5830", dot.getSvgIdByLabel("44"));
     }
 }

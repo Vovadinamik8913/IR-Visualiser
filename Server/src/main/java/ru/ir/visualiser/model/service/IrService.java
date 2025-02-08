@@ -1,0 +1,39 @@
+package ru.ir.visualiser.model.service;
+
+
+import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import java.util.Map;
+
+import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.repository.IrRepository;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
+
+@Service
+@RequiredArgsConstructor
+public class IrService {
+
+    private  final IrRepository irRepository;
+
+    public Ir create(Ir ir) {
+        return irRepository.save(ir);
+    }
+
+    @Nullable
+    public Ir get(Long id) {
+        return irRepository.findById(id).orElse(null);
+    }
+
+    public void update(Ir ir) {
+        irRepository.save(ir);
+    }
+
+    public void deleteById(long id) {
+        Ir ir = irRepository.findById(id).orElse(null);
+        if (ir != null) {
+            irRepository.deleteAll(ir.getChildren());
+            irRepository.delete(ir);
+        }
+    }
+}

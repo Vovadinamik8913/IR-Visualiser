@@ -1,6 +1,7 @@
-package ru.ir.visualiser.files.llvm;
+package ru.ir.visualiser.logic.llvm;
 
-import ru.ir.visualiser.files.model.Ir;
+
+import ru.ir.visualiser.model.classes.Ir;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,6 +54,7 @@ public class Opt {
         }
         return process.exitValue() == 0;
     }
+
     public static String printLoops(String opt, Ir ir) throws IOException {
         String pathToIr = ir.getIrPath() + File.separator + ir.getFilename();
         ProcessBuilder processBuilder = new ProcessBuilder(

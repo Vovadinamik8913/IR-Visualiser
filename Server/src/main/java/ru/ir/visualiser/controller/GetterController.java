@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ir.visualiser.files.model.Ir;
-import ru.ir.visualiser.files.model.IrService;
+import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.service.IrService;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +50,23 @@ public class GetterController {
     ) {
         Ir ir = irService.get(id);
         String path = ir.getSvgPath() + File.separator + "." + functionName + ".svg";
+        try {
+            Path dirPath = Paths.get(path);
+            return ResponseEntity.ok(Files.readAllBytes(dirPath));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return ResponseEntity.ofNullable(null);
+    }
+
+    @Operation(summary = "Получение svg по имени функции")
+    @PostMapping(value = "/code")
+    @ResponseBody
+    public ResponseEntity<byte[]> getCode(
+            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
+    ) {
+        Ir ir = irService.get(id);
+        String path = ir.getIrPath() + File.separator + ir.getFilename();
         try {
             Path dirPath = Paths.get(path);
             return ResponseEntity.ok(Files.readAllBytes(dirPath));

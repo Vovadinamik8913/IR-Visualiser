@@ -3,14 +3,16 @@ package ru.ir.visualiser.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
-import java.util.Optional;
-import ru.ir.visualiser.files.model.IrService;
-import ru.ir.visualiser.parser.FunctionIR;
-import ru.ir.visualiser.parser.ModuleIR;
-import ru.ir.visualiser.parser.BlockIR;
-import ru.ir.visualiser.parser.Dot;
+
+import ru.ir.visualiser.model.service.IrService;
+import ru.ir.visualiser.model.classes.ir.FunctionIR;
+import ru.ir.visualiser.model.classes.ir.ModuleIR;
+import ru.ir.visualiser.model.classes.ir.BlockIR;
+import ru.ir.visualiser.model.classes.ir.Dot;
+import ru.ir.visualiser.model.service.ModuleService;
 
 
 /**
@@ -20,7 +22,7 @@ import ru.ir.visualiser.parser.Dot;
 @RestController
 @RequestMapping("/fromline")
 public class LineToSvgController {
-    private final IrService irService;
+    private final ModuleService moduleService;
 
     /**
      * Method to get svg and svg id from line 
@@ -33,12 +35,14 @@ public class LineToSvgController {
     @Operation(summary = "send function info corresponding to a line")
     @PostMapping(value = "/get/svg")
     @ResponseBody
-    public String[] getSvg(
+    public ResponseEntity<String[]> getSvg(
         @Parameter(description = "Номер строки") @RequestParam("line") int line,
         @Parameter(description = "Id of ir") @RequestParam("file") Long id
     ) {
-        ModuleIR module = irService.getModule(id);
-
+        ModuleIR module = moduleService.find(id);
+        if (module == null) {
+            return ResponseEntity.badRequest().build();
+        }
         Collection<FunctionIR> functions = module.getFunctions();
         FunctionIR function = null;
         for (FunctionIR functionNow : functions) {
@@ -60,13 +64,15 @@ public class LineToSvgController {
         }
         if (block == null) {
             System.err.println("Block not found");
-            return new String[]{function.getFunctionName()};
+            return ResponseEntity.ok(new String[]{function.getFunctionName()});
         }
 
         Dot dot = module.getDot(function.getFunctionName());
-        String svgId = dot.getSvgIdByLabel(block.getLabel());
-
-        return new String[]{function.getFunctionName(), svgId};
+        String svgId = "";
+        if(dot != null) {
+            svgId = dot.getSvgIdByLabel(block.getLabel());
+        }
+        return ResponseEntity.ok(new String[]{function.getFunctionName(), svgId});
     }
 
     /**
@@ -81,18 +87,21 @@ public class LineToSvgController {
     @Operation(summary = "send line corresponding to a svg id")
     @PostMapping(value = "/get/line")
     @ResponseBody
-    public int getLine(
+    public ResponseEntity<Integer> getLine(
         @Parameter(description = "Id of svg") @RequestParam("id") String svgId,
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
         @Parameter(description = "Function name") @RequestParam("function") String function
     ) {
-        ModuleIR module = irService.getModule(id);
+        ModuleIR module = moduleService.find(id);
+        if (module == null) {
+            return ResponseEntity.badRequest().build();
+        }
         String label = module.getDot(function).getLabelBySvgId(svgId);
 
         FunctionIR functionIr = module.getFunction(function);
 
-        BlockIR blockIr = functionIr.getBlock(Optional.ofNullable(label));
+        BlockIR blockIr = functionIr.getBlock(label);
 
-        return blockIr.getStartLine();
+        return ResponseEntity.ok(blockIr.getStartLine());
     }
 }

@@ -10,18 +10,10 @@ import java.io.IOException;
 
 public class FileWorker {
 
-    public static void createPath(String path, String foldersOrder) {
-        String[] folders = foldersOrder.split(File.separator);
-        String newPath = path;
-        for (String folder : folders) {
-            addFolder(newPath, folder);
-            newPath += File.separator + folder;
-        }
-    }
-
-    public static void createPaths(String path, String[] foldersOrders) {
-        for (String foldersOrder : foldersOrders) {
-            createPath(path, foldersOrder);
+    public static void createPath(String path) {
+        File dir = new File(path);
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
     }
 
