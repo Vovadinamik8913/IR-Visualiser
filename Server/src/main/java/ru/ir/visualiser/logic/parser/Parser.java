@@ -169,7 +169,7 @@ public class Parser {
         String regexId = "(\\d+):";
         Pattern patternId = Pattern.compile(regexId);
         Matcher matcher = patternId.matcher(input);
-        String label = "entry";
+        String label = "";
         if (matcher.find()) {
             String check = matcher.group(1);
             label = matcher.group(1);

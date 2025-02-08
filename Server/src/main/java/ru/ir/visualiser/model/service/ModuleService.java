@@ -28,7 +28,7 @@ public class ModuleService {
         for (FunctionIR function : functions) {
             blockRepository.saveAll(function.getBlocks());
         }
-        dotRepository.saveAll(module.getDots());
+        dotRepository.saveAll(module.getDots().values());
         functionRepository.saveAll(functions);
         return moduleRepository.save(module);
     }
@@ -47,7 +47,7 @@ public class ModuleService {
         for (FunctionIR function : functions) {
             blockRepository.deleteAll(function.getBlocks());
         }
-        dotRepository.deleteAll(module.getDots());
+        dotRepository.deleteAll(module.getDots().values());
         functionRepository.deleteAll(functions);
         moduleRepository.delete(module);
     }

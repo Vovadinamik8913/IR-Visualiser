@@ -50,7 +50,7 @@ public class LoopsController {
             return ResponseEntity.notFound().build();
         }
         ModuleIR moduleIr = ir.getModuleIR();
-        Collection<Dot> dots = moduleIr.getDots();
+        Collection<Dot> dots = moduleIr.getDots().values();
         Dot dot = null;
         for(Dot nowDot : dots) {
             if(nowDot.getFunctionName().equals(functionName)) {

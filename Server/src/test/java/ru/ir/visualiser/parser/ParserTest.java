@@ -2,6 +2,7 @@ package ru.ir.visualiser.parser;
 
 import org.junit.jupiter.api.Test;
 import ru.ir.visualiser.logic.parser.Parser;
+import ru.ir.visualiser.model.classes.ir.BlockIR;
 import ru.ir.visualiser.model.classes.ir.Dot;
 import ru.ir.visualiser.model.classes.ir.FunctionIR;
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
@@ -13,8 +14,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ParserTest {
 
@@ -45,7 +48,7 @@ public class ParserTest {
 
         ModuleIR moduleIR = Parser.parseModule(content, dotContents);
         Collection<FunctionIR> functions = moduleIR.getFunctions();
-        Collection<Dot> dots = moduleIR.getDots();
+        Map<String, Dot> dots = moduleIR.getDots();
         FunctionIR function = functions.iterator().next();
 
         assertEquals(21, functions.size());
@@ -66,5 +69,45 @@ public class ParserTest {
         assertEquals("Node0x55cdef5b5d60", dot.getSvgIdByLabel("28"));
         assertEquals("Node0x55cdef5b5dc0", dot.getSvgIdByLabel("32"));
         assertEquals("Node0x55cdef5b5830", dot.getSvgIdByLabel("44"));
+    }
+
+    @Test
+    public void blockLabelToDotTest() throws URISyntaxException, IOException {
+        URI path = getClass().getClassLoader().getResource("test1/test.ll").toURI();
+        String content = Files.readString(Path.of(path));
+
+        List<String> dotFiles = List.of(
+                "test1/.add.dot",
+                "test1/.add_my_arr.dot",
+                "test1/.in_order_traversal.dot",
+                "test1/.main.dot",
+                "test1/.max.dot",
+                "test1/.rebalance.dot",
+                "test1/.rotation_left.dot",
+                "test1/.rotation_right.dot",
+                "test1/.shuffle.dot",
+                "test1/.swap.dot",
+                "test1/.update_height.dot"
+        );
+        List<String> dotContents = new java.util.ArrayList<>(dotFiles.size());
+        for (String dotFile : dotFiles) {
+            URI dotPath = getClass().getClassLoader().getResource(dotFile).toURI();
+            String dotContent = Files.readString(Path.of(dotPath));
+            dotContents.add(dotContent);
+        }
+
+        ModuleIR moduleIR = Parser.parseModule(content, dotContents);
+        Collection<FunctionIR> functions = moduleIR.getFunctions();
+        Map<String, Dot> dots = moduleIR.getDots();
+
+        for (FunctionIR function : functions) {
+            Collection<BlockIR> blocks = function.getBlocks();
+            for (BlockIR block : blocks) {
+                Dot dot = dots.get(function.getFunctionName());
+                assertNotNull(dot);
+                String svgId = dot.getSvgIdByLabel(block.getLabel());
+                assertNotNull(svgId);
+            }
+        }
     }
 }
