@@ -54,6 +54,17 @@ public class Opt {
         return process.exitValue() == 0;
     }
 
+    /**
+     * Prints info about loops by starting opt as a process.
+     *
+     * @param opt - path to opt
+     *
+     * @param ir - Ir, which loop info is needed
+     *
+     * @return Loop info from opt
+     *
+     * @throws IOException if couldnt start a process.
+     */
     public static String printLoops(String opt, Ir ir) throws IOException {
         String pathToIr = ir.getIrPath() + File.separator + ir.getFilename();
         ProcessBuilder processBuilder = new ProcessBuilder(

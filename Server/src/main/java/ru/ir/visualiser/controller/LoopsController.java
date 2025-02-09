@@ -28,13 +28,28 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Controller that return highlighted svg and loop info.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/loops")
 public class LoopsController {
     private final IrService irService;
 
-
+    /**
+     * See operation summary.
+     *
+     * @param id - id of ir in database
+     *
+     * @param opt - number of opt
+     *
+     * @param functionName - function name ex. "add"
+     *
+     * @return svg with highlighted loops
+     *
+     * @throws IOException if could`nt read a svg file
+     */
     @Operation(summary = "send svg with highlighted loops")
     @PostMapping("/get/svg")
     @ResponseBody
@@ -44,18 +59,18 @@ public class LoopsController {
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
     ) throws IOException {
         Ir ir = irService.get(id);
-        if(ir == null) {
+        if (ir == null) {
             return ResponseEntity.notFound().build();
         }
         ModuleIR moduleIr = ir.getModuleIR();
         Collection<Dot> dots = moduleIr.getDots().values();
         Dot dot = null;
-        for(Dot nowDot : dots) {
-            if(nowDot.getFunctionName().equals(functionName)) {
+        for (Dot nowDot : dots) {
+            if (nowDot.getFunctionName().equals(functionName)) {
                 dot = nowDot;
             }
         }
-        if(dot == null) {
+        if (dot == null) {
             return ResponseEntity.notFound().build();
         }
         String svgPath = ir.getSvgPath() +  File.separator + "." + functionName + ".svg";
@@ -63,7 +78,7 @@ public class LoopsController {
         String loopInfoRaw = Opt.printLoops(optPath, ir);
         FunctionIR function;
         function = moduleIr.getFunction(functionName);
-        if(function == null) {
+        if (function == null) {
             return ResponseEntity.notFound().build();
         }
         List<LoopIR> loops = Parser.findLoopInfofromOpt(function, loopInfoRaw);
@@ -71,7 +86,7 @@ public class LoopsController {
         String svgContent = new String(Files.readAllBytes(Paths.get(svgPath)));
         Document svgDoc = Jsoup.parse(svgContent);
         for (LoopIR loop : loops) {
-            for(LoopBlock block : loop.getBlocks()) {
+            for (LoopBlock block : loop.getBlocks()) {
                 BlockIR nowBlock = block.getBlock();
                 String svgId = dot.getSvgIdByLabel(nowBlock.getLabel());
                 for (Element titleElement : svgDoc.select("title")) {
