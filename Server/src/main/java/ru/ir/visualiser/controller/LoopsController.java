@@ -27,8 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -118,7 +116,7 @@ public class LoopsController {
         for(LoopIR loop : loops) {
             for(LoopBlock block : loop.getBlocks()) {
                 BlockIR nowBlock = block.getBlock();
-                if(nowBlock.getLabel().equals(Optional.of(blockName))) {
+                if(nowBlock.getLabel().equals(blockName)) {
                     if(loop.getDepth() > maxDepth) {
                         maxDepth = loop.getDepth();
                         neighbors = loop;
@@ -132,8 +130,8 @@ public class LoopsController {
             return "Block not found";
         }
         for(LoopBlock block: neighbors.getBlocks()) {
-            if(!block.getBlock().getLabel().equals(Optional.of(blockName))) {
-                sb.append(block.getBlock().getLabel());
+            if(!block.getBlock().getLabel().equals(blockName)) {
+                sb.append(block.getBlock().getLabel()).append(" ");
                 if(block.isHeader()) {
                     sb.append("Header ");
                 }
