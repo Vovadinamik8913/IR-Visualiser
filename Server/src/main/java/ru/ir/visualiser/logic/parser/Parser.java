@@ -228,30 +228,30 @@ public class Parser {
      */
     private static LoopIR parseLoop(FunctionIR function, String text, int depth) {
         ArrayList<LoopBlock> blocks = new ArrayList<>();
-        for (String now: text.split(",")) {
+        for (String now : text.split(",")) {
             String regex = "%(\\w+)";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(now);
             if (matcher.find()) {
                 String check = matcher.group(1);
-                Collection<BlockIR> blocksIR = function.getBlocks();
+                Collection<BlockIR> blocksIr = function.getBlocks();
                 BlockIR blockIR = null;
-                for(BlockIR block: blocksIR) {
-                    if(block.getLabel().equals(check)) {
+                for (BlockIR block : blocksIr) {
+                    if (block.getLabel().equals(check)) {
                         blockIR = block;
                     }
                 }
-                if(blockIR == null) {
+                if (blockIR == null) {
                     throw new IllegalArgumentException("Can't find block");
                 }
                 LoopBlock block = new LoopBlock(blockIR);
-                if(now.contains("<exiting>")) {
+                if (now.contains("<exiting>")) {
                     block.setExit(true);
                 }
-                if(now.contains("<latch>")) {
+                if (now.contains("<latch>")) {
                     block.setLatch(true);
                 }
-                if(now.contains("<header>")) {
+                if (now.contains("<header>")) {
                     block.setHeader(true);
                 }
                 blocks.add(block);
