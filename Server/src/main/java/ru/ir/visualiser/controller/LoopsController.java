@@ -116,23 +116,23 @@ public class LoopsController {
             @Parameter(description = "Block name", required = true) @RequestParam("block") String blockName
     ) throws IOException {
         Ir ir = irService.get(id);
-        if(ir == null) {
+        if (ir == null) {
             return "IR not found";
         }
         ModuleIR moduleIR = ir.getModuleIR();
         String optPath = Config.getInstance().getOptsPath()[opt];
         String loopInfoRaw = Opt.printLoops(optPath, ir);
-        if(moduleIR.getFunction(functionName) == null) {
+        if (moduleIR.getFunction(functionName) == null) {
             return "Function not found";
         }
         List<LoopIR> loops = Parser.findLoopInfofromOpt(moduleIR.getFunction(functionName), loopInfoRaw);
         int maxDepth = 0;
         LoopIR neighbors = null;
-        for(LoopIR loop : loops) {
-            for(LoopBlock block : loop.getBlocks()) {
+        for (LoopIR loop : loops) {
+            for (LoopBlock block : loop.getBlocks()) {
                 BlockIR nowBlock = block.getBlock();
-                if(nowBlock.getLabel().equals(blockName)) {
-                    if(loop.getDepth() > maxDepth) {
+                if (nowBlock.getLabel().equals(blockName)) {
+                    if (loop.getDepth() > maxDepth) {
                         maxDepth = loop.getDepth();
                         neighbors = loop;
                     }
