@@ -2,7 +2,6 @@ package ru.ir.visualiser.logic.llvm;
 
 
 import ru.ir.visualiser.model.classes.Ir;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

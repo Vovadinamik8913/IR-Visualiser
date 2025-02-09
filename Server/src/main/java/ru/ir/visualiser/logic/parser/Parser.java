@@ -255,8 +255,7 @@ public class Parser {
                     block.setHeader(true);
                 }
                 blocks.add(block);
-            }
-            else{
+            } else {
                 throw new IllegalArgumentException("No block label is found");
             }
 

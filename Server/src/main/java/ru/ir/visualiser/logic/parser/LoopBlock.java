@@ -4,9 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.ir.visualiser.model.classes.ir.BlockIR;
 
+/**
+ * Class that holds single block of loop.
+ */
 @Getter
 public class LoopBlock {
-    BlockIR block;
+    @Getter
+    private BlockIR block;
     @Setter
     private boolean latch = false;
     @Setter

@@ -1,15 +1,15 @@
 package ru.ir.visualiser.logic.parser;
 
 import lombok.Getter;
-import ru.ir.visualiser.logic.parser.LoopBlock;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that holds loop info.
+ */
+@Getter
 public class LoopIR {
-    @Getter
     private final List<LoopBlock> blocks;
-    @Getter
     private final int depth;
 
     public LoopIR(ArrayList<LoopBlock> blocks, int depth) {
