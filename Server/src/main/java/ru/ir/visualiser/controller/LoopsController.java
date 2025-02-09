@@ -106,6 +106,21 @@ public class LoopsController {
         return ResponseEntity.ok(svgDoc.outerHtml().getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * See operation summary.
+     *
+     * @param id - id of ir
+     *
+     * @param opt - id of opt
+     *
+     * @param functionName - function name ex "add"
+     *
+     * @param blockName - block name without "%" ex "13"
+     *
+     * @return - info about block neighbors
+     *
+     * @throws IOException - if could`nt start opt
+     */
     @Operation(summary = "get loop info about block")
     @PostMapping("/get/block/by/name")
     @ResponseBody
@@ -141,19 +156,19 @@ public class LoopsController {
         }
         StringBuilder sb = new StringBuilder();
         sb.append("Neighbors of the block:\n");
-        if(neighbors == null) {
+        if (neighbors == null) {
             return "Block not found";
         }
-        for(LoopBlock block: neighbors.getBlocks()) {
-            if(!block.getBlock().getLabel().equals(blockName)) {
+        for (LoopBlock block: neighbors.getBlocks()) {
+            if (!block.getBlock().getLabel().equals(blockName)) {
                 sb.append(block.getBlock().getLabel()).append(" ");
-                if(block.isHeader()) {
+                if (block.isHeader()) {
                     sb.append("Header ");
                 }
-                if(block.isLatch()) {
+                if (block.isLatch()) {
                     sb.append("Latch ");
                 }
-                if(block.isExit()) {
+                if (block.isExit()) {
                     sb.append("Exit ");
                 }
                 sb.append("\n");
