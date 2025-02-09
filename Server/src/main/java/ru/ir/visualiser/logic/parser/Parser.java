@@ -4,12 +4,10 @@ import ru.ir.visualiser.model.classes.ir.BlockIR;
 import ru.ir.visualiser.model.classes.ir.Dot;
 import ru.ir.visualiser.model.classes.ir.FunctionIR;
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
-import ru.ir.visualiser.logic.parser.LoopIR;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -137,19 +135,17 @@ public class Parser {
         Pattern patternBlock = Pattern.compile(regexBlock);
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {
-            String check1 = matcher.group(1);
-            String check2 = matcher.group(2);
             if (matcher.group(1) != null) {
-                BlockIR blockIR = parseBlock(matcher.group(1),
+                BlockIR blockIr = parseBlock(matcher.group(1),
                         startLine + getLineNumber(input, matcher.start()),
                         startLine + getLineNumber(input, matcher.end()));
-                functionIR.addBlock(blockIR);
+                functionIR.addBlock(blockIr);
                 continue;
             }
-            BlockIR blockIR = parseBlock(matcher.group(2),
+            BlockIR blockIr = parseBlock(matcher.group(2),
                     startLine + getLineNumber(input, matcher.start()),
                     startLine + getLineNumber(input, matcher.end()));
-            functionIR.addBlock(blockIR);
+            functionIR.addBlock(blockIr);
         }
         return functionIR;
     }
@@ -171,14 +167,13 @@ public class Parser {
         Matcher matcher = patternId.matcher(input);
         String label = "";
         if (matcher.find()) {
-            String check = matcher.group(1);
             label = matcher.group(1);
         }
         return new BlockIR(label, startLine, endLine);
     }
 
     /**
-     * Function that extracts Loop info for certain function from Opt output
+     * Function that extracts Loop info for certain function from Opt output.
      *
      * @param function - name of a function
      *
@@ -187,7 +182,7 @@ public class Parser {
      * @return - Loop Structure
      */
     public static List<LoopIR> findLoopInfofromOpt(FunctionIR function, String text) {
-        String regex = "Loop info for function '"+function.getFunctionName()+"':\\n([\\s\\S]*?)(?=Loop info for function |\\Z)";
+        String regex = "Loop info for function '" + function.getFunctionName() + "':\\n([\\s\\S]*?)(?=Loop info for function |\\Z)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         List<LoopIR> res;
@@ -221,6 +216,7 @@ public class Parser {
 
 
     /**
+     * Parses single Loop and creates LoopIR and LoopBlock elements.
      *
      * @param function - function for which loop info is analyzed
      *
@@ -232,8 +228,8 @@ public class Parser {
      */
     private static LoopIR parseLoop(FunctionIR function, String text, int depth) {
         ArrayList<LoopBlock> blocks = new ArrayList<>();
-        for(String now: text.split(",")) {
-            String regex = "\\%(\\w+)";
+        for (String now: text.split(",")) {
+            String regex = "%(\\w+)";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(now);
             if (matcher.find()) {
