@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Objects;
 
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
-import ru.ir.visualiser.logic.parser.Parser;
 import ru.ir.visualiser.model.service.ModuleService;
+import ru.ir.visualiser.logic.parser.Parser;
 
 @RestController
 @RequiredArgsConstructor

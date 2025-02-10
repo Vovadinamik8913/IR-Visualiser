@@ -66,7 +66,7 @@ public class ModuleIR {
         return nameToFunctions.values();
     }
 
-    public Collection<Dot> getDots() {
-        return nameToDot.values();
+    public Map<String, Dot> getDots() {
+        return nameToDot;
     }
 }

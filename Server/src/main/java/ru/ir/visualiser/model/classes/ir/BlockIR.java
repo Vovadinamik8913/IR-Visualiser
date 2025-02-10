@@ -15,7 +15,6 @@ public class BlockIR {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String textRaw;
     @Getter
     private String label;
     @Getter
@@ -23,8 +22,7 @@ public class BlockIR {
     @Getter
     private int endLine;
 
-    public BlockIR(String textRaw, String label, int startLine, int endLine) {
-        this.textRaw = textRaw;
+    public BlockIR(String label, int startLine, int endLine) {
         this.label = label;
         this.startLine = startLine;
         this.endLine = endLine;

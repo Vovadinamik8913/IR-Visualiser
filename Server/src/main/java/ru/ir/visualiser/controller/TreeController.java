@@ -15,6 +15,7 @@ import ru.ir.visualiser.model.classes.Ir;
 import ru.ir.visualiser.model.service.IrService;
 import ru.ir.visualiser.response.Node;
 
+import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -39,8 +40,11 @@ public class TreeController {
         FileWorker.createPath(child.getSvgPath());
         String optPath = Config.getInstance().getOptsPath()[opt];
         try {
-            Opt.optimizate(optPath, parent, child);
+            Opt.optimizeOpt(optPath, parent, child);
             child = irService.create(child);
+            Opt.optimizeOpt(optPath, parent, child);
+            File res = new File(child.getIrPath() + File.separator + child.getFilename());
+            irService.create(child);
             return ResponseEntity.ok(child.getId());
         } catch (IOException e) {
             System.out.println(e.getMessage());

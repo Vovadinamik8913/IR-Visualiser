@@ -32,7 +32,7 @@ public class LineToSvgController {
      *
      * @return - Array of two elements. String[0] - name of the function, String[1] - svg id
      */
-    @Operation(summary = "send svg corresponding to a line")
+    @Operation(summary = "send function info corresponding to a line")
     @PostMapping(value = "/get/svg")
     @ResponseBody
     public ResponseEntity<String[]> getSvg(
