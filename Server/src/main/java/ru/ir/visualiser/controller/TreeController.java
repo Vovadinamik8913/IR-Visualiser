@@ -13,8 +13,8 @@ import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.logic.llvm.Opt;
 import ru.ir.visualiser.model.classes.Ir;
 import ru.ir.visualiser.model.service.IrService;
+import ru.ir.visualiser.response.Node;
 
-import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -23,22 +23,24 @@ import java.io.IOException;
 public class TreeController {
     private final IrService irService;
 
-    @Operation(summary = "Использование оптимизаций")
+    @Operation(summary = "Использование оптимизаций и создание новой ветки")
     @PostMapping(value = "/add")
     public ResponseEntity<Long> optimizeFile(
-            @Parameter(description = "Parent", required = true) @RequestParam("parent") Long file,
+            @Parameter(description = "Parent", required = true) @RequestParam("file") Long id,
             @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "Optimization", required = true) @RequestParam("optimization") String optimization
     ) {
-        Ir parent = irService.get(file);
+        Ir parent = irService.get(id);
+        if (parent == null) {
+            return ResponseEntity.notFound().build();
+        }
         Ir child = new Ir(parent, optimization);
         FileWorker.createPath(child.getDotPath());
         FileWorker.createPath(child.getSvgPath());
         String optPath = Config.getInstance().getOptsPath()[opt];
         try {
             Opt.optimizate(optPath, parent, child);
-            File res = new File(child.getIrPath() + File.separator + child.getFilename());
-            irService.create(child);
+            child = irService.create(child);
             return ResponseEntity.ok(child.getId());
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -46,11 +48,24 @@ public class TreeController {
         return ResponseEntity.ok(null);
     }
 
-    @Operation(summary = "Использование оптимизаций")
+    @Operation(summary = "Удаление ветки")
     @PostMapping(value = "/delete")
     public void deleteBranch(
-            @Parameter(description = "Parent", required = true) @RequestParam("parent") Long file
+            @Parameter(description = "file", required = true) @RequestParam("file") Long id
     ) {
-        irService.deleteById(file);
+        irService.deleteById(id);
+    }
+
+    @Operation(summary = "Получение дерева")
+    @PostMapping(value = "/get")
+    public ResponseEntity<Node> get(
+            @Parameter(description = "Parent", required = true) @RequestParam("parent") Long id
+    ) {
+        Ir parent = irService.get(id);
+        if (parent == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Node res = new Node(parent);
+        return ResponseEntity.ok(res);
     }
 }

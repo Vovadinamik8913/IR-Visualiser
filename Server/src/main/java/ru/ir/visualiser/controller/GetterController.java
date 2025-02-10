@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.classes.ir.Dot;
 import ru.ir.visualiser.model.classes.ir.FunctionIR;
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
 import ru.ir.visualiser.model.service.IrService;
@@ -37,10 +38,10 @@ public class GetterController {
         if (moduleIR == null) {
             return ResponseEntity.notFound().build();
         }
-        List<FunctionIR> functions = moduleIR.getFunctions().stream().toList();
+        List<Dot> dots = moduleIR.getDots().stream().toList();
         List<String> result = new ArrayList<>();
-        for (FunctionIR func : functions) {
-            result.add(func.getFunctionName());
+        for (Dot dot : dots) {
+            result.add(dot.getFunctionName());
         }
         return ResponseEntity.ok(result);
     }

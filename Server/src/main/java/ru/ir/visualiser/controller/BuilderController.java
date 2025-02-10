@@ -70,6 +70,8 @@ public class BuilderController {
                 filename,
                 content
         );
+
+        ir = irService.create(ir);
         return ir;
     }
 
@@ -77,8 +79,7 @@ public class BuilderController {
     @PostMapping(value = "/save/path")
     public ResponseEntity<Long> saveByPath(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
-            @Parameter(description = "Path of file", required = true) @RequestParam("filePath") String filePath,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt
+            @Parameter(description = "Path of file", required = true) @RequestParam("filePath") String filePath
     ) {
         try {
             File file = new File(filePath);
@@ -95,8 +96,7 @@ public class BuilderController {
     @PostMapping(value = "/save/file")
     public ResponseEntity<Long> saveByFile(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
-            @Parameter(description = "File to load", required = true) @RequestParam("file") MultipartFile file,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt
+            @Parameter(description = "File to load", required = true) @RequestParam("file") MultipartFile file
     ) {
         try {
             String filename = file.getOriginalFilename();
@@ -120,7 +120,6 @@ public class BuilderController {
         }
         try {
             generate(opt, ir);
-
             File file = new File(ir.getIrPath() + File.separator + ir.getFilename());
             byte[] content = Files.readAllBytes(file.toPath());
             String moduleContent = new String(content, StandardCharsets.UTF_8);
