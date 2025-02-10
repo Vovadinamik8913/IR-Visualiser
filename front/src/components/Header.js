@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import Upload from './Upload';
+import OptTree from './OptTree';
 import './styles/Header.css';
 
 const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
@@ -7,7 +8,7 @@ const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [isDropboxOpen, setIsDropboxOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState("Анализы");
-
+    const [isOptTreeOpen, setIsOptTreeOpen] = useState(false);
 
     const handleOpenOverlay = () => {
       setIsOverlayOpen(true);
@@ -25,9 +26,12 @@ const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
     return (
         <header className="header">
             <div className="header-left">
-              <button className="opt-tree-button">
-                Дерево оптимизаций
-              </button>
+              <div className="opt-tree">
+                <button onClick={() => setIsOptTreeOpen(true)} className="opt-tree-button">
+                  Дерево оптимизаций
+                </button>
+                <OptTree isOpen={isOptTreeOpen} onClose={() => setIsOptTreeOpen(false)}/>
+              </div>
               <div class="dropdown">
                 <button onClick={() => setIsDropboxOpen(!isDropboxOpen)} class="dropdown-button">
                   {selectedOption}
@@ -35,7 +39,7 @@ const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
                 {isDropboxOpen && (
                   <div className="dropdown-menu">
                     <div>
-                      <div className="dropdown-item" onClick={() => handleSelect("Опция 1")}>Опция 1</div>
+                      <div className="dropdown-item" onClick={() => handleSelect("LoopsInfo")}>LoopsInfo</div>
                       <div className="dropdown-item" onClick={() => handleSelect("Опция 2")}>Опция 2</div>
                       <div className="dropdown-item" onClick={() => handleSelect("Опция 3")}>Опция 3</div>
                       <div className="dropdown-item" onClick={() => handleSelect("Опция 4")}>Опция 4</div>

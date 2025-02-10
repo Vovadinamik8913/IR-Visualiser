@@ -21,28 +21,6 @@
     }
 }
 
-.dropdown {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 4px;
-    border: none;
-    width: 250px;
-}
-
-.upload-button {
-    background-color: #228B22;
-    padding: 12px 20px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-.upload-button:hover {
-    background-color: #8ee782;
-}
-
 .main-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -70,13 +48,5 @@ h2 {
     margin-right: 10px;
     user-select: none;
     cursor: default;
-}
-
-.svg-win {
-    max-height: 730px;
-    overflow: auto;
-    padding: 20px;
-    user-select: none;
-    flex-shrink: 0;
 }
 

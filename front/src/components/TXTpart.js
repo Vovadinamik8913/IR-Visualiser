@@ -9,8 +9,10 @@ const TXTpart = ({content, onLineClick }) => {
         // Подписываемся на событие мыши — нажатие (mouseDown)
         editor.onMouseDown((mouseEvent) => {
           if (mouseEvent.target && mouseEvent.target.position) {
-            const { lineNumber, column } = mouseEvent.target.position;
-            onLineClick(lineNumber);
+            if (mouseEvent.event.ctrlKey) {  // Проверяем, зажат ли ctrl
+              const { lineNumber } = mouseEvent.target.position;
+              onLineClick(lineNumber);
+            }
           }
         });
       };

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import './styles/SVG.css';
 
 const SVGpart = ({ 
     svgContent,
@@ -41,7 +42,7 @@ const SVGpart = ({
                 value={selectedFunction}
                 onChange={handleDropdownChange}
                 className="dropdown"
-                 >
+                >
                 <option value="start">Выберите функцию</option>
                 {functions.length > 0 ? (
                     functions.map((func, index) => (

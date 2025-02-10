@@ -1,0 +1,15 @@
+.dropdown {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: none;
+    width: 250px;
+}
+
+.svg-win {
+    max-height: 730px;
+    overflow: auto;
+    padding: 20px;
+    user-select: none;
+    flex-shrink: 0;
+}
