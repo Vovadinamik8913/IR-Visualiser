@@ -6,6 +6,8 @@ import ru.ir.visualiser.model.classes.ir.FunctionIR;
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -134,14 +136,16 @@ public class Parser {
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {
             if (matcher.group(1) != null) {
-                functionIR.addBlock(parseBlock(matcher.group(1),
+                BlockIR blockIr = parseBlock(matcher.group(1),
                         startLine + getLineNumber(input, matcher.start()),
-                        startLine + getLineNumber(input, matcher.end())));
+                        startLine + getLineNumber(input, matcher.end()));
+                functionIR.addBlock(blockIr);
                 continue;
             }
-            functionIR.addBlock(parseBlock(matcher.group(2),
-                    startLine + matcher.start(), startLine + matcher.end()));
-
+            BlockIR blockIr = parseBlock(matcher.group(2),
+                    startLine + getLineNumber(input, matcher.start()),
+                    startLine + getLineNumber(input, matcher.end()));
+            functionIR.addBlock(blockIr);
         }
         return functionIR;
     }
@@ -165,6 +169,97 @@ public class Parser {
         if (matcher.find()) {
             label = matcher.group(1);
         }
-        return new BlockIR(label, input, startLine, endLine);
+        return new BlockIR(label, startLine, endLine);
+    }
+
+    /**
+     * Function that extracts Loop info for certain function from Opt output.
+     *
+     * @param function - name of a function
+     *
+     * @param text - opt output
+     *
+     * @return - Loop Structure
+     */
+    public static List<LoopIR> findLoopInfofromOpt(FunctionIR function, String text) {
+        String regex = "Loop info for function '" + function.getFunctionName() + "':\\n([\\s\\S]*?)(?=Loop info for function |\\Z)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        List<LoopIR> res;
+        if (matcher.find()) {
+            res = parseLoops(function, matcher.group(1));
+        } else {
+            throw new IllegalArgumentException("Can't find name of the function");
+        }
+        return res;
+    }
+
+    /**
+     * Extracts every loop from preparsed opt output for single function.
+     *
+     * @param function - function for which loop info is analyzed
+     *
+     * @param text - preparsed by findLoopInfofromOpt
+     *
+     * @return parsed loops
+     */
+    private static List<LoopIR> parseLoops(FunctionIR function, String text) {
+        String regex = "Loop at depth (\\d+) containing: ([\\s\\S]*?)\\n";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        List<LoopIR> res = new ArrayList<>();
+        while (matcher.find()) {
+            res.add(parseLoop(function, matcher.group(2), Integer.parseInt(matcher.group(1))));
+        }
+        return res;
+    }
+
+
+    /**
+     * Parses single Loop and creates LoopIR and LoopBlock elements.
+     *
+     * @param function - function for which loop info is analyzed
+     *
+     * @param text - single loop info without "Loop at depth ... containing"
+     *
+     * @param depth - depth of a loop
+     *
+     * @return parsed Loop
+     */
+    private static LoopIR parseLoop(FunctionIR function, String text, int depth) {
+        ArrayList<LoopBlock> blocks = new ArrayList<>();
+        for (String now : text.split(",")) {
+            String regex = "%(\\w+)";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(now);
+            if (matcher.find()) {
+                String check = matcher.group(1);
+                Collection<BlockIR> blocksIr = function.getBlocks();
+                BlockIR blockIR = null;
+                for (BlockIR block : blocksIr) {
+                    if (block.getLabel().equals(check)) {
+                        blockIR = block;
+                    }
+                }
+                if (blockIR == null) {
+                    throw new IllegalArgumentException("Can't find block");
+                }
+                LoopBlock block = new LoopBlock(blockIR);
+                if (now.contains("<exiting>")) {
+                    block.setExit(true);
+                }
+                if (now.contains("<latch>")) {
+                    block.setLatch(true);
+                }
+                if (now.contains("<header>")) {
+                    block.setHeader(true);
+                }
+                blocks.add(block);
+            } else {
+                throw new IllegalArgumentException("No block label is found");
+            }
+
+        }
+        return new LoopIR(blocks, depth);
     }
 }

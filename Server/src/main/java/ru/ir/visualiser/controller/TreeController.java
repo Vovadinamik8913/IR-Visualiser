@@ -36,7 +36,7 @@ public class TreeController {
         FileWorker.createPath(child.getSvgPath());
         String optPath = Config.getInstance().getOptsPath()[opt];
         try {
-            Opt.optimizate(optPath, parent, child);
+            Opt.optimizeOpt(optPath, parent, child);
             File res = new File(child.getIrPath() + File.separator + child.getFilename());
             irService.create(child);
             return ResponseEntity.ok(child.getId());
