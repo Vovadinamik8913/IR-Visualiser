@@ -7,12 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Map;
-
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.model.classes.Ir;
 import ru.ir.visualiser.model.repository.IrRepository;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
 
 @Service
 @RequiredArgsConstructor

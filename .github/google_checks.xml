@@ -246,19 +246,10 @@
       <property name="arrayInitIndent" value="4"/>
       <property name="forceStrictCondition" value="false"/>
     </module>
-    <module name="AbbreviationAsWordInName">
-      <property name="ignoreFinal" value="false"/>
-      <property name="allowedAbbreviationLength" value="0"/>
-      <property name="tokens"
-               value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, ANNOTATION_FIELD_DEF,
-                    PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF, PATTERN_VARIABLE_DEF, RECORD_DEF,
-                    RECORD_COMPONENT_DEF"/>
-    </module>
     <module name="NoWhitespaceBeforeCaseDefaultColon"/>
     <module name="OverloadMethodsDeclarationOrder"/>
     <module name="VariableDeclarationUsageDistance"/>
     <module name="CustomImportOrder">
-      <property name="separateLineBetweenGroups" value="true"/>
       <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
     </module>
     <module name="MethodParamPad">
@@ -344,6 +335,10 @@
     </module>
     <module name="CommentsIndentation">
       <property name="tokens" value="SINGLE_LINE_COMMENT, BLOCK_COMMENT_BEGIN"/>
+    </module>
+    <module name="CustomImportOrder">
+      <property name="separateLineBetweenGroups" value="true"/>
+      <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
     </module>
     <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
     <module name="SuppressionXpathFilter">
