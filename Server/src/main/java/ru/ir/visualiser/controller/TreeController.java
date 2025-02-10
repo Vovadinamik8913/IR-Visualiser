@@ -13,31 +13,47 @@ import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.logic.llvm.Opt;
 import ru.ir.visualiser.model.classes.Ir;
 import ru.ir.visualiser.model.service.IrService;
+import ru.ir.visualiser.response.Node;
 
 import java.io.File;
 import java.io.IOException;
 
+/** controller for tree.
+ *
+ */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/optimization/tree")
+@RequestMapping("/tree")
 public class TreeController {
     private final IrService irService;
 
-    @Operation(summary = "Использование оптимизаций")
+    /** generating new ir.
+     * by applying optimizations
+     *
+     * @param id id of class description
+     * @param opt index of opt
+     * @param optimization flags(param)
+     * @return id of class desc for new file
+     */
+    @Operation(summary = "Использование оптимизаций и создание новой ветки")
     @PostMapping(value = "/add")
     public ResponseEntity<Long> optimizeFile(
-            @Parameter(description = "Parent", required = true) @RequestParam("parent") Long file,
+            @Parameter(description = "Parent", required = true) @RequestParam("file") Long id,
             @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "Optimization", required = true) @RequestParam("optimization") String optimization
     ) {
-        Ir parent = irService.get(file);
+        Ir parent = irService.get(id);
+        if (parent == null) {
+            return ResponseEntity.notFound().build();
+        }
         Ir child = new Ir(parent, optimization);
         FileWorker.createPath(child.getDotPath());
         FileWorker.createPath(child.getSvgPath());
         String optPath = Config.getInstance().getOptsPath()[opt];
         try {
             Opt.optimizeOpt(optPath, parent, child);
-            File res = new File(child.getIrPath() + File.separator + child.getFilename());
+            child = irService.create(child);
+            Opt.optimizeOpt(optPath, parent, child);
             irService.create(child);
             return ResponseEntity.ok(child.getId());
         } catch (IOException e) {
@@ -46,11 +62,38 @@ public class TreeController {
         return ResponseEntity.ok(null);
     }
 
-    @Operation(summary = "Использование оптимизаций")
+    /** delete this ir and children.
+     *
+     * @param id id of ir description
+     */
+    @Operation(summary = "Удаление ветки")
     @PostMapping(value = "/delete")
-    public void deleteBranch(
-            @Parameter(description = "Parent", required = true) @RequestParam("parent") Long file
+    public ResponseEntity<?> deleteBranch(
+            @Parameter(description = "file", required = true) @RequestParam("file") Long id
     ) {
-        irService.deleteById(file);
+        try {
+            irService.deleteById(id);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /** get tree.
+     *
+     * @param id id of ir description
+     * @return tree
+     */
+    @Operation(summary = "Получение дерева")
+    @PostMapping(value = "/get")
+    public ResponseEntity<Node> get(
+            @Parameter(description = "Parent", required = true) @RequestParam("parent") Long id
+    ) {
+        Ir parent = irService.get(id);
+        if (parent == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Node res = new Node(parent);
+        return ResponseEntity.ok(res);
     }
 }

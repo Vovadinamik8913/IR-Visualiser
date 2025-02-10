@@ -2,13 +2,14 @@ package ru.ir.visualiser.model.service;
 
 
 import jakarta.annotation.Nullable;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.Map;
 
+import java.io.IOException;
+import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.model.classes.Ir;
 import ru.ir.visualiser.model.repository.IrRepository;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +26,26 @@ public class IrService {
         return irRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void update(Ir ir) {
         irRepository.save(ir);
     }
 
-    public void deleteById(long id) {
+    /** deleting files.
+     *
+     * @param id id of ir
+     * @throws IOException error
+     */
+    @Transactional
+    public void deleteById(long id) throws IOException {
         Ir ir = irRepository.findById(id).orElse(null);
         if (ir != null) {
-            irRepository.deleteAll(ir.getChildren());
+            for (Ir child : ir.getChildren()) {
+                deleteById(child.getId());
+            }
+            FileWorker.deleteDirectory(ir.getDotPath());
+            FileWorker.deleteDirectory(ir.getSvgPath());
+            FileWorker.deleteDirectory(ir.getIrPath());
             irRepository.delete(ir);
         }
     }

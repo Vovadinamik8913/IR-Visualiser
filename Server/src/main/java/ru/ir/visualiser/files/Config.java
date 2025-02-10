@@ -7,6 +7,10 @@ import java.io.File;
 import java.io.IOException;
 
 
+/** config singleton.
+ * contains opts and workPath
+ *
+ */
 public class Config {
     @Getter
     private String[] optsPath;
@@ -16,6 +20,10 @@ public class Config {
 
     private Config() {}
 
+    /** get singleton.
+     *
+     * @return instance
+     */
     public static Config getInstance() {
         if (instance == null) {
             instance = new Config();
@@ -23,10 +31,14 @@ public class Config {
         return instance;
     }
 
-    public static void deserializeFromJson() throws IOException {
-        String filepath = "irvis.json";
+    /** fill config.
+     *
+     * @param filename source file
+     * @throws IOException no such file
+     */
+    public static void deserializeFromJson(String filename) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        instance = objectMapper.readValue(new File(filepath), Config.class);
+        instance = objectMapper.readValue(new File(filename), Config.class);
     }
 
 }

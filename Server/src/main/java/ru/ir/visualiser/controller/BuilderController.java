@@ -23,12 +23,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
 import ru.ir.visualiser.model.service.ModuleService;
 import ru.ir.visualiser.logic.parser.Parser;
 
+/** controller for saving files.
+ * and generating dots and svgs
+ *
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/files")
@@ -36,6 +42,12 @@ public class BuilderController {
     private final IrService irService;
     private final ModuleService moduleService;
 
+    /** generating opts and svgs.
+     *
+     * @param opt number of opt in arr
+     * @param ir description of our file
+     * @throws IOException if problems with file
+     */
     private void generate(int opt, Ir ir) throws IOException {
         String optPath = Config.getInstance().getOptsPath()[opt];
         if (Opt.validateOpt(optPath)) {
@@ -69,21 +81,16 @@ public class BuilderController {
                 content
         );
 
-        String moduleContent = new String(content, StandardCharsets.UTF_8);
-        DirectoryStream<Path> dotsDirectory = Files.newDirectoryStream(Path.of(ir.getDotPath()));
-        List<String> dots = new java.util.ArrayList<>();
-        for (Path dotPath : dotsDirectory) {
-            dots.add(Files.readString(dotPath));
-        }
-
         ir = irService.create(ir);
-        ModuleIR module = Parser.parseModule(moduleContent, dots);
-        module.setIr(ir);
-        moduleService.create(module);
-
         return ir;
     }
 
+    /** saving to work path by file path.
+     *
+     * @param folder name of project group
+     * @param filePath path to ir file
+     * @return id of class description
+     */
     @Operation(summary = "Сохранение файла по пути до него")
     @PostMapping(value = "/save/path")
     public ResponseEntity<Long> saveByPath(
@@ -101,6 +108,12 @@ public class BuilderController {
         return ResponseEntity.ofNullable(null);
     }
 
+    /** saving to work path file.
+     *
+     * @param folder name of project group
+     * @param file file
+     * @return id of class description
+     */
     @Operation(summary = "Сохранение переданного файла")
     @PostMapping(value = "/save/file")
     public ResponseEntity<Long> saveByFile(
@@ -117,6 +130,13 @@ public class BuilderController {
         return ResponseEntity.ofNullable(null);
     }
 
+    /** end-point for generating.
+     * dots and svgs
+     *
+     * @param id id of class description
+     * @param opt index of opt
+     * @return ok or badRequest
+     */
     @Operation(summary = "Создание svg и dot")
     @PostMapping(value = "/generate")
     public ResponseEntity<?> buildSVGByFile(
@@ -129,6 +149,17 @@ public class BuilderController {
         }
         try {
             generate(opt, ir);
+            File file = new File(ir.getIrPath() + File.separator + ir.getFilename());
+            byte[] content = Files.readAllBytes(file.toPath());
+            String moduleContent = new String(content, StandardCharsets.UTF_8);
+            DirectoryStream<Path> dotsDirectory = Files.newDirectoryStream(Path.of(ir.getDotPath()));
+            List<String> dots = new java.util.ArrayList<>();
+            for (Path dotPath : dotsDirectory) {
+                dots.add(Files.readString(dotPath));
+            }
+            ModuleIR module = Parser.parseModule(moduleContent, dots);
+            module.setIr(ir);
+            moduleService.create(module);
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
