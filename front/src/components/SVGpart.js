@@ -7,24 +7,38 @@ const SVGpart = ({
     selectedFunction,
     setSelectedFunction,
     llContent, 
-    onGetRequest 
+    onGetRequest, 
+    selectedOption,
+    infoContent,
+    onBlockClick
 }) => {
 
+    const [blockTitle, setBlockTitle] = useState('');
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
         const edge = event.target.closest('.edge');
 
         if (node) {
-            const blockTitle = node.querySelector('title')?.textContent || 'Без названия';
+            const title = node.querySelector('title')?.textContent || 'Без названия';
+            setBlockTitle(title);
             console.log("Информация о блоке:", blockTitle); // Выводим информацию о блоке в консоль
+            onBlockClick(blockTitle);
+            if (selectedOption === "LoopsInfo") {
+                setPopupPosition({ x: event.clientX, y: event.clientY });
+                setPopupVisible(true);
+            }
         } else if (edge) {
             const blockFrom = edge.querySelector('title')?.textContent.split("->")[0] || 'NO NAME';
             console.log("Ребро из блока:", blockFrom);
             const blockTo = edge.querySelector('title')?.textContent.split('->')[1] || 'NO NAME';
             console.log("в блок:", blockTo);
+            setPopupVisible(false);
         } else {
             console.log("Клик вне блоков и рёбер");
+            setPopupVisible(false);
         }
     };
 
@@ -60,8 +74,16 @@ const SVGpart = ({
                     <div className="svg-win"
                         onClick={handleSvgClick}
                         dangerouslySetInnerHTML={{ __html: svgContent }}
-                         style={{cursor: "pointer"}}
+                        style={{cursor: "pointer"}}
                     />
+                    {popupVisible && selectedOption === "LoopsInfo" && (
+                        <div 
+                            className="popup-info" 
+                            style={{ top: popupPosition.y, left: popupPosition.x }}
+                        >
+                            {infoContent || "Нет данных"}
+                        </div>
+                    )}
                 </div>
             ) : (
                 <div className="svg-placeholder" style={{

@@ -3,9 +3,10 @@ import Header from './components/Header';
 import SVGpart from './components/SVGpart';
 import TXTpart from "./components/TXTpart";
 import './App.css';
-import {buildByFile, buildByPath, generateSvg, saveByFile, saveByPath} from './components/api/build-api'
+import { buildByFile, buildByPath, generateSvg, saveByFile, saveByPath} from './components/api/build-api'
 import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/svg-api';
 import { getCode } from './components/api/code-api';
+import { getSvgWithLoops, getLoopInfo } from './components/api/loops-api';
 
 function App() {
     const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
@@ -13,6 +14,8 @@ function App() {
     const [svgContent, setSvgContent] = useState(''); // Содержимое SVG
     const [irId, setIrId] = useState(0);
     const [selectedFunction, setSelectedFunction] = useState('');// выбранное значение
+    const [selectedOption, setSelectedOption] = useState("Анализы");
+    const [loopInfo, setLoopInfo] = useState('');
     const irIdRef = useRef(irId);
 
     useEffect(() => {
@@ -95,17 +98,37 @@ function App() {
         }
     };
 
+    //получение свг(дефолт)
     const handleGetRequest = async (funcName) => {
         try {
-            console.log(irId);
-            const svgText = await getSvgByFunction(irId, funcName);
+            let svgText;
+            if (selectedOption === "LoopsInfo") {
+                svgText = await getSvgWithLoops(irId, funcName);
+            } else {
+                svgText = await getSvgByFunction(irId, funcName);
+            }
             setSvgContent(svgText);
         } catch (error) {
             console.error('Ошибка запроса:', error);
             alert('Произошла ошибка при выполнении запроса');
         }
-    }
+    };
 
+    //клик для лупса
+    const handleBlockClick = async (blockTitle) => {
+    
+        if (selectedOption === "LoopsInfo" && selectedFunction) {
+            try {
+                const info = await getLoopInfo(irId, selectedFunction, blockTitle);
+                setLoopInfo(info);
+            } catch (error) {
+                console.error("Ошибка при получении информации о цикле:", error);
+                setLoopInfo("Ошибка загрузки данных");
+            }
+        }
+    };
+
+    //клик на строку
     const handleLineClick = async (index) => {
         try {
             const info = await getSvgByLine(irIdRef.current, index);
@@ -130,6 +153,7 @@ function App() {
                 onFileUpload={handleFileUpload}
                 onBuildByFileRequest={handleBuildByFileRequest}
                 onBuildByPathRequest={handleBuildByPathRequest}
+                onAnalysChange={setSelectedOption}
             />
             <div className="main-container">
                 <TXTpart
@@ -143,6 +167,9 @@ function App() {
                     llContent={llContent}
                     svgContent={svgContent}
                     onGetRequest={handleGetRequest}
+                    selectedOption={selectedOption}
+                    infoContent={loopInfo}
+                    onBlockClick={handleBlockClick}
                 />
             </div>
         </div>

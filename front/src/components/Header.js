@@ -3,8 +3,7 @@ import Upload from './Upload';
 import OptTree from './OptTree';
 import './styles/Header.css';
 
-const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
-    const [isLoading, setIsLoading] = useState(false); 
+const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest, onAnalysChange}) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [isDropboxOpen, setIsDropboxOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState("Анализы");
@@ -20,7 +19,8 @@ const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
 
     const handleSelect = (option) => {
       setSelectedOption(option);
-      setIsDropboxOpen(false); // Закрываем меню после выбора
+      setIsDropboxOpen(false);
+      onAnalysChange(option);
     };    
 
     return (
@@ -56,7 +56,6 @@ const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
             </div>
             
             <h1 className="header-title">IR VISUALIZER</h1>
-            {isLoading && <div className="loading-bar"></div>}
             {/* Сам оверлей со вкладками. Показывается только, если isOverlayOpen === true */}
             {isOverlayOpen && (
               <Upload
