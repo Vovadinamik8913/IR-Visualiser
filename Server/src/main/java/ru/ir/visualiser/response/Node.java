@@ -15,6 +15,10 @@ public class Node {
     private final String name;
     private final List<Node> children;
 
+    /** constructor.
+     *
+     * @param ir ir
+     */
     public Node(Ir ir) {
         this.name = ir.getFilename().substring(0, ir.getFilename().lastIndexOf('.'));
         this.id = ir.getId();
@@ -23,7 +27,7 @@ public class Node {
     }
 
     private void setChildren(Ir ir) {
-        for(Ir child : ir.getChildren()) {
+        for (Ir child : ir.getChildren()) {
             children.add(new Node(child));
         }
     }

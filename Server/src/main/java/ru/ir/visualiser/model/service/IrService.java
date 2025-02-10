@@ -31,6 +31,11 @@ public class IrService {
         irRepository.save(ir);
     }
 
+    /** deleting files.
+     *
+     * @param id id of ir
+     * @throws IOException error
+     */
     @Transactional
     public void deleteById(long id) throws IOException {
         Ir ir = irRepository.findById(id).orElse(null);
