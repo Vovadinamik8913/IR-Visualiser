@@ -1,6 +1,7 @@
-package ru.ir.visualiser.logic.parser;
+package ru.ir.visualiser.logic.parser.loops;
 
 import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 

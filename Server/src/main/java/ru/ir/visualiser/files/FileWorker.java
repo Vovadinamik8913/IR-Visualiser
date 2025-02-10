@@ -29,19 +29,15 @@ public class FileWorker {
         return absolutePath;
     }
 
-    public static void addFolder(String path, String folderName) {
-        File newDir = new File(path + File.separator + folderName);
-        if (!newDir.exists()) {
-            newDir.mkdirs();
-        }
-    }
-
-    public static void cleanDirectory(String path) throws IOException {
+    public static void deleteDirectory(String path) throws IOException {
         File dir = new File(path);
         if (dir.exists()) {
             FileUtils.cleanDirectory(dir);
         }
+        dir.delete();
     }
+
+
 
     public static void copy(String path, String fileName, byte[] bytes) throws IOException {
         File file = new File(path + File.separator + fileName);

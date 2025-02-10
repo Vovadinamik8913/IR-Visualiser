@@ -18,12 +18,23 @@ import ru.ir.visualiser.response.Node;
 import java.io.File;
 import java.io.IOException;
 
+/** controller for tree.
+ *
+ */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/optimization/tree")
+@RequestMapping("/tree")
 public class TreeController {
     private final IrService irService;
 
+    /** generating new ir.
+     * by applying optimizations
+     *
+     * @param id id of class description
+     * @param opt index of opt
+     * @param optimization flags(param)
+     * @return id of class desc for new file
+     */
     @Operation(summary = "Использование оптимизаций и создание новой ветки")
     @PostMapping(value = "/add")
     public ResponseEntity<Long> optimizeFile(
@@ -43,7 +54,6 @@ public class TreeController {
             Opt.optimizeOpt(optPath, parent, child);
             child = irService.create(child);
             Opt.optimizeOpt(optPath, parent, child);
-            File res = new File(child.getIrPath() + File.separator + child.getFilename());
             irService.create(child);
             return ResponseEntity.ok(child.getId());
         } catch (IOException e) {
@@ -52,14 +62,28 @@ public class TreeController {
         return ResponseEntity.ok(null);
     }
 
+    /** delete this ir and children.
+     *
+     * @param id id of ir description
+     */
     @Operation(summary = "Удаление ветки")
     @PostMapping(value = "/delete")
-    public void deleteBranch(
+    public ResponseEntity<?> deleteBranch(
             @Parameter(description = "file", required = true) @RequestParam("file") Long id
     ) {
-        irService.deleteById(id);
+        try {
+            irService.deleteById(id);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
+    /** get tree.
+     *
+     * @param id id of ir description
+     * @return tree
+     */
     @Operation(summary = "Получение дерева")
     @PostMapping(value = "/get")
     public ResponseEntity<Node> get(

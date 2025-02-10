@@ -1,13 +1,14 @@
 package ru.ir.visualiser.response;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import ru.ir.visualiser.model.classes.Ir;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/** Tree response.
+ *
+ */
 @Getter
 public class Node {
     private final long id;

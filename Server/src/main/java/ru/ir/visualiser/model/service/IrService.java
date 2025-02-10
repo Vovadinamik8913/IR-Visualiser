@@ -5,8 +5,11 @@ import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.util.Map;
 
+import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.model.classes.Ir;
 import ru.ir.visualiser.model.repository.IrRepository;
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
@@ -32,12 +35,15 @@ public class IrService {
     }
 
     @Transactional
-    public void deleteById(long id) {
+    public void deleteById(long id) throws IOException {
         Ir ir = irRepository.findById(id).orElse(null);
         if (ir != null) {
             for (Ir child : ir.getChildren()) {
                 deleteById(child.getId());
             }
+            FileWorker.deleteDirectory(ir.getDotPath());
+            FileWorker.deleteDirectory(ir.getSvgPath());
+            FileWorker.deleteDirectory(ir.getIrPath());
             irRepository.delete(ir);
         }
     }

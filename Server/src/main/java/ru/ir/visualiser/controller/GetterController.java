@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/** getter controller.
+ *
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/files/get")
@@ -28,6 +31,11 @@ public class GetterController {
     private final IrService irService;
     private final ModuleService moduleService;
 
+    /** get list of func.
+     *
+     * @param id id of ir description.
+     * @return list of func
+     */
     @PostMapping(value = "/functions")
     @Operation(summary = "Получение всех имен функций")
     @ResponseBody
@@ -38,7 +46,7 @@ public class GetterController {
         if (moduleIR == null) {
             return ResponseEntity.notFound().build();
         }
-        List<Dot> dots = moduleIR.getDots().stream().toList();
+        List<Dot> dots = moduleIR.getDots().values().stream().toList();
         List<String> result = new ArrayList<>();
         for (Dot dot : dots) {
             result.add(dot.getFunctionName());
@@ -46,6 +54,12 @@ public class GetterController {
         return ResponseEntity.ok(result);
     }
 
+    /** get svg by function.
+     *
+     * @param id id of ir description
+     * @param functionName function
+     * @return svg of function
+     */
     @Operation(summary = "Получение svg по имени функции")
     @PostMapping(value = "/svg")
     @ResponseBody
@@ -54,6 +68,9 @@ public class GetterController {
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
     ) {
         Ir ir = irService.get(id);
+        if (ir == null) {
+            return ResponseEntity.notFound().build();
+        }
         String path = ir.getSvgPath() + File.separator + "." + functionName + ".svg";
         try {
             Path dirPath = Paths.get(path);
@@ -64,6 +81,11 @@ public class GetterController {
         return ResponseEntity.ofNullable(null);
     }
 
+    /** get ir file by id.
+     *
+     * @param id id of ir description
+     * @return ir
+     */
     @Operation(summary = "Получение svg по имени функции")
     @PostMapping(value = "/code")
     @ResponseBody
@@ -71,6 +93,9 @@ public class GetterController {
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
     ) {
         Ir ir = irService.get(id);
+        if (ir == null) {
+            return ResponseEntity.notFound().build();
+        }
         String path = ir.getIrPath() + File.separator + ir.getFilename();
         try {
             Path dirPath = Paths.get(path);

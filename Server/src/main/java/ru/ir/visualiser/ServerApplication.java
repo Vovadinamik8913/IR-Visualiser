@@ -11,7 +11,7 @@ public class ServerApplication {
 
 	public static void main(String[] args) {
         try {
-            Config.deserializeFromJson();
+            Config.deserializeFromJson("irvis.json");
 			SpringApplication.run(ServerApplication.class, args);
         } catch (IOException e) {
             System.out.println(e.getMessage());
