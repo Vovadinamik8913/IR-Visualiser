@@ -13,32 +13,30 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-
+@Getter
 @NoArgsConstructor
 public class Ir {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
     private Long id;
-    @Getter
     private String flags;
-    @Getter
     private String filename;
-    @Getter
     private String dotPath;
-    @Getter
     private String svgPath;
-    @Getter
     private String irPath;
+
     @ManyToOne @JoinColumn(name = "parent_id")
-    @Getter
     private Ir parent;
+
     @OneToMany(mappedBy = "parent")
     private List<Ir> children;
+
     @OneToOne(mappedBy = "ir")
-    @Getter
     private ModuleIR moduleIR;
 
-    public Ir(String filename, String irPath, String svgPath, String dotPath) {
+    @ManyToOne @JoinColumn(name = "project_id")
+    private Project project;
+
+    public Ir(String filename, String irPath, String svgPath, String dotPath, Project project) {
         this.flags = "init";
         this.filename = filename;
         this.parent = null;
@@ -46,6 +44,7 @@ public class Ir {
         this.dotPath = dotPath;
         this.svgPath = svgPath;
         this.irPath = irPath;
+        this.project = project;
     }
 
     public Ir(Ir parent, String flags) {
@@ -57,13 +56,5 @@ public class Ir {
         this.flags = flags;
         this.filename = flags + ".ll";
         this.children = new ArrayList<>();
-    }
-
-    public void addChild(Ir child) {
-        children.add(child);
-    }
-
-    public Collection<Ir> getChildren() {
-        return children;
     }
 }

@@ -15,6 +15,7 @@ import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.logic.llvm.Opt;
 import ru.ir.visualiser.logic.llvm.Svg;
 import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.classes.Project;
 import ru.ir.visualiser.model.service.IrService;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import java.util.Objects;
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
 import ru.ir.visualiser.model.service.ModuleService;
 import ru.ir.visualiser.logic.parser.Parser;
+import ru.ir.visualiser.model.service.ProjectService;
 
 /** controller for saving files.
  * and generating dots and svgs
@@ -41,6 +43,7 @@ import ru.ir.visualiser.logic.parser.Parser;
 public class BuilderController {
     private final IrService irService;
     private final ModuleService moduleService;
+    private final ProjectService projectService;
 
     /** generating opts and svgs.
      *
@@ -64,7 +67,7 @@ public class BuilderController {
         }
     }
 
-    private Ir create(String folder, String filename, byte[] content) throws IOException {
+    private Ir create(Project project, String folder, String filename, byte[] content) throws IOException {
         String folderName = FileWorker.getFolderName(filename);
         String path = FileWorker.absolutePath(folder + File.separator + folderName);
 
@@ -72,7 +75,8 @@ public class BuilderController {
         Ir ir = new Ir(filename,
                 path,
                 path + File.separator + "svg_files",
-                path + File.separator + "dot_files");
+                path + File.separator + "dot_files",
+                project);
 
         FileWorker.createPath(ir.getSvgPath());
         FileWorker.createPath(ir.getDotPath());
@@ -80,7 +84,6 @@ public class BuilderController {
                 filename,
                 content
         );
-
         ir = irService.create(ir);
         return ir;
     }
@@ -100,7 +103,12 @@ public class BuilderController {
         try {
             File file = new File(filePath);
             String filename = file.getName();
-            Ir ir = create(folder, filename, Files.readAllBytes(file.toPath()));
+            Project project = projectService.findByName(folder);
+            if (project == null) {
+                project = new Project(folder);
+            }
+            Ir ir = create(project, folder, filename,
+                    Files.readAllBytes(file.toPath()));
             return ResponseEntity.ok(ir.getId());
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
@@ -122,7 +130,11 @@ public class BuilderController {
     ) {
         try {
             String filename = file.getOriginalFilename();
-            Ir ir = create(folder, filename, file.getBytes());
+            Project project = projectService.findByName(folder);
+            if (project == null) {
+                project = new Project(folder);
+            }
+            Ir ir = create(project, folder, filename, file.getBytes());
             return ResponseEntity.ok(ir.getId());
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());

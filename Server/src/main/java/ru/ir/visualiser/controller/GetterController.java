@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.classes.Project;
 import ru.ir.visualiser.model.classes.ir.Dot;
 import ru.ir.visualiser.model.classes.ir.FunctionIR;
 import ru.ir.visualiser.model.classes.ir.ModuleIR;
 import ru.ir.visualiser.model.service.IrService;
 import ru.ir.visualiser.model.service.ModuleService;
+import ru.ir.visualiser.model.service.ProjectService;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.Objects;
 public class GetterController {
     private final IrService irService;
     private final ModuleService moduleService;
+    private final ProjectService projectService;
 
     /** get list of func.
      *
@@ -86,7 +89,7 @@ public class GetterController {
      * @param id id of ir description
      * @return ir
      */
-    @Operation(summary = "Получение svg по имени функции")
+    @Operation(summary = "Получение ir файла")
     @PostMapping(value = "/code")
     @ResponseBody
     public ResponseEntity<byte[]> getCode(
@@ -106,4 +109,14 @@ public class GetterController {
         return ResponseEntity.ofNullable(null);
     }
 
+    /** get projects.
+     *
+     * @return List Projects
+     */
+    @Operation(summary = "Получение проектов")
+    @PostMapping(value = "/projects")
+    @ResponseBody
+    public ResponseEntity<List<Project>> getProjets() {
+        return ResponseEntity.ok(projectService.getAll());
+    }
 }
