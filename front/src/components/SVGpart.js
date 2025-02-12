@@ -14,6 +14,7 @@ const SVGpart = ({
 }) => {
 
     const [blockTitle, setBlockTitle] = useState('');
+    const [blockNumber, setBlockNumber] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     
@@ -24,8 +25,11 @@ const SVGpart = ({
         if (node) {
             const title = node.querySelector('title')?.textContent || 'Без названия';
             setBlockTitle(title);
+            const textElement = node.querySelector('text'); // Получаем первый <text>
+            const number = textElement?.textContent.trim().replace(':', '') || 'Нет данных';
+            setBlockNumber(number);
             console.log("Информация о блоке:", blockTitle); // Выводим информацию о блоке в консоль
-            onBlockClick(blockTitle);
+            onBlockClick(number);
             if (selectedOption === "LoopsInfo") {
                 setPopupPosition({ x: event.clientX, y: event.clientY });
                 setPopupVisible(true);
