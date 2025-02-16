@@ -3,7 +3,13 @@ import Upload from './Upload';
 import OptTree from './OptTree';
 import './styles/Header.css';
 
-const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest, onAnalysChange}) => {
+const Header = ({
+  onFileUpload,
+  onBuildByFileRequest, 
+  onBuildByPathRequest, 
+  onAnalysChange,
+  onSelect
+}) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [isDropboxOpen, setIsDropboxOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState("Анализы");
@@ -30,7 +36,11 @@ const Header = ({onFileUpload, onBuildByFileRequest, onBuildByPathRequest, onAna
                 <button onClick={() => setIsOptTreeOpen(true)} className="opt-tree-button">
                   Дерево оптимизаций
                 </button>
-                <OptTree isOpen={isOptTreeOpen} onClose={() => setIsOptTreeOpen(false)}/>
+                <OptTree
+                 isOpen={isOptTreeOpen} 
+                 onClose={() => setIsOptTreeOpen(false)}
+                 onSelect={onSelect}
+                 />
               </div>
               <div class="dropdown">
                 <button onClick={() => setIsDropboxOpen(!isDropboxOpen)} class="dropdown-button">

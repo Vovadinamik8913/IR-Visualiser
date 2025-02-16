@@ -34,3 +34,17 @@ export const generateSvg = async(id) => {
     });
     if(!response.ok) throw new Error("/files/generate/bad request");
 }
+
+export const optimize = async(id, flags) => {
+    const buildFormData = new FormData();
+    buildFormData.append("file", id);
+    buildFormData.append("opt", 0);
+    buildFormData.append("flags", flags);
+    const response = await fetch('/tree/add', {
+        method: 'POST',
+        body: buildFormData,
+    });
+    if(!response.ok) throw new Error("/tree/add bad request");
+    const doneRes = await response.text();
+    return doneRes;
+}

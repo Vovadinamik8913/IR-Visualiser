@@ -3,7 +3,12 @@ import Editor from '@monaco-editor/react';
 import {handleMount} from './MonacoMount'
 
 
-const TXTpart = ({content, onLineClick }) => {
+const TXTpart = ({
+  content,
+  compilerFlags, setCompilerFlags,
+  handleProcessCode,
+  onLineClick 
+}) => {
 
     const handleEditorMount = (editor, monaco) => {
         // Подписываемся на событие мыши — нажатие (mouseDown)
@@ -16,9 +21,29 @@ const TXTpart = ({content, onLineClick }) => {
           }
         });
       };
+    
+    const handleCompilerFlagsChange = (event) => {
+      setCompilerFlags(event.target.value);
+    };
 
     return (
-        <div className="window">
+        <div className="window form">
+          <div className="info">
+            {/* Ввод ключей для компилятора */}
+            <div className="flex-grow">
+              <input
+                id="compiler-flags"
+                type="text"
+                value={compilerFlags}
+                onChange={handleCompilerFlagsChange}
+                className="text-input"
+              />
+            </div>
+            <div>
+              <button className="open-upload-button" onClick={handleProcessCode}>
+                Применить</button>
+            </div>
+          </div>
           {content ? (
               <Editor
                 height="100%"

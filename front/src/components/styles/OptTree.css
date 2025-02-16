@@ -50,3 +50,60 @@
     color: black;
   }
   
+
+  .tree-container {
+    margin-top: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  
+  .project-selector {
+    margin: 40px 0 15px;
+  }
+  
+  .dropdown {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .loading {
+    padding: 10px;
+    color: #666;
+    font-style: italic;
+  }
+  
+  .tree-node {
+    margin: 5px 0;
+    padding: 5px;
+    transition: background-color 0.2s;
+  }
+  
+  .node-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+  
+  .node-header:hover {
+    background: #e9ecef;
+  }
+  
+  .delete-btn {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+    padding: 2px 8px;
+    margin-left: auto;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  }
+  
+  .delete-btn:hover {
+    background: #ffcdd2;
+  }
