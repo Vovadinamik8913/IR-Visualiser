@@ -12,7 +12,9 @@ import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.logic.llvm.Opt;
 import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.classes.Project;
 import ru.ir.visualiser.model.service.IrService;
+import ru.ir.visualiser.model.service.ProjectService;
 import ru.ir.visualiser.response.Node;
 
 import java.io.File;
@@ -26,13 +28,14 @@ import java.io.IOException;
 @RequestMapping("/tree")
 public class TreeController {
     private final IrService irService;
+    private final ProjectService projectService;
 
     /** generating new ir.
      * by applying optimizations
      *
      * @param id id of class description
      * @param opt index of opt
-     * @param optimization flags(param)
+     * @param flags flags(param)
      * @return id of class desc for new file
      */
     @Operation(summary = "Использование оптимизаций и создание новой ветки")
@@ -40,13 +43,13 @@ public class TreeController {
     public ResponseEntity<Long> optimizeFile(
             @Parameter(description = "Parent", required = true) @RequestParam("file") Long id,
             @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
-            @Parameter(description = "Optimization", required = true) @RequestParam("optimization") String optimization
+            @Parameter(description = "Optimization", required = true) @RequestParam("flags") String flags
     ) {
         Ir parent = irService.get(id);
         if (parent == null) {
             return ResponseEntity.notFound().build();
         }
-        Ir child = new Ir(parent, optimization);
+        Ir child = new Ir(parent, flags);
         FileWorker.createPath(child.getDotPath());
         FileWorker.createPath(child.getSvgPath());
         String optPath = Config.getInstance().getOptsPath()[opt];
@@ -87,12 +90,13 @@ public class TreeController {
     @Operation(summary = "Получение дерева")
     @PostMapping(value = "/get")
     public ResponseEntity<Node> get(
-            @Parameter(description = "Parent", required = true) @RequestParam("parent") Long id
+            @Parameter(description = "Project", required = true) @RequestParam("project") Long id
     ) {
-        Ir parent = irService.get(id);
-        if (parent == null) {
+        Project project = projectService.find(id);
+        if (project == null) {
             return ResponseEntity.notFound().build();
         }
+        Ir parent = project.getIr();
         Node res = new Node(parent);
         return ResponseEntity.ok(res);
     }

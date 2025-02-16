@@ -19,6 +19,11 @@ public class ProjectService {
     }
 
     @Nullable
+    public Project find(Long id) {
+        return projectRepository.findById(id).orElse(null);
+    }
+
+    @Nullable
     public Project findByName(String name) {
         return projectRepository.findByName(name).orElse(null);
     }

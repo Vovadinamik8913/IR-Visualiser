@@ -41,7 +41,7 @@ public class Opt {
         File dir = new File(result.getIrPath());
         ProcessBuilder processBuilder = new ProcessBuilder(
                 opt,
-                "-passes=" + result.getFlags(), "-S", ".." + File.separator + parent.getFilename(),  "-o",
+                result.getFlags(), "-S", ".." + File.separator + parent.getFilename(),  "-o",
                 result.getFilename());
         processBuilder.directory(dir);
         processBuilder.inheritIO();

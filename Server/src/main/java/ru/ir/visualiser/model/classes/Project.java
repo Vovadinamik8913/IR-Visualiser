@@ -16,10 +16,10 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String name;
-    @OneToMany(mappedBy = "project")
+    @OneToOne(mappedBy = "project")
     @Setter
     @JsonIgnore
-    private List<Ir> ir;
+    private Ir ir;
 
     public Project(String name) {
         this.name = name;
