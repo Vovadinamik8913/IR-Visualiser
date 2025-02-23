@@ -206,7 +206,7 @@ public class Parser {
      * @return parsed loops
      */
     private static List<LoopIR> parseLoops(FunctionIR function, String text) {
-        String regex = "Loop at depth (\\d+) containing: ([\\s\\S]*?)\\n";
+        String regex = "Loop at depth (\\d+) containing: ([\\s\\S]*?\\n|[\\s\\S]*)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         List<LoopIR> res = new ArrayList<>();
