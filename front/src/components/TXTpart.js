@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Editor from '@monaco-editor/react';
 import {handleMount} from './MonacoMount'
+import './styles/TXT.css';
 
 
 const TXTpart = ({
@@ -27,7 +28,7 @@ const TXTpart = ({
     };
 
     return (
-        <div className="window form">
+        <div className="window">
           <div className="info">
             {/* Ввод ключей для компилятора */}
             <div className="flex-grow">
@@ -37,6 +38,7 @@ const TXTpart = ({
                 value={compilerFlags}
                 onChange={handleCompilerFlagsChange}
                 className="text-input"
+                placeholder="Введите ключи для компилятора"
               />
             </div>
             <div>
@@ -57,18 +59,9 @@ const TXTpart = ({
                 onMount={handleEditorMount}
               />
           ) : (
-            <div className="ir-placeholder" style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-              height: '300px',
-              border: '2px dashed #ccc',
-              color: '#888',
-              fontSize: '16px'
-          }}>
+            <div className="ir-placeholder">
               Загрузите файл с расширением .ll
-          </div>
+            </div>
           )}
         </div>
     );

@@ -90,16 +90,7 @@ const SVGpart = ({
                     )}
                 </div>
             ) : (
-                <div className="svg-placeholder" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '100%',
-                    height: '300px',
-                    border: '2px dashed #ccc',
-                    color: '#888',
-                    fontSize: '16px'
-                }}>
+                <div className="svg-placeholder">
                     Здесть будет CFG-граф.
                 </div>
             )}

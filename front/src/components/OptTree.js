@@ -71,7 +71,7 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
           <select
             value={selectedProject?.id || ''}
             onChange={(e) => {
-              const project = projects.find(p => p.id == e.target.value);
+              const project = projects.find(p => p.id === parseInt(e.target.value, 10));
               setSelectedProject(project);
               loadProjectTree(project.id);
             }}
@@ -116,9 +116,9 @@ const TreeNode = ({ node, onDelete, level, onSelect }) => {
   return (
     <div className="tree-node" style={{ marginLeft: `${level * 25}px` }}>
       <div className="node-header">
-        <button onClick={handleSelect}>
+        <button className="node-button" onClick={handleSelect}>
           {node.children?.length > 0 && (
-            <span>{isOpen ? '▼' : '▶'}</span>
+            <span>{isOpen ? '▼ ' : '▶ '}</span>
           )}
           {node.name}
         </button>
