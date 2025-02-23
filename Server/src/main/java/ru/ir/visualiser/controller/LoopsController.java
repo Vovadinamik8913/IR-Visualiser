@@ -48,7 +48,6 @@ public class LoopsController {
      *
      * @param dot - dot of the function
      *
-     * @return - highlighted svg
      */
     private void highlightAllLoops(Document svgDoc, List<LoopIR> loops, Dot dot) {
         for (LoopIR loop : loops) {
