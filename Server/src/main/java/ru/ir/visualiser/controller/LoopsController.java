@@ -37,6 +37,40 @@ import java.util.List;
 public class LoopsController {
     private final IrService irService;
 
+
+
+    /**
+     * Method for highlighting list of loops with yellow stroke.
+     *
+     * @param svgDoc - svg to be edit.
+     *
+     * @param loops - loops to be highlighted
+     *
+     * @param dot - dot of the function
+     *
+     */
+    private void highlightAllLoops(Document svgDoc, List<LoopIR> loops, Dot dot) {
+        for (LoopIR loop : loops) {
+            for (LoopBlock block : loop.getBlocks()) {
+                BlockIR nowBlock = block.getBlock();
+                String svgId = dot.getSvgIdByLabel(nowBlock.getLabel());
+                for (Element titleElement : svgDoc.select("title")) {
+                    if (titleElement.text().equals(svgId)) {
+                        Element parent = titleElement.parent(); // Получаем родительский <g>
+                        if (parent != null) {
+                            Element polygon = parent.selectFirst("polygon"); // Берем первый <polygon>
+                            if (polygon != null) {
+                                //polygon.attr("fill", "#FFFF00");  // Новый цвет (жёлтый)
+                                polygon.attr("stroke", "#FFFF00");
+                                polygon.attr("stroke-width", "3");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * See operation summary.
      *
@@ -48,10 +82,10 @@ public class LoopsController {
      *
      * @return svg with highlighted loops
      *
-     * @throws IOException if could`nt read a svg file
+     * @throws IOException if couldn`t read a svg file
      */
     @Operation(summary = "send svg with highlighted loops")
-    @PostMapping("/get/svg")
+    @PostMapping("/get/all/svg")
     @ResponseBody
     public ResponseEntity<byte[]> highlightedLoops(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
@@ -83,21 +117,99 @@ public class LoopsController {
         }
         List<LoopIR> loops = Parser.findLoopInfofromOpt(function, loopInfoRaw);
 
-        String svgContent = new String(Files.readAllBytes(Paths.get(svgPath)));
-        Document svgDoc = Jsoup.parse(svgContent);
+        Document svgDoc = Jsoup.parse(new String(Files.readAllBytes(Paths.get(svgPath))));
+        highlightAllLoops(svgDoc, loops, dot);
+        return ResponseEntity.ok(svgDoc.outerHtml().getBytes(StandardCharsets.UTF_8));
+    }
+
+
+    /**
+     *
+     * @param id - ir
+     *
+     * @param opt - index of opt path in config
+     *
+     * @param functionName - function to be analyzed
+     *
+     * @param blockName - name of clicked block
+     *
+     * @param click - number of click
+     *
+     * @return - svg with highlighted loop corresponding to depth
+     *
+     * @throws IOException - if svg not found
+     */
+    @Operation(summary = "send svg with highlighted loop according to depth")
+    @PostMapping("/get/loop/svg/by/click")
+    @ResponseBody
+    public ResponseEntity<byte[]> highlightedLoopDepth(
+            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
+            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
+            @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName,
+            @Parameter(description = "Block name", required = true) @RequestParam("block") String blockName,
+            @Parameter(description = "Click", required = true) @RequestParam ("click") int click
+    ) throws IOException {
+        Ir ir = irService.get(id);
+        if (ir == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ModuleIR moduleIr = ir.getModuleIR();
+        Collection<Dot> dots = moduleIr.getDots().values();
+        Dot dot = null;
+        for (Dot nowDot : dots) {
+            if (nowDot.getFunctionName().equals(functionName)) {
+                dot = nowDot;
+            }
+        }
+        if (dot == null) {
+            return ResponseEntity.notFound().build();
+        }
+        String svgPath = ir.getSvgPath() +  File.separator + "." + functionName + ".svg";
+        String optPath = Config.getInstance().getOptsPath()[opt];
+        String loopInfoRaw = Opt.printLoops(optPath, ir);
+        FunctionIR function;
+        function = moduleIr.getFunction(functionName);
+        if (function == null) {
+            return ResponseEntity.notFound().build();
+        }
+        List<LoopIR> loops = Parser.findLoopInfofromOpt(function, loopInfoRaw);
+
+        Document svgDoc = Jsoup.parse(new String(Files.readAllBytes(Paths.get(svgPath))));
+        highlightAllLoops(svgDoc, loops, dot);
+        int maxDepth = 0;
         for (LoopIR loop : loops) {
             for (LoopBlock block : loop.getBlocks()) {
                 BlockIR nowBlock = block.getBlock();
-                String svgId = dot.getSvgIdByLabel(nowBlock.getLabel());
-                for (Element titleElement : svgDoc.select("title")) {
-                    if (titleElement.text().equals(svgId)) {
-                        Element parent = titleElement.parent(); // Получаем родительский <g>
-                        if (parent != null) {
-                            Element polygon = parent.selectFirst("polygon"); // Берем первый <polygon>
-                            if (polygon != null) {
-                                polygon.attr("fill", "#FFFF00");  // Новый цвет (жёлтый)
-                                polygon.attr("stroke", "#FFFF00");
-                            }
+                if (nowBlock.getLabel().equals(blockName)) {
+                    if (loop.getDepth() > maxDepth) {
+                        maxDepth = loop.getDepth();
+                    }
+                }
+            }
+        }
+        click = (click - 1) % maxDepth + 1; //цикличный остаток от деления
+        int desiredDepth = (maxDepth - (click - 1));
+        LoopIR loopToBeHighlight = null;
+        for (LoopIR loop : loops) {
+            for (LoopBlock block : loop.getBlocks()) {
+                BlockIR nowBlock = block.getBlock();
+                if (nowBlock.getLabel().equals(blockName)) {
+                    if (loop.getDepth() == desiredDepth) {
+                        loopToBeHighlight = loop;
+                    }
+                }
+            }
+        }
+        for (LoopBlock block : loopToBeHighlight.getBlocks()) {
+            BlockIR nowBlock = block.getBlock();
+            String svgId = dot.getSvgIdByLabel(nowBlock.getLabel());
+            for (Element titleElement : svgDoc.select("title")) {
+                if (titleElement.text().equals(svgId)) {
+                    Element parent = titleElement.parent(); // Получаем родительский <g>
+                    if (parent != null) {
+                        Element polygon = parent.selectFirst("polygon"); // Берем первый <polygon>
+                        if (polygon != null) {
+                            polygon.attr("fill", "#FFFF00");  // Новый цвет (жёлтый)
                         }
                     }
                 }
