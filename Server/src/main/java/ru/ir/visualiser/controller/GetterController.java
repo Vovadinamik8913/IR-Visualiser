@@ -5,14 +5,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ir.visualiser.model.classes.Ir;
-import ru.ir.visualiser.model.classes.Project;
-import ru.ir.visualiser.model.classes.ir.Dot;
-import ru.ir.visualiser.model.classes.ir.FunctionIR;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
-import ru.ir.visualiser.model.service.IrService;
-import ru.ir.visualiser.model.service.ModuleService;
-import ru.ir.visualiser.model.service.ProjectService;
+import ru.ir.visualiser.model.Ir;
+import ru.ir.visualiser.model.Project;
+import ru.ir.visualiser.model.ir.Dot;
+import ru.ir.visualiser.model.ir.ModuleIR;
+import ru.ir.visualiser.service.IrService;
+import ru.ir.visualiser.service.ModuleService;
+import ru.ir.visualiser.service.ProjectService;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /** getter controller.
  *
@@ -109,7 +108,8 @@ public class GetterController {
         return ResponseEntity.ofNullable(null);
     }
 
-    /** get projects.
+    /**
+     * get projects.
      *
      * @return List Projects
      */

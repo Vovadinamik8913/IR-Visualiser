@@ -1,15 +1,12 @@
-package ru.ir.visualiser.model.classes;
+package ru.ir.visualiser.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
+import ru.ir.visualiser.model.ir.ModuleIR;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity

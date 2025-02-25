@@ -12,11 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
-import ru.ir.visualiser.logic.llvm.Opt;
-import ru.ir.visualiser.logic.llvm.Svg;
-import ru.ir.visualiser.model.classes.Ir;
-import ru.ir.visualiser.model.classes.Project;
-import ru.ir.visualiser.model.service.IrService;
+import ru.ir.visualiser.core.llvm.Opt;
+import ru.ir.visualiser.core.llvm.Svg;
+import ru.ir.visualiser.model.Ir;
+import ru.ir.visualiser.model.Project;
+import ru.ir.visualiser.service.IrService;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,14 +24,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
-import ru.ir.visualiser.model.service.ModuleService;
-import ru.ir.visualiser.logic.parser.Parser;
-import ru.ir.visualiser.model.service.ProjectService;
+import ru.ir.visualiser.model.ir.ModuleIR;
+import ru.ir.visualiser.service.ModuleService;
+import ru.ir.visualiser.core.parser.Parser;
+import ru.ir.visualiser.service.ProjectService;
 
 /** controller for saving files.
  * and generating dots and svgs
@@ -88,9 +86,10 @@ public class BuilderController {
         return ir;
     }
 
-    /** saving to work path by file path.
+    /**
+     * saving to work path by file path.
      *
-     * @param folder name of project group
+     * @param folder   name of project group
      * @param filePath path to ir file
      * @return id of class description
      */
@@ -100,26 +99,27 @@ public class BuilderController {
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
             @Parameter(description = "Path of file", required = true) @RequestParam("filePath") String filePath
     ) {
-        try {
-            File file = new File(filePath);
-            String filename = file.getName();
-            Project project = projectService.findByName(folder);
-            if (project == null) {
-                project = new Project(folder);
-            }
-            Ir ir = create(project, folder, filename,
-                    Files.readAllBytes(file.toPath()));
-            return ResponseEntity.ok(ir.getId());
-        } catch (IOException | RuntimeException e) {
-            System.out.println(e.getMessage());
+        File file = new File(filePath);
+        String filename = file.getName();
+        Project project = projectService.findByName(folder);
+        if (project == null) {
+            project = new Project(folder);
         }
-        return ResponseEntity.ofNullable(null);
+        Ir ir = null;
+        try {
+            ir = create(project, folder, filename,
+                    Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(ir.getId());
     }
 
-    /** saving to work path file.
+    /**
+     * saving to work path file.
      *
      * @param folder name of project group
-     * @param file file
+     * @param file   file
      * @return id of class description
      */
     @Operation(summary = "Сохранение переданного файла")
@@ -128,18 +128,19 @@ public class BuilderController {
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
             @Parameter(description = "File to load", required = true) @RequestParam("file") MultipartFile file
     ) {
+        String filename = file.getOriginalFilename();
+        Project project =  projectService.findByName(folder);
+        if (project == null) {
+            project = new Project(folder);
+        }
+        Ir ir = null;
         try {
-            String filename = file.getOriginalFilename();
-            Project project = projectService.findByName(folder);
-            if (project == null) {
-                project = new Project(folder);
-            }
-            Ir ir = create(project, folder, filename, file.getBytes());
+            ir = create(project, folder, filename, file.getBytes());
             return ResponseEntity.ok(ir.getId());
-        } catch (IOException | RuntimeException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        return ResponseEntity.ofNullable(null);
+        return ResponseEntity.badRequest().build();
     }
 
     /** end-point for generating.

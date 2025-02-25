@@ -1,4 +1,4 @@
-package ru.ir.visualiser.logic.llvm;
+package ru.ir.visualiser.core.llvm;
 
 import java.io.File;
 import java.io.IOException;

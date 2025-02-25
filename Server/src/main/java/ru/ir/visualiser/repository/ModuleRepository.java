@@ -1,8 +1,8 @@
-package ru.ir.visualiser.model.repository;
+package ru.ir.visualiser.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.ir.visualiser.model.classes.Ir;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
+import ru.ir.visualiser.model.Ir;
+import ru.ir.visualiser.model.ir.ModuleIR;
 
 import java.util.Optional;
 

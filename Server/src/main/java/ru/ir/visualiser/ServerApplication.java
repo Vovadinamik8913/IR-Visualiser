@@ -2,6 +2,7 @@ package ru.ir.visualiser;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 import ru.ir.visualiser.files.Config;
 
 import java.io.IOException;

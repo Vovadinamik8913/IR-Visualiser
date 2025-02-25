@@ -1,16 +1,16 @@
-package ru.ir.visualiser.model.service;
+package ru.ir.visualiser.service;
 
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.ir.visualiser.model.classes.Ir;
-import ru.ir.visualiser.model.classes.ir.FunctionIR;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
-import ru.ir.visualiser.model.repository.BlockRepository;
-import ru.ir.visualiser.model.repository.DotRepository;
-import ru.ir.visualiser.model.repository.FunctionRepository;
-import ru.ir.visualiser.model.repository.ModuleRepository;
+import ru.ir.visualiser.model.Ir;
+import ru.ir.visualiser.model.ir.FunctionIR;
+import ru.ir.visualiser.model.ir.ModuleIR;
+import ru.ir.visualiser.repository.BlockRepository;
+import ru.ir.visualiser.repository.DotRepository;
+import ru.ir.visualiser.repository.FunctionRepository;
+import ru.ir.visualiser.repository.ModuleRepository;
 
 import java.util.Collection;
 
