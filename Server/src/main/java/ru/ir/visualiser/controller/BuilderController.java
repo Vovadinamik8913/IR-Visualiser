@@ -25,7 +25,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.service.ModuleService;
@@ -137,10 +136,11 @@ public class BuilderController {
         Ir ir = null;
         try {
             ir = create(project, folder, filename, file.getBytes());
+            return ResponseEntity.ok(ir.getId());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
-        return ResponseEntity.ok(ir.getId());
+        return ResponseEntity.badRequest().build();
     }
 
     /** end-point for generating.

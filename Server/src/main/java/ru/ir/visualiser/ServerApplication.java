@@ -8,7 +8,6 @@ import ru.ir.visualiser.files.Config;
 import java.io.IOException;
 
 @SpringBootApplication
-@EnableAsync
 public class ServerApplication {
 
 	public static void main(String[] args) {
