@@ -1,9 +1,9 @@
 export const getSvgWithLoops = async (irId, funcName) => {
     const svgLoopsFormData = new FormData();
     svgLoopsFormData.append("file", irId);
-    svgLoopsFormData.append("opt", 0)
+    svgLoopsFormData.append("opt", 0);
     svgLoopsFormData.append("function", funcName);
-    const response = await fetch('/loops/get/svg', {
+    const response = await fetch('/loops/get/all/svg', {
         method: 'POST',
         body: svgLoopsFormData,
     });
@@ -23,6 +23,22 @@ export const getLoopInfo = async (irId, funcName, svgBlock) => {
         body: loopInfoFormData,
     });
     if(!response.ok) throw new Error("/loops/get/block/by/name bad request");
+    const info = await response.text();
+    return info;
+}
+
+export const getNestedLoops= async (irId, funcName, svgBlock, howManyClicks) => {
+    const loopInfoFormData = new FormData();
+    loopInfoFormData.append("file", irId);
+    loopInfoFormData.append("opt", 0);
+    loopInfoFormData.append("function", funcName);
+    loopInfoFormData.append("block", svgBlock);
+    loopInfoFormData.append("click", howManyClicks);
+    const response = await fetch('/loops/get/loop/svg/by/click', {
+        method: 'POST',
+        body: loopInfoFormData,
+    });
+    if(!response.ok) throw new Error("/loops/get/loop/svg/by/click bad request");
     const info = await response.text();
     return info;
 }

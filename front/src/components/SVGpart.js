@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import './styles/SVG.css';
 
+let clickCounter = 0;
+
 const SVGpart = ({ 
     svgContent,
     functions,
@@ -10,7 +12,8 @@ const SVGpart = ({
     onGetRequest, 
     selectedOption,
     infoContent,
-    onBlockClick
+    onBlockClick,
+    howManyClicks,
 }) => {
 
     const [blockTitle, setBlockTitle] = useState('');
@@ -24,15 +27,28 @@ const SVGpart = ({
 
         if (node) {
             const title = node.querySelector('title')?.textContent || 'Без названия';
+            if(blockTitle === title) {
+                clickCounter = clickCounter + 1 > 3 ? 1 : clickCounter + 1;
+                console.log(clickCounter);
+            } else {
+                clickCounter = 1;
+                console.log(clickCounter);
+            }
             setBlockTitle(title);
-            const textElement = node.querySelector('text'); // Получаем первый <text>
+            const textElement = node.querySelector('text');
             const number = textElement?.textContent.trim().replace(':', '') || 'Нет данных';
             setBlockNumber(number);
             console.log("Информация о блоке:", blockTitle); // Выводим информацию о блоке в консоль
             onBlockClick(number);
             if (selectedOption === "LoopsInfo") {
-                setPopupPosition({ x: event.clientX, y: event.clientY });
-                setPopupVisible(true);
+                if(event.ctrlKey) {
+                    setPopupVisible(true);
+                    setPopupPosition({ x: event.clientX, y: event.clientY });
+                }
+                else { 
+                    setPopupVisible(false);
+                }
+                howManyClicks(clickCounter);
             }
         } else if (edge) {
             const blockFrom = edge.querySelector('title')?.textContent.split("->")[0] || 'NO NAME';

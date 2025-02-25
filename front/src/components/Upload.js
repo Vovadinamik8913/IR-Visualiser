@@ -82,18 +82,19 @@ const Upload = ({onClose, onFileUpload, onBuildByFileRequest, onBuildByPathReque
                       id="file-upload"
                       onChange={handleFileUpload}
                       style={{display: 'none'}}/>
-                       <input
-                          type="text"
-                          value={folderName}
-                          onChange={handleFolderChange}
-                          placeholder="Введите имя папки"
-                      />
-                      
+
                       <label
                           htmlFor="file-upload"
                           className="upload-button">
                           { selectedFile ? selectedFile.name : 'Загрузите файл'}
                       </label>
+
+                      <input
+                          type="text"
+                          value={folderName}
+                          onChange={handleFolderChange}
+                          placeholder="Введите имя папки"
+                      />
                   
                       <button
                         onClick={handleFileDoneClick}
@@ -106,15 +107,16 @@ const Upload = ({onClose, onFileUpload, onBuildByFileRequest, onBuildByPathReque
                     <div className="tab-panel">
                       <input
                         type="text"
-                        value={folderName}
-                        onChange={handleFolderChange}
-                        placeholder="Введите имя папки"
-                      />
-                      <input
-                        type="text"
                         value={path}
                         onChange={handlePathChange}
                         placeholder="Введите путь до файла"
+                      />
+
+                      <input
+                        type="text"
+                        value={folderName}
+                        onChange={handleFolderChange}
+                        placeholder="Введите имя папки"
                       />
                       <button
                         onClick={handlePathDoneClick}

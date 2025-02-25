@@ -6,7 +6,7 @@ import './App.css';
 import { generateSvg, optimize, saveByFile, saveByPath} from './components/api/build-api'
 import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/svg-api';
 import { getCode } from './components/api/code-api';
-import { getSvgWithLoops, getLoopInfo } from './components/api/loops-api';
+import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './components/api/loops-api';
 
 function App() {
     const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
@@ -18,6 +18,7 @@ function App() {
     const [loopInfo, setLoopInfo] = useState('');
     const irIdRef = useRef(irId);
     const [compilerFlags, setCompilerFlags] =  useState(''); 
+    const [howManyClicks, setHowManyClicks] = useState(0);
 
     useEffect(() => {
       document.body.style.overflow = 'hidden';
@@ -98,25 +99,30 @@ function App() {
         }
     };
 
-    //получение свг(дефолт)
+    //получение свг(обычной и со всеми лупсами)
     const handleGetRequest = async (funcName) => {
-        try {
-            let svgText;
-            if (selectedOption === "LoopsInfo") {
-                svgText = await getSvgWithLoops(irId, funcName);
-            } else {
-                svgText = await getSvgByFunction(irId, funcName);
+
+        if(selectedOption === "LoopsInfo") {
+            try {
+                const svgText = await getSvgWithLoops(irId, funcName, howManyClicks);
+                setSvgContent(svgText);
+            } catch (error) {
+                console.error('Ошибка запроса:', error);
+                alert('Произошла ошибка при выполнении запроса');
             }
-            setSvgContent(svgText);
-        } catch (error) {
-            console.error('Ошибка запроса:', error);
-            alert('Произошла ошибка при выполнении запроса');
+        } else {
+            try {
+                const svgText = await getSvgByFunction(irId, funcName);
+                setSvgContent(svgText);
+            } catch (error) {
+                console.error('Ошибка запроса:', error);
+                alert('Произошла ошибка при выполнении запроса');
+            }
         }
     };
 
     //клик для лупса
     const handleBlockClick = async (blockTitle) => {
-    
         if (selectedOption === "LoopsInfo" && selectedFunction) {
             try {
                 const info = await getLoopInfo(irId, selectedFunction, blockTitle);
@@ -124,6 +130,13 @@ function App() {
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
                 setLoopInfo("Ошибка загрузки данных");
+            }
+
+            try {
+                const svgText = await getNestedLoops(irId, selectedFunction, blockTitle, howManyClicks);
+                setSvgContent(svgText);
+            } catch (error) {
+                console.error('Ошибка запроса:', error);
             }
         }
     };
@@ -146,7 +159,6 @@ function App() {
             alert('Произошла ошибка при выполнении запроса');
         }
     }
-
 
     const handleOptimize= async () => {
         try {
@@ -208,6 +220,7 @@ function App() {
                     selectedOption={selectedOption}
                     infoContent={loopInfo}
                     onBlockClick={handleBlockClick}
+                    howManyClicks={setHowManyClicks}
                 />
             </div>
         </div>
