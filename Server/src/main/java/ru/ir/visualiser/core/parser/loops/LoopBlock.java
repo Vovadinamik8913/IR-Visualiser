@@ -1,8 +1,8 @@
-package ru.ir.visualiser.logic.parser.loops;
+package ru.ir.visualiser.core.parser.loops;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.ir.visualiser.model.classes.ir.BlockIR;
+import ru.ir.visualiser.model.ir.BlockIR;
 
 /**
  * Class that holds single block of loop.

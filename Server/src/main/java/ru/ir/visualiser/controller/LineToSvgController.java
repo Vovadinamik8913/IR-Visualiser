@@ -7,12 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
-import ru.ir.visualiser.model.service.IrService;
-import ru.ir.visualiser.model.classes.ir.FunctionIR;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
-import ru.ir.visualiser.model.classes.ir.BlockIR;
-import ru.ir.visualiser.model.classes.ir.Dot;
-import ru.ir.visualiser.model.service.ModuleService;
+import ru.ir.visualiser.model.ir.FunctionIR;
+import ru.ir.visualiser.model.ir.ModuleIR;
+import ru.ir.visualiser.model.ir.BlockIR;
+import ru.ir.visualiser.model.ir.Dot;
+import ru.ir.visualiser.service.ModuleService;
 
 
 /**

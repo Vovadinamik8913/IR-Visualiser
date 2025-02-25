@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
-import ru.ir.visualiser.logic.llvm.Opt;
-import ru.ir.visualiser.model.classes.Ir;
-import ru.ir.visualiser.model.classes.Project;
-import ru.ir.visualiser.model.service.IrService;
-import ru.ir.visualiser.model.service.ProjectService;
-import ru.ir.visualiser.response.Node;
+import ru.ir.visualiser.core.llvm.Opt;
+import ru.ir.visualiser.model.Ir;
+import ru.ir.visualiser.model.Project;
+import ru.ir.visualiser.service.IrService;
+import ru.ir.visualiser.service.ProjectService;
+import ru.ir.visualiser.controller.response.Node;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 /** controller for tree.
  *

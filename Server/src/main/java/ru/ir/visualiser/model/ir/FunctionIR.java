@@ -1,4 +1,4 @@
-package ru.ir.visualiser.model.classes.ir;
+package ru.ir.visualiser.model.ir;
 
 import java.util.*;
 

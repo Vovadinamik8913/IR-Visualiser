@@ -1,4 +1,4 @@
-package ru.ir.visualiser.model.service;
+package ru.ir.visualiser.service;
 
 
 import jakarta.annotation.Nullable;
@@ -8,14 +8,15 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import ru.ir.visualiser.files.FileWorker;
-import ru.ir.visualiser.model.classes.Ir;
-import ru.ir.visualiser.model.repository.IrRepository;
+import ru.ir.visualiser.model.Ir;
+import ru.ir.visualiser.repository.IrRepository;
 
 @Service
 @RequiredArgsConstructor
 public class IrService {
 
     private  final IrRepository irRepository;
+
 
     public Ir create(Ir ir) {
         return irRepository.save(ir);
