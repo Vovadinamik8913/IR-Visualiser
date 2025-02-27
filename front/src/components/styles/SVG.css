@@ -6,10 +6,16 @@
     width: 250px;
 }
 
+.zoom-slider {
+    color: #228B22;
+}
+
 .svg-win {
     max-height: 730px;
     overflow: auto;
     padding: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
 .svg-placeholder {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import './styles/SVG.css';
 
 let clickCounter = 0;
@@ -20,6 +20,8 @@ const SVGpart = ({
     const [blockNumber, setBlockNumber] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+    const [scale, setScale] = useState(1);
+    const svgContainerRef = useRef(null);
     
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
@@ -67,6 +69,10 @@ const SVGpart = ({
         onGetRequest(event.target.value);
     };
 
+    const handleSliderChange = (event) => {
+        setScale(event.target.value);
+    };
+
     
     return (
         <div className="window">
@@ -89,12 +95,29 @@ const SVGpart = ({
                 )}
                 </select>
             </div>}
+            <input 
+                type="range" 
+                min="0.1" 
+                max="1"
+                step="0.01" 
+                value={scale} 
+                onChange={handleSliderChange} 
+                className="zoom-slider"
+            />
             {svgContent ? (
-                <div>
+                <div className="svg-container">
                     <div className="svg-win"
+                        ref={svgContainerRef}
                         onClick={handleSvgClick}
-                        dangerouslySetInnerHTML={{ __html: svgContent }}
-                        style={{cursor: "pointer"}}
+                        dangerouslySetInnerHTML={{ __html: `
+                            <div style='
+                            display: inline-block; 
+                            align-items: center;
+                            justify-content: center;
+                            transform: scale(${scale}); 
+                            transform-origin: top left;'>
+                              ${svgContent}
+                            </div>` }}
                     />
                     {popupVisible && selectedOption === "LoopsInfo" && (
                         <div 
