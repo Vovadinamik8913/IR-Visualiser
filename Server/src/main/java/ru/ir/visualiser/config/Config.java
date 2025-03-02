@@ -2,6 +2,7 @@ package ru.ir.visualiser.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class Config {
     @Getter
     private String workPath;
     @Getter
+    @Setter
     private static Config instance = new Config();
 
     private Config() {}
