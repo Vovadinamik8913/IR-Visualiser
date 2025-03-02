@@ -1,4 +1,4 @@
-package ru.ir.visualiser.model.classes.ir;
+package ru.ir.visualiser.model.ir;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,11 +1,11 @@
-package ru.ir.visualiser.logic.parser;
+package ru.ir.visualiser.core.parser;
 
-import ru.ir.visualiser.model.classes.ir.BlockIR;
-import ru.ir.visualiser.model.classes.ir.Dot;
-import ru.ir.visualiser.model.classes.ir.FunctionIR;
-import ru.ir.visualiser.model.classes.ir.ModuleIR;
-import ru.ir.visualiser.logic.parser.loops.LoopBlock;
-import ru.ir.visualiser.logic.parser.loops.LoopIR;
+import ru.ir.visualiser.model.ir.BlockIR;
+import ru.ir.visualiser.model.ir.Dot;
+import ru.ir.visualiser.model.ir.FunctionIR;
+import ru.ir.visualiser.model.ir.ModuleIR;
+import ru.ir.visualiser.core.parser.loops.LoopBlock;
+import ru.ir.visualiser.core.parser.loops.LoopIR;
 
 import java.util.ArrayList;
 import java.util.Collection;

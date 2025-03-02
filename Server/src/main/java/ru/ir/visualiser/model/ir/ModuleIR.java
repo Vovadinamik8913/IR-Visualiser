@@ -1,10 +1,10 @@
-package ru.ir.visualiser.model.classes.ir;
+package ru.ir.visualiser.model.ir;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.Ir;
 
 import java.util.Collection;
 import java.util.HashMap;

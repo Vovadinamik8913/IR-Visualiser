@@ -1,13 +1,13 @@
-package ru.ir.visualiser.model.service;
+package ru.ir.visualiser.service;
 
-import jakarta.annotation.Nullable;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import ru.ir.visualiser.model.classes.Project;
-import ru.ir.visualiser.model.repository.ProjectRepository;
+import ru.ir.visualiser.model.Project;
+import ru.ir.visualiser.repository.ProjectRepository;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +18,10 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    @Nullable
     public Project find(Long id) {
         return projectRepository.findById(id).orElse(null);
     }
 
-    @Nullable
     public Project findByName(String name) {
         return projectRepository.findByName(name).orElse(null);
     }

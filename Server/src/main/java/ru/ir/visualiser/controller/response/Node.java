@@ -1,7 +1,7 @@
-package ru.ir.visualiser.response;
+package ru.ir.visualiser.controller.response;
 
 import lombok.Getter;
-import ru.ir.visualiser.model.classes.Ir;
+import ru.ir.visualiser.model.Ir;
 
 import java.util.ArrayList;
 import java.util.List;

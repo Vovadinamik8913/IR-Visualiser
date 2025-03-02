@@ -1,4 +1,4 @@
-package ru.ir.visualiser.logic.parser.loops;
+package ru.ir.visualiser.core.parser.loops;
 
 import lombok.Getter;
 
