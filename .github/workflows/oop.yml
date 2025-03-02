@@ -1,8 +1,10 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   pull_request:
-    branches: [ "main", "backend", "inwork" ]  
+    branches: [ "main", "backend", "inwork" ]
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -12,10 +14,87 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Run check style
-        uses: nikitasavinov/checkstyle-action@master
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+
+      - name: Checkstyle Report
+        uses: mikepenz/action-checkstyle@v2
+        with:
+          report_path: build/reports/checkstyle/*.xml
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          checkstyle_config: '.github/google_checks.xml'
-          reporter: 'github-pr-check'
-         	
+          failure_threshold: 10 # Запрещаем мерж при 10+ ошибках
+          annotate_failures: true
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    needs: checkstyle
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Run tests with coverage
+        run: ./gradlew clean test jacocoTestReport
+
+      - name: Code coverage check
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: build/reports/jacoco/test/jacocoTestReport.csv
+          format: jacoco
+          min-coverage: 80
+          fail-under-min: true
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: build/reports/jacoco/test/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test-and-coverage
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Build package
+        run: ./gradlew build
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          usedocker: true
+
+  merge-guard:
+    runs-on: ubuntu-latest
+    needs: [checkstyle, test-and-coverage]
+    steps:
+      - name: Merge validation
+        if: contains(needs.*.result, 'failure')
+        run: |
+          echo "❌ One or more checks failed - merge blocked"
+          exit 1
