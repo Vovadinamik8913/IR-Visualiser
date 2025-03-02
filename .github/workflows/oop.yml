@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD
 
 on:
   pull_request:
@@ -21,16 +21,12 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Run Checkstyle
-        run: ./gradlew checkstyleMain checkstyleTest
-
-      - name: Checkstyle Report
-        uses: mikepenz/action-checkstyle@v2
+      - name: Run check style
+        uses: nikitasavinov/checkstyle-action@master
         with:
-          report_path: build/reports/checkstyle/*.xml
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          failure_threshold: 10 # Запрещаем мерж при 10+ ошибках
-          annotate_failures: true
+          checkstyle_config: '.github/google_checks.xml'
+          reporter: 'github-pr-check'
 
   test-and-coverage:
     runs-on: ubuntu-latest
@@ -45,7 +41,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'gradle'
-
+          
+      - name: Execute Gradle build
+        run: ./gradlew build
+        
       - name: Run tests with coverage
         run: ./gradlew clean test jacocoTestReport
 
@@ -57,11 +56,17 @@ jobs:
           min-coverage: 80
           fail-under-min: true
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+      - name: Generate javadoc
+        run: ./gradlew javadoc
+
+      - name: Publish javadoc
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          name: coverage-report
-          path: build/reports/jacoco/test/
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          clean: true
+          folder: ${{ github.event.pull_request.title }}/build/docs/javadoc
+          target-folder: ${{ github.event.pull_request.title }}
 
   deploy:
     runs-on: ubuntu-latest
