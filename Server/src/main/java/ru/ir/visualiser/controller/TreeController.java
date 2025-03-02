@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ir.visualiser.files.Config;
+import ru.ir.visualiser.config.Config;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.core.llvm.Opt;
 import ru.ir.visualiser.model.Ir;

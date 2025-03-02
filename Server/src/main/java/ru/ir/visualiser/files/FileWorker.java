@@ -1,12 +1,9 @@
 package ru.ir.visualiser.files;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.springframework.cglib.beans.FixedKeySet;
+import ru.ir.visualiser.config.Config;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /** class for work with files.
  *
@@ -64,17 +61,21 @@ public class FileWorker {
      *
      * @param path path
      * @param fileName res file
-     * @param bytes context
+     * @param stream content
      * @throws IOException error
      */
-    public static void copy(String path, String fileName, byte[] bytes) throws IOException {
+    public static void copy(String path, String fileName, InputStream stream) throws IOException {
         File file = new File(path + File.separator + fileName);
         if (!file.exists()) {
             file.createNewFile();
         }
-        BufferedOutputStream stream =
-                new BufferedOutputStream(new FileOutputStream(file));
-        stream.write(bytes);
-        stream.close();
+        OutputStream outputStream = new FileOutputStream(file);
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        while ((bytesRead = stream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        outputStream.flush();
+        outputStream.close();
     }
 }

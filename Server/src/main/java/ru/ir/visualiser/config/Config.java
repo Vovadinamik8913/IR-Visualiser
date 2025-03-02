@@ -1,4 +1,4 @@
-package ru.ir.visualiser.files;
+package ru.ir.visualiser.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -16,20 +16,10 @@ public class Config {
     private String[] optsPath;
     @Getter
     private String workPath;
-    private static Config instance;
+    @Getter
+    private static Config instance = new Config();
 
     private Config() {}
-
-    /** get singleton.
-     *
-     * @return instance
-     */
-    public static Config getInstance() {
-        if (instance == null) {
-            instance = new Config();
-        }
-        return instance;
-    }
 
     /** fill config.
      *
