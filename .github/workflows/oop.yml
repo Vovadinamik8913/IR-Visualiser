@@ -2,7 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ "main", "backend", "inwork" ]  
+    branches: [ "main", "backend", "inwork" ]
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -18,4 +20,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           checkstyle_config: '.github/google_checks.xml'
           reporter: 'github-pr-check'
-         	
