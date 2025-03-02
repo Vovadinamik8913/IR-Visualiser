@@ -1,10 +1,10 @@
-name: CI
+name: CI/CD
 
-# Controls when the workflow will run
 on:
   pull_request:
-    branches: [ "main", "backend", "inwork" ]  
-  workflow_dispatch:
+    branches: [ "main", "backend", "inwork" ]
+  push:
+    branches: [ "main" ]
 
 jobs:
   checkstyle:
@@ -13,9 +13,82 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Run check style
+      - name: Run checkstyle
         uses: nikitasavinov/checkstyle-action@master
+        id: checkstyle
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           checkstyle_config: '.github/google_checks.xml'
           reporter: 'github-pr-check'
+          fail_on_error: false
+
+      - name: Check error count
+        if: steps.checkstyle.outputs.error_count > 10
+        run: |
+          echo "Found ${{ steps.checkstyle.outputs.error_count }} code style errors (max allowed: 10)"
+          exit 1
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    needs: checkstyle
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build and test
+        run: mvn -B clean verify jacoco:report
+
+      - name: Check coverage
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: target/site/jacoco/jacoco.csv
+          format: jacoco
+          min-coverage: 80
+          fail-under-min: true
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [checkstyle, test-and-coverage]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build package
+        run: mvn -B clean package -DskipTests
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "your-app-name"
+          heroku_email: "your-email@example.com"
+          healthcheck: "https://your-app-name.herokuapp.com/actuator/health"
+
+  merge-guard:
+    runs-on: ubuntu-latest
+    needs: [checkstyle, test-and-coverage]
+    steps:
+      - name: Check workflow status
+        run: |
+          if ${{ needs.checkstyle.result != 'success' }}; then
+            echo "Code style checks failed!"
+            exit 1
+          fi
+          if ${{ needs.test-and-coverage.result != 'success' }}; then
+            echo "Tests or coverage failed!"
+            exit 1
+          fi

@@ -3,6 +3,9 @@ package ru.ir.visualiser.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ir.visualiser.model.Ir;
@@ -13,8 +16,7 @@ import ru.ir.visualiser.service.IrService;
 import ru.ir.visualiser.service.ModuleService;
 import ru.ir.visualiser.service.ProjectService;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,7 +67,7 @@ public class GetterController {
     @Operation(summary = "Получение svg по имени функции")
     @PostMapping(value = "/svg")
     @ResponseBody
-    public ResponseEntity<byte[]> getSvg(
+    public ResponseEntity<InputStreamResource> getSvg(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
     ) {
@@ -74,13 +76,24 @@ public class GetterController {
             return ResponseEntity.notFound().build();
         }
         String path = ir.getSvgPath() + File.separator + "." + functionName + ".svg";
+
+        File file = new File(path);
+        InputStream inputStream = null;
         try {
-            Path dirPath = Paths.get(path);
-            return ResponseEntity.ok(Files.readAllBytes(dirPath));
-        } catch (IOException e) {
+            inputStream = new BufferedInputStream(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ofNullable(null);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName()  + "\"");
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .body(new InputStreamResource(inputStream));
     }
 
     /** get ir file by id.
@@ -91,7 +104,7 @@ public class GetterController {
     @Operation(summary = "Получение ir файла")
     @PostMapping(value = "/code")
     @ResponseBody
-    public ResponseEntity<byte[]> getCode(
+    public ResponseEntity<InputStreamResource> getCode(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
     ) {
         Ir ir = irService.get(id);
@@ -99,13 +112,23 @@ public class GetterController {
             return ResponseEntity.notFound().build();
         }
         String path = ir.getIrPath() + File.separator + ir.getFilename();
+        File file = new File(path);
+        InputStream inputStream = null;
         try {
-            Path dirPath = Paths.get(path);
-            return ResponseEntity.ok(Files.readAllBytes(dirPath));
-        } catch (IOException e) {
+            inputStream = new BufferedInputStream(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ofNullable(null);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName()  + "\"");
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .body(new InputStreamResource(inputStream));
     }
 
     /**

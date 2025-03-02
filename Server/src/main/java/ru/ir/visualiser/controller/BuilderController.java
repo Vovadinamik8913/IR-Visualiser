@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import ru.ir.visualiser.files.Config;
+import ru.ir.visualiser.config.Config;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.core.llvm.Opt;
 import ru.ir.visualiser.core.llvm.Svg;
@@ -19,7 +19,9 @@ import ru.ir.visualiser.model.Project;
 import ru.ir.visualiser.service.IrService;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -65,7 +67,7 @@ public class BuilderController {
         }
     }
 
-    private Ir create(Project project, String folder, String filename, byte[] content) throws IOException {
+    private Ir create(Project project, String folder, String filename, InputStream stream) throws IOException {
         String folderName = FileWorker.getFolderName(filename);
         String path = FileWorker.absolutePath(folder + File.separator + folderName);
 
@@ -80,7 +82,7 @@ public class BuilderController {
         FileWorker.createPath(ir.getDotPath());
         FileWorker.copy(ir.getIrPath(),
                 filename,
-                content
+                stream
         );
         ir = irService.create(ir);
         return ir;
@@ -108,7 +110,7 @@ public class BuilderController {
         Ir ir = null;
         try {
             ir = create(project, folder, filename,
-                    Files.readAllBytes(file.toPath()));
+                    new FileInputStream(file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -135,7 +137,7 @@ public class BuilderController {
         }
         Ir ir = null;
         try {
-            ir = create(project, folder, filename, file.getBytes());
+            ir = create(project, folder, filename, file.getInputStream());
             return ResponseEntity.ok(ir.getId());
         } catch (IOException e) {
             System.out.println(e.getMessage());
