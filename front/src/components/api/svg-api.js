@@ -20,8 +20,21 @@ export const getSvgByFunction = async (irId, funcName) => {
         body: svgFormData,
     });
     if(!response.ok) throw new Error("/files/get/svg bad request");
-    const svgText = await response.text();
-    return svgText;
+    const reader = response.body.getReader();
+    const contentLength = +response.headers.get('Content-Length');
+    let receivedLength = 0;
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      receivedLength += value.length;
+    }
+
+    const blob = new Blob(chunks);
+    const doneRes = await blob.text();
+    return doneRes;
 }
 
 

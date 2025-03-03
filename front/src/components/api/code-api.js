@@ -6,7 +6,19 @@ export const getCode = async (id) => {
         body: buildFormData,
     });
     if(!response.ok) throw new Error("/files/build/file bad request");
-    const blob = await response.blob();
+    const reader = response.body.getReader();
+    const contentLength = +response.headers.get('Content-Length');
+    let receivedLength = 0;
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      receivedLength += value.length;
+    }
+
+    const blob = new Blob(chunks);
     const doneRes = await blob.text();
     return doneRes;
 };
