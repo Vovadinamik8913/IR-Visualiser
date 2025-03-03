@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   pull_request:
-    branches: [ "main", "backend", "inwork" ]
+    branches: [ "main", "backend", "inwork", "cicd" ]
   push:
     branches: [ "main" ]
   workflow_dispatch:
