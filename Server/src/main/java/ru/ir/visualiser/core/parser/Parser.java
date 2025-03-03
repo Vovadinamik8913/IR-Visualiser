@@ -1,11 +1,13 @@
 package ru.ir.visualiser.core.parser;
 
+import ru.ir.visualiser.model.analysis.Scev;
 import ru.ir.visualiser.model.ir.BlockIR;
 import ru.ir.visualiser.model.ir.Dot;
 import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.core.parser.loops.LoopBlock;
 import ru.ir.visualiser.core.parser.loops.LoopIR;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,8 +62,9 @@ public class Parser {
         Pattern patternFunctions = Pattern.compile(regexFunc);
         matcher = patternFunctions.matcher(input);
 
+        List<String> moduleText = List.of(input.split("\n"));
 
-        ModuleIR moduleIR = new ModuleIR(moduleID, input);
+        ModuleIR moduleIR = new ModuleIR(moduleID, moduleText);
         ArrayList<FunctionIR> functions = new ArrayList<>();
 
         while (matcher.find()) {
@@ -263,5 +266,19 @@ public class Parser {
 
         }
         return new LoopIR(blocks, depth);
+    }
+
+
+    /**
+     * Method that parses scev analysis.
+     *
+     * @param input - text of scev file
+     *
+     * @param module - module for which scev is parsed
+     *
+     * @return - parsed scev
+     */
+    public static Scev parseScev(String input, ModuleIR module) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

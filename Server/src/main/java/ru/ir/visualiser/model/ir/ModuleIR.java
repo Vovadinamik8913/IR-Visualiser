@@ -9,6 +9,7 @@ import ru.ir.visualiser.model.Ir;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * Class that holds a ModuleIr
@@ -23,7 +24,9 @@ public class ModuleIR {
 
     @Getter
     private String moduleName;
-    private String moduleTextRaw;
+    /// Text of the module, split up into lines.
+    @Getter
+    private List<String> moduleText;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "module_id")
@@ -39,9 +42,9 @@ public class ModuleIR {
     @Setter @Getter
     private Ir ir;
 
-    public ModuleIR(String moduleName, String moduleTextRaw) {
+    public ModuleIR(String moduleName, List<String> moduleText) {
         this.moduleName = moduleName;
-        this.moduleTextRaw = moduleTextRaw;
+        this.moduleText = moduleText;
         this.nameToFunctions = new HashMap<>();
         this.nameToDot = new HashMap<>();
     }

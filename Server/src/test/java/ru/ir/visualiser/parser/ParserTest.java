@@ -54,7 +54,8 @@ public class ParserTest {
         assertEquals(21, functions.size());
         assertEquals(144, function.getStartLine());
         assertEquals(167,function.getEndLine());
-        assertEquals(dots.size(), 11);
+        assertEquals(11, dots.size());
+        assertEquals(747, moduleIR.getModuleText().size());
     }
 
     @Test

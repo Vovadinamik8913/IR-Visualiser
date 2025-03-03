@@ -1,6 +1,5 @@
 package ru.ir.visualiser.core.llvm;
 
-
 import ru.ir.visualiser.model.Ir;
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Opt {
+
     public static boolean generateDotFiles(String opt, String dotPath, String filename) throws IOException {
         File dotDir = new File(dotPath);
         ProcessBuilder processBuilder = new ProcessBuilder(
@@ -28,7 +28,7 @@ public class Opt {
     public static boolean validateOpt(String opt) {
         try {
             Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec(new String[] {opt, "--version"});
+            Process process = runtime.exec(new String[]{opt, "--version"});
             boolean result = process.waitFor(1, java.util.concurrent.TimeUnit.SECONDS);
             process.destroyForcibly();
             return result;
@@ -41,7 +41,7 @@ public class Opt {
         File dir = new File(result.getIrPath());
         ProcessBuilder processBuilder = new ProcessBuilder(
                 opt,
-                result.getFlags(), "-S", ".." + File.separator + parent.getFilename(),  "-o",
+                result.getFlags(), "-S", ".." + File.separator + parent.getFilename(), "-o",
                 result.getFilename());
         processBuilder.directory(dir);
         processBuilder.inheritIO();
@@ -55,21 +55,13 @@ public class Opt {
     }
 
     /**
-     * Prints info about loops by starting opt as a process.
-     *
-     * @param opt - path to opt
-     *
-     * @param ir - Ir, which loop info is needed
-     *
-     * @return Loop info from opt
-     *
-     * @throws IOException if couldnt start a process.
+     * Calls `opt -passes=print<analysis> /path/to/ir -disable-output` and returns output.
      */
-    public static String printLoops(String opt, Ir ir) throws IOException {
+    private static String print(String opt, Ir ir, String analysis) throws IOException {
         String pathToIr = ir.getIrPath() + File.separator + ir.getFilename();
         ProcessBuilder processBuilder = new ProcessBuilder(
                 opt,
-                "-passes=print<loops>", pathToIr, "-disable-output");
+                "-passes=print<" + analysis + ">", pathToIr, "-disable-output");
         processBuilder.redirectErrorStream(true); // Перенаправляем stderr в stdout
 
         Process process = processBuilder.start();
@@ -91,5 +83,35 @@ public class Opt {
         }
 
         return output.toString();
+    }
+
+    /**
+     * Prints info about loops by starting opt as a process.
+     *
+     * @param opt - path to opt
+     *
+     * @param ir - Ir, which loop info is needed
+     *
+     * @return Loop info from opt
+     *
+     * @throws IOException if couldnt start a process.
+     */
+    public static String printLoops(String opt, Ir ir) throws IOException {
+        return print(opt, ir, "loops");
+    }
+
+    /**
+     * Prints info about scev by starting opt as a process.
+     *
+     * @param opt - path to opt
+     *
+     * @param ir - Ir, which scev info is needed
+     *
+     * @return Scev info from opt
+     *
+     * @throws IOException if couldnt start a process.
+     */
+    public static String printScev(String opt, Ir ir) throws IOException {
+        return print(opt, ir, "scalar-evolution");
     }
 }
