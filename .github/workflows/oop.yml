@@ -32,7 +32,7 @@ jobs:
           
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-
+    
       - name: Make gradlew executable
         run: chmod +x ./gradlew
           
@@ -41,18 +41,20 @@ jobs:
         
       - name: Run tests with coverage
         run: ./gradlew clean test jacocoTestReport
-
+    
       - name: Code coverage check
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: build/reports/jacoco/test/jacocoTestReport.csv
+          filename: ./Server/build/reports/jacoco/test/jacocoTestReport.csv
           format: jacoco
-          min-coverage: 80
-          fail-under-min: true
-
+          thresholds: 80
+          fail_below_min: true
+          badge: false
+          output: console
+        
       - name: Generate javadoc
         run: ./gradlew javadoc
-
+        
       - name: Publish javadoc
         uses: JamesIves/github-pages-deploy-action@v4
         with:
