@@ -37,7 +37,7 @@ jobs:
         run: chmod +x ./gradlew
           
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: ./gradlew clean build
         
       - name: Run tests with coverage
         run: ./gradlew clean test jacocoTestReport
