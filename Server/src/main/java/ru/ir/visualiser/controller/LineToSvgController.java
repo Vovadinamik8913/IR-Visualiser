@@ -87,7 +87,7 @@ public class LineToSvgController {
     @PostMapping(value = "/get/line")
     @ResponseBody
     public ResponseEntity<Integer> getLine(
-        @Parameter(description = "Id of svg") @RequestParam("id") String svgId,
+        @Parameter(description = "svg id") @RequestParam("id") String svgId,
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
         @Parameter(description = "Function name") @RequestParam("function") String function
     ) {

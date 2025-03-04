@@ -24,6 +24,10 @@ public class Scev {
      */
     private Map<Integer, String> lineToScevString;
 
+    public Scev(Map<Integer, String> lineToScevString) {
+        this.lineToScevString = lineToScevString;
+    }
+
     public Optional<String> parsedLine(int line) {
         String scevString = lineToScevString.get(line);
 
