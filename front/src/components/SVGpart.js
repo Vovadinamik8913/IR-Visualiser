@@ -130,7 +130,7 @@ const SVGpart = ({
                 </div>
             ) : (
                 <div className="svg-placeholder">
-                    Здесть будет CFG-граф.
+                    Здесь будет CFG.
                 </div>
             )}
         </div>
