@@ -39,5 +39,3 @@ irvis.json
 ### VS Code ###
 .vscode/
 /.idea/
-
-gradle.properties
