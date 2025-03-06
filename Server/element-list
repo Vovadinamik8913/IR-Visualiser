@@ -1,0 +1,12 @@
+ru.ir.visualiser
+ru.ir.visualiser.config
+ru.ir.visualiser.controller
+ru.ir.visualiser.controller.response
+ru.ir.visualiser.core.llvm
+ru.ir.visualiser.core.parser
+ru.ir.visualiser.core.parser.loops
+ru.ir.visualiser.files
+ru.ir.visualiser.model
+ru.ir.visualiser.model.ir
+ru.ir.visualiser.repository
+ru.ir.visualiser.service
