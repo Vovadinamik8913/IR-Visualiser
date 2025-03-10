@@ -294,14 +294,16 @@ public class Parser {
 
         while (scevLine < scevLines.length) {
             if (collecting) {
-                String currScevLine = scevLines[scevLine];
-
-                if (currScevLine.startsWith("Determining loop execution counts for:")) {
+                if (scevLines[scevLine].startsWith("Determining loop execution counts for:")) {
                     collecting = false;
                     continue;
                 }
+
+                String scevExpr = scevLines[scevLine].strip().split(" ")[0];
                 
-                while (!moduleLines.get(moduleLine).contains(currScevLine)) {
+                while (!moduleLines.get(moduleLine).startsWith(scevExpr)) {
+                    System.out.println("Module line: " + moduleLines.get(moduleLine) + '\n');
+                    System.out.println("Scev line:   " + scevExpr + '\n');
                     moduleLine += 1;
                 }
 

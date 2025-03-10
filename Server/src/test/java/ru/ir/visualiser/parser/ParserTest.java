@@ -147,9 +147,9 @@ public class ParserTest {
         ModuleIR moduleIR = Parser.parseModule(content, dotContents);
 
         File fileContent = path.toFile();
-        ProcessBuilder processBuilder = new ProcessBuilder("opt -passes='print<scalar-evolution>' -disable-output");
+        ProcessBuilder processBuilder = new ProcessBuilder("opt", "-passes=print<scalar-evolution>", "-disable-output");
         processBuilder.redirectErrorStream(true); // Перенаправляем stderr в stdout
-        processBuilder.redirectInput(fileContent);
+        processBuilder.redirectInput(ProcessBuilder.Redirect.from(fileContent));
 
         Process process = processBuilder.start();
 
