@@ -22,10 +22,8 @@ public class Parser {
     /**
      * Method to determine at which line char with index is located
      *
-     * @param text - text to check in
-     *
+     * @param text  - text to check in
      * @param index - index of a char
-     *
      * @return number of line
      */
     public static int getLineNumber(String text, int index) {
@@ -44,7 +42,6 @@ public class Parser {
      * and calls parseFunction for each.
      *
      * @param input - Text of IR.
-     *
      * @return ModuleIR
      */
     public static ModuleIR parseModule(String input, Iterable<String> dotFiles) {
@@ -89,7 +86,6 @@ public class Parser {
      * Method to parse whole dot file. Finds svg id to label mapping.
      *
      * @param input - Text of dot.
-     *
      * @return Dot
      */
     public static Dot parseDot(String input) {
@@ -117,12 +113,9 @@ public class Parser {
      * Method to parse function. Finds function name, cuts every block from
      * function body and calls parseBlock for each.
      *
-     * @param input - Function body
-     *
+     * @param input     - Function body
      * @param startLine - number of first line of that function(counting from start of module).
-     *
-     * @param endLine - number of last line of that function(counting from start of module).
-     *
+     * @param endLine   - number of last line of that function(counting from start of module).
      * @return FunctionIR
      */
     private static FunctionIR parseFunction(String input, int startLine, int endLine) {
@@ -159,12 +152,9 @@ public class Parser {
     /**
      * Method for parsing block
      *
-     * @param input - body of a block
-     *
+     * @param input     - body of a block
      * @param startLine - number of first line of that block(counting from start of module).
-     *
-     * @param endLine - number of last line of that block(counting from start of module).
-     *
+     * @param endLine   - number of last line of that block(counting from start of module).
      * @return - BlockIR
      */
     private static BlockIR parseBlock(String input, int startLine, int endLine) {
@@ -182,9 +172,7 @@ public class Parser {
      * Function that extracts Loop info for certain function from Opt output.
      *
      * @param function - name of a function
-     *
-     * @param text - opt output
-     *
+     * @param text     - opt output
      * @return - Loop Structure
      */
     public static List<LoopIR> findLoopInfofromOpt(FunctionIR function, String text) {
@@ -204,9 +192,7 @@ public class Parser {
      * Extracts every loop from preparsed opt output for single function.
      *
      * @param function - function for which loop info is analyzed
-     *
-     * @param text - preparsed by findLoopInfofromOpt
-     *
+     * @param text     - preparsed by findLoopInfofromOpt
      * @return parsed loops
      */
     private static List<LoopIR> parseLoops(FunctionIR function, String text) {
@@ -224,11 +210,8 @@ public class Parser {
      * Parses single Loop and creates LoopIR and LoopBlock elements.
      *
      * @param function - function for which loop info is analyzed
-     *
-     * @param text - single loop info without "Loop at depth ... containing"
-     *
-     * @param depth - depth of a loop
-     *
+     * @param text     - single loop info without "Loop at depth ... containing"
+     * @param depth    - depth of a loop
      * @return parsed Loop
      */
     private static LoopIR parseLoop(FunctionIR function, String text, int depth) {
@@ -271,10 +254,8 @@ public class Parser {
     /**
      * Method that parses scev analysis.
      *
-     * @param input - text of scev file
-     *
+     * @param input  - text of scev file
      * @param module - module for which scev is parsed
-     *
      * @return - parsed scev
      */
     public static Scev parseScev(String input, ModuleIR module) {
@@ -296,7 +277,7 @@ public class Parser {
                 }
 
                 String scevExpr = scevLines[scevLine].strip().split(" ")[0];
-                
+
                 while (!moduleLines.get(moduleLine).startsWith(scevExpr)) {
                     moduleLine += 1;
                 }
@@ -315,5 +296,19 @@ public class Parser {
         }
 
         return new Scev(scev);
+    }
+
+    public static String findDomtreeInfofromOpt(FunctionIR function, String text) {
+        String regex = "DominatorTree for function: max\\n[\\s\\S]*?Inorder Dominator Tree[\\s\\S]*?\\n([\\s\\S]*?)\\nRoots: ([\\s\\S]*?) \\n";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        String body = "";
+        String roots = "";
+        if (matcher.find()) {
+            body = matcher.group(1);
+            roots = matcher.group(2);
+        }
+
+
     }
 }
