@@ -5,6 +5,8 @@ import java.util.Optional;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ru.ir.visualiser.model.Ir;
 
 @Entity
 @NoArgsConstructor
@@ -14,15 +16,20 @@ public class Scev {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "scev_id")
-    @MapKey(name = "scev_string")
+    @ElementCollection
+    @CollectionTable(name = "scev_mapping", joinColumns = @JoinColumn(name = "scev_id"))
+    @MapKeyColumn(name = "scev_line_number")
+    @Column(name = "scev_string")
     @Getter
     /**
      * A map from line in the source to the line of she scalar evolution for the
      * binding, without the `-->` in the beginning.
      */
     private Map<Integer, String> lineToScevString;
+
+    @OneToOne @JoinColumn(name = "ir_id")
+    @Setter @Getter
+    private Ir ir;
 
     public Scev(Map<Integer, String> lineToScevString) {
         this.lineToScevString = lineToScevString;

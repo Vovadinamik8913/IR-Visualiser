@@ -302,8 +302,6 @@ public class Parser {
                 String scevExpr = scevLines[scevLine].strip().split(" ")[0];
                 
                 while (!moduleLines.get(moduleLine).startsWith(scevExpr)) {
-                    System.out.println("Module line: " + moduleLines.get(moduleLine) + '\n');
-                    System.out.println("Scev line:   " + scevExpr + '\n');
                     moduleLine += 1;
                 }
 
