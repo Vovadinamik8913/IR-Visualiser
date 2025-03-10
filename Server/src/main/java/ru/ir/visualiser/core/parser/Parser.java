@@ -1,15 +1,16 @@
 package ru.ir.visualiser.core.parser;
 
+import ru.ir.visualiser.model.analysis.Scev;
 import ru.ir.visualiser.model.ir.BlockIR;
 import ru.ir.visualiser.model.ir.Dot;
 import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.core.parser.loops.LoopBlock;
 import ru.ir.visualiser.core.parser.loops.LoopIR;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,10 +39,8 @@ public class Parser {
     }
 
     /**
-     * Method to parse whole IR module.
-     * Finds name of a module.
-     * Finds every function, cuts their bodies,
-     * Determines range of lines for each function,
+     * Method to parse whole IR module. Finds name of a module. Finds every
+     * function, cuts their bodies, Determines range of lines for each function,
      * and calls parseFunction for each.
      *
      * @param input - Text of IR.
@@ -60,8 +59,14 @@ public class Parser {
         Pattern patternFunctions = Pattern.compile(regexFunc);
         matcher = patternFunctions.matcher(input);
 
+        String[] mt = input.split("\n");
+        for (int i = 0; i < mt.length; i++) {
+            mt[i] = mt[i].strip();
+        }
 
-        ModuleIR moduleIR = new ModuleIR(moduleID, input);
+        List<String> moduleText = List.of(mt);
+
+        ModuleIR moduleIR = new ModuleIR(moduleID, moduleText);
         ArrayList<FunctionIR> functions = new ArrayList<>();
 
         while (matcher.find()) {
@@ -81,8 +86,7 @@ public class Parser {
     }
 
     /**
-     * Method to parse whole dot file.
-     * Finds svg id to label mapping.
+     * Method to parse whole dot file. Finds svg id to label mapping.
      *
      * @param input - Text of dot.
      *
@@ -110,9 +114,9 @@ public class Parser {
     }
 
     /**
-     * Method to parse function.
-     * Finds function name, cuts every block from function body
-     * and calls parseBlock for each.
+     * Method to parse function. Finds function name, cuts every block from
+     * function body and calls parseBlock for each.
+     *
      * @param input - Function body
      *
      * @param startLine - number of first line of that function(counting from start of module).
@@ -216,7 +220,6 @@ public class Parser {
         return res;
     }
 
-
     /**
      * Parses single Loop and creates LoopIR and LoopBlock elements.
      *
@@ -263,5 +266,54 @@ public class Parser {
 
         }
         return new LoopIR(blocks, depth);
+    }
+
+    /**
+     * Method that parses scev analysis.
+     *
+     * @param input - text of scev file
+     *
+     * @param module - module for which scev is parsed
+     *
+     * @return - parsed scev
+     */
+    public static Scev parseScev(String input, ModuleIR module) {
+        List<String> moduleLines = module.getModuleText();
+        String[] scevLines = input.split("\n");
+
+        Map<Integer, String> scev = new java.util.HashMap<>();
+
+        int moduleLine = 0;
+        int scevLine = 0;
+
+        boolean collecting = false;
+
+        while (scevLine < scevLines.length) {
+            if (collecting) {
+                if (scevLines[scevLine].startsWith("Determining loop execution counts for:")) {
+                    collecting = false;
+                    continue;
+                }
+
+                String scevExpr = scevLines[scevLine].strip().split(" ")[0];
+                
+                while (!moduleLines.get(moduleLine).startsWith(scevExpr)) {
+                    moduleLine += 1;
+                }
+
+                scevLine += 1;
+                String scevString = scevLines[scevLine].strip().substring(3).strip();
+                scev.put(moduleLine, scevString);
+                scevLine += 1;
+                moduleLine += 1;
+            } else {
+                if (scevLines[scevLine].startsWith("Classifying expressions for:")) {
+                    collecting = true;
+                }
+                scevLine += 1;
+            }
+        }
+
+        return new Scev(scev);
     }
 }
