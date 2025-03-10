@@ -119,11 +119,9 @@ public class Parser {
      *
      * @param input - Function body
      *
-     * @param startLine - number of first line of that function(counting from
-     * start of module).
+     * @param startLine - number of first line of that function(counting from start of module).
      *
-     * @param endLine - number of last line of that function(counting from start
-     * of module).
+     * @param endLine - number of last line of that function(counting from start of module).
      *
      * @return FunctionIR
      */

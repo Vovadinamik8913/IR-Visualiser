@@ -42,6 +42,13 @@ public class ModuleIR {
     @Setter @Getter
     private Ir ir;
 
+    /**
+     * Create new module ir
+     *
+     * @param moduleName name of the module
+     * @param moduleText full text of the module split up into lines
+     * @return module ir
+     */
     public ModuleIR(String moduleName, List<String> moduleText) {
         this.moduleName = moduleName;
         this.moduleText = moduleText;

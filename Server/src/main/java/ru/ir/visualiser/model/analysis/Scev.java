@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.ir.visualiser.model.Ir;
 
+/**
+ * Contains mapping from line to the text that should show up upon clicking on that line when in scev analysis mode.
+ */
 @Entity
 @NoArgsConstructor
 public class Scev {
@@ -16,15 +19,15 @@ public class Scev {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    /**
+     * A map from line in the source to the line of she scalar evolution for the
+     * binding, without the `-->` in the beginning.
+     */
     @ElementCollection
     @CollectionTable(name = "scev_mapping", joinColumns = @JoinColumn(name = "scev_id"))
     @MapKeyColumn(name = "scev_line_number")
     @Column(name = "scev_string")
     @Getter
-    /**
-     * A map from line in the source to the line of she scalar evolution for the
-     * binding, without the `-->` in the beginning.
-     */
     private Map<Integer, String> lineToScevString;
 
     @OneToOne @JoinColumn(name = "ir_id")
@@ -35,6 +38,12 @@ public class Scev {
         this.lineToScevString = lineToScevString;
     }
 
+    /**
+     * Returns text in the format in which it should show up.
+     *
+     * @param line line in the .ll file
+     * @return text that should show up in the box or empty if no text should show up
+     */
     public Optional<String> parsedLine(int line) {
         String scevString = lineToScevString.get(line);
 
