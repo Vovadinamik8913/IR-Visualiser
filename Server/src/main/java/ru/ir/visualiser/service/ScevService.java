@@ -13,6 +13,9 @@ import ru.ir.visualiser.config.Config;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.repository.ModuleRepository;
 
+/**
+ * Request info about scev analysis for the given ir.
+ */
 @Service
 @RequiredArgsConstructor
 public class ScevService {

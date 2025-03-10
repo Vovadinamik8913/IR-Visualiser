@@ -161,11 +161,9 @@ public class Parser {
      *
      * @param input - body of a block
      *
-     * @param startLine - number of first line of that block(counting from start
-     * of module).
+     * @param startLine - number of first line of that block(counting from start of module).
      *
-     * @param endLine - number of last line of that block(counting from start of
-     * module).
+     * @param endLine - number of last line of that block(counting from start of module).
      *
      * @return - BlockIR
      */

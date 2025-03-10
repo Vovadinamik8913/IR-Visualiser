@@ -1,13 +1,12 @@
 package ru.ir.visualiser.parser;
 
 import org.junit.jupiter.api.Test;
-
 import ru.ir.visualiser.core.parser.Parser;
 import ru.ir.visualiser.model.ir.BlockIR;
 import ru.ir.visualiser.model.ir.Dot;
 import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
-
+import ru.ir.visualiser.model.analysis.Scev;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
@@ -19,11 +18,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import ru.ir.visualiser.model.analysis.Scev;
 
 public class ParserTest {
 

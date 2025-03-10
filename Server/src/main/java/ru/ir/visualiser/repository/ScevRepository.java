@@ -6,7 +6,7 @@ import java.util.Optional;
 import ru.ir.visualiser.model.Ir;
 
 /**
- * Scev repository
+ * Scev repository.
  */
 public interface ScevRepository extends JpaRepository<Scev, Long> {
 

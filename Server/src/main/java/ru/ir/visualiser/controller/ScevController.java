@@ -27,6 +27,7 @@ public class ScevController {
 
     /**
      * Get text that should show up by clicking on line.
+     *
      * @param id - id of ir in database
      * @param opt - number of opt
      * @param line - line in the file
