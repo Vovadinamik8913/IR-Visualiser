@@ -7,6 +7,7 @@ import { generateSvg, optimize, saveByFile, saveByPath} from './components/api/b
 import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/svg-api';
 import { getCode } from './components/api/code-api';
 import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './components/api/loops-api';
+import { getScevInfo } from './components/api/scev-api';
 
 function App() {
     const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
@@ -16,6 +17,7 @@ function App() {
     const [selectedFunction, setSelectedFunction] = useState('');// выбранное значение
     const [selectedOption, setSelectedOption] = useState("Анализы");
     const [loopInfo, setLoopInfo] = useState('');
+    const [scevInfo, setScevInfo] = useState('');
     const irIdRef = useRef(irId);
     const [compilerFlags, setCompilerFlags] =  useState(''); 
     const [howManyClicks, setHowManyClicks] = useState(0);
@@ -144,22 +146,47 @@ function App() {
     //клик на строку
     const handleLineClick = async (index) => {
         try {
+
             const info = await getSvgByLine(irIdRef.current, index);
-            setSelectedFunction(info[0]);
+            if (!info || info.length === 0) {
+                console.error("Ошибка: getSvgByLine не вернул данные.");
+                return;
+            }
+    
+            const functionName = info[0]; 
+            setSelectedFunction(functionName);
+    
             try {
-                const svgText = await getSvgByFunction(irIdRef.current, info[0]);
+                const svgText = await getSvgByFunction(irIdRef.current, functionName);
                 setSvgContent(svgText);
             } catch (error) {
-                console.error('Ошибка запроса:', error);
-                alert('Произошла ошибка при выполнении запроса');
+                console.error('Ошибка при загрузке SVG:', error);
+                alert('Ошибка при загрузке SVG');
             }
 
-        } catch (error) {
-            console.error('Ошибка запроса:', error);
-            alert('Произошла ошибка при выполнении запроса');
-        }
-    }
+            console.log("da ebal ya tvoy s");
 
+            if (selectedOption === "S") {
+                try {
+                    const scev = await getScevInfo(irIdRef.current, parseInt(index));
+                    if(scev) {
+                        console.log(scev);  
+                    } else {
+                        console.log("ydgsfsd");
+                    }
+                    setScevInfo(scev);
+                } catch (error) {
+                    console.error('Ошибка запроса getScevInfo:', error);
+                    alert('Ошибка при получении Scev информации');
+                }
+            }
+            console.log("da ebal ya tvoy s");
+        } catch (error) {
+            console.error('Ошибка запроса getSvgByLine:', error);
+            alert('Произошла ошибка при обработке строки');
+        }
+    };
+    
     const handleOptimize= async () => {
         try {
          const newId = await optimize(irId, compilerFlags);
@@ -209,6 +236,8 @@ function App() {
                     handleProcessCode={handleOptimize}
                     compilerFlags={compilerFlags}
                     setCompilerFlags={setCompilerFlags}
+                    selectedOption={selectedOption}
+                    infoContent={scevInfo}
                 />
                 <SVGpart    
                     functions={listOfFunctions}

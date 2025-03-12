@@ -35,3 +35,22 @@
     color: #888;
     font-size: 16px;
 }
+
+.popup-info {
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    max-width: 200px;
+    z-index: 1000;
+    white-space: pre-wrap;
+    box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.3);
+    text-align: left;
+}
+
+.txt-container {
+    margin-top: 10px;
+    height: 760px;
+}

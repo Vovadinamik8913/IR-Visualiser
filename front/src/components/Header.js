@@ -52,7 +52,7 @@ const Header = ({
                       <div className="dropdown-item" onClick={() => handleSelect("Normal")}>Normal</div>
                       <div className="dropdown-item" onClick={() => handleSelect("LoopsInfo")}>LoopsInfo</div>
                       <div className="dropdown-item" onClick={() => handleSelect("DomTree")}>DomTree</div>
-                      <div className="dropdown-item" onClick={() => handleSelect("Опция 3")}>Опция 3</div>
+                      <div className="dropdown-item" onClick={() => handleSelect("S")}>S</div>
                       <div className="dropdown-item" onClick={() => handleSelect("Опция 4")}>Опция 4</div>
                     </div>
                   </div>
