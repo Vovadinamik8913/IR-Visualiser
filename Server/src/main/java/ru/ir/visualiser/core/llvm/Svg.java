@@ -11,11 +11,11 @@ public class Svg {
     private static boolean generateSvg(Path file, File svgDir) throws IOException {
         String filename = file.getFileName().toString();
         String path = file.toAbsolutePath().toString();
-        String dotPath = path.substring(path.indexOf("dot_files"), path.lastIndexOf("/"));
+        String dotPath = path.substring(path.indexOf("dot_files"), path.lastIndexOf(File.separator));
         String name = filename.substring(0, filename.lastIndexOf("."));
         ProcessBuilder processBuilder = new ProcessBuilder(
                 "dot", "-Tsvg", "-o", name + ".svg",
-                "../" + dotPath + "/" + filename
+                ".." + File.separator + dotPath + File.separator + filename
         );
         processBuilder.directory(svgDir);
         processBuilder.inheritIO();

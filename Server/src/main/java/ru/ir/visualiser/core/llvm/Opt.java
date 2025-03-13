@@ -13,7 +13,7 @@ public class Opt {
         ProcessBuilder processBuilder = new ProcessBuilder(
                 opt,
                 "-passes=dot-cfg",
-                "../" + filename);
+                ".." + File.separator + filename);
         processBuilder.directory(dotDir);
         processBuilder.inheritIO();
         Process process = processBuilder.start();
