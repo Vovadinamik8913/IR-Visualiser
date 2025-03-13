@@ -33,7 +33,7 @@ function App() {
     useEffect(() => {
       irIdRef.current = irId;
       optionRef.current = selectedOption;
-    }, [irId]);
+    }, [irId, selectedOption]);
 
     // Функция для загрузки .ll файла
     const handleFileUpload = (file) => {

@@ -1,8 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Editor from '@monaco-editor/react';
 import {handleMount} from './MonacoMount'
 import './styles/TXT.css';
-
 
 const TXTpart = ({
   content,
@@ -15,6 +14,14 @@ const TXTpart = ({
 
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+    const visibleRef = useRef(popupVisible);
+    const posRef = useRef(popupPosition);
+
+    useEffect(() => {
+        visibleRef.current = popupVisible;
+        posRef.current = popupPosition
+    }, [popupVisible, popupPosition]);
+
     const handleEditorMount = (editor, monaco) => {
       editor.onMouseDown((mouseEvent) => {
           if (!mouseEvent.target) return;
@@ -30,9 +37,10 @@ const TXTpart = ({
                 console.log("Попап должен появиться на строке:", lineNumber);
                 setPopupVisible(true);
                 setPopupPosition({
-                    x: mouseEvent.event.clientX + 10,
-                    y: mouseEvent.event.clientY + 10
+                    x: mouseEvent.event.posx,
+                    y: mouseEvent.event.posy
                 });
+                console.log(posRef);
             }
           }
       });
