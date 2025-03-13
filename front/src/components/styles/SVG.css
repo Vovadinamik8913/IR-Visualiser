@@ -1,0 +1,45 @@
+.dropdown {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: none;
+    width: 250px;
+}
+
+.zoom-slider {
+    color: #228B22;
+}
+
+.svg-win {
+    max-height: 730px;
+    overflow: auto;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.svg-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+    border: 2px dashed #ccc;
+    color: #888;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+.popup-info {
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    max-width: 200px;
+    z-index: 100;
+    white-space: pre-wrap;
+    box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.3);
+    text-align: left;
+}
