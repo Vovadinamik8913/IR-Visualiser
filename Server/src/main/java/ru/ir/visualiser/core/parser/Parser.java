@@ -303,7 +303,7 @@ public class Parser {
 
                 scevLine += 1;
                 String scevString = scevLines[scevLine].strip().substring(3).strip();
-                scev.put(moduleLine, scevString);
+                scev.put(moduleLine + 1, scevString);
                 scevLine += 1;
                 moduleLine += 1;
             } else {
