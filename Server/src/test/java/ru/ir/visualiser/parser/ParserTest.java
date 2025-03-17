@@ -1,12 +1,14 @@
 package ru.ir.visualiser.parser;
 
 import org.junit.jupiter.api.Test;
+
 import ru.ir.visualiser.core.parser.Parser;
 import ru.ir.visualiser.model.ir.BlockIR;
 import ru.ir.visualiser.model.ir.Dot;
 import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.model.analysis.Scev;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
@@ -18,8 +20,12 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import net.bytebuddy.dynamic.DynamicType;
 
 public class ParserTest {
 
@@ -169,5 +175,35 @@ public class ParserTest {
 
         Scev scev = Parser.parseScev(parserInput, moduleIR);
         assertEquals(353, scev.getLineToScevString().size());
+        assertEquals(Optional.of("""
+((4 * (sext i32 %22 to i64))<nsw> + %21)
+U: full-set
+S: full-set
+Exits: <<Unknown>>
+LoopDispositions: { %9: Variant }"""), scev.parsedLine(97));
+
+        assertEquals(Optional.of("""
+%3
+U: [8,-15)
+S: [-9223372036854775808,9223372036854775801)"""), scev.parsedLine(122));
+
+        assertEquals(Optional.of("""
+((4 * (sext i32 %11 to i64))<nsw> + %8)
+U: full-set
+S: full-set"""), scev.parsedLine(134));
+
+        assertEquals(Optional.of("""
+%14
+U: full-set
+S: full-set"""), scev.parsedLine(136));
+
+        assertEquals(Optional.empty(), scev.parsedLine(677));
+        
+        assertEquals(Optional.of("""
+%5
+U: [8,-23)
+S: [-9223372036854775808,9223372036854775801)
+Exits: %5
+LoopDispositions: { %28: Invariant }"""), scev.parsedLine(681));
     }
 }

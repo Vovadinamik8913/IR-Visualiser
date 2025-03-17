@@ -70,7 +70,8 @@ public class Scev {
                     }
 
                     str.append(scevString, from, uptoWithoutWhitespace);
-                    from = uptoWithoutWhitespace;
+                    str.append("\n");
+                    from = upto;
                     break;
                 }
             }

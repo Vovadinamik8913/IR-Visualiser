@@ -1,0 +1,353 @@
+  -->  %3 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %4 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %5 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %6 U: full-set S: full-set
+  -->  %7 U: full-set S: full-set
+  -->  %10 U: full-set S: full-set
+  -->  %12 U: full-set S: full-set
+  -->  %14 U: full-set S: full-set
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %5 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %6 U: full-set S: full-set
+  -->  %7 U: full-set S: full-set
+  -->  %8 U: full-set S: full-set
+  -->  %9 U: full-set S: full-set
+  -->  %10 U: full-set S: full-set
+  -->  %11 U: full-set S: full-set
+  -->  %12 U: full-set S: full-set
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %5 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %6 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %7 U: full-set S: full-set
+  -->  (trunc i64 %7 to i32) U: full-set S: full-set
+  -->  %10 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %11 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %14 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %15 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %16 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %17 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %18 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  (sext i32 %18 to i64) U: [-2147483648,2147483648) S: [-2147483648,2147483648)		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  ((4 * (sext i32 %18 to i64))<nsw> + %17) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %21 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %22 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  (sext i32 %22 to i64) U: [-2147483648,2147483648) S: [-2147483648,2147483648)		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  ((4 * (sext i32 %22 to i64))<nsw> + %21) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %26 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  (1 + %26) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %9: Variant }
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %5 U: full-set S: full-set
+  -->  %6 U: full-set S: full-set
+  -->  %6 U: full-set S: full-set
+  -->  %8 U: full-set S: full-set
+  -->  %9 U: full-set S: full-set
+  -->  (8 + %9)<nuw> U: [8,0) S: [8,0)
+  -->  %11 U: full-set S: full-set
+  -->  (sext i32 %11 to i64) U: [-2147483648,2147483648) S: [-2147483648,2147483648)
+  -->  ((4 * (sext i32 %11 to i64))<nsw> + %8) U: full-set S: full-set
+  -->  %14 U: full-set S: full-set
+  -->  (8 + %14)<nuw> U: [8,0) S: [8,0)
+  -->  %16 U: full-set S: full-set
+  -->  (1 + %16) U: full-set S: full-set
+  -->  %2 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: full-set S: full-set
+  -->  (24 + %4)<nuw> U: [24,0) S: [24,0)
+  -->  %6 U: full-set S: full-set
+  -->  %7 U: full-set S: full-set
+  -->  (24 + %7)<nuw> U: [24,0) S: [24,0)
+  -->  %9 U: full-set S: full-set
+  -->  (16 + %9)<nuw> U: [16,0) S: [16,0)
+  -->  %11 U: full-set S: full-set
+  -->  %12 U: full-set S: full-set
+  -->  (24 + %12)<nuw> U: [24,0) S: [24,0)
+  -->  %14 U: full-set S: full-set
+  -->  %15 U: full-set S: full-set
+  -->  (16 + %15)<nuw> U: [16,0) S: [16,0)
+  -->  %17 U: full-set S: full-set
+  -->  %2 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: full-set S: full-set
+  -->  (16 + %4)<nuw> U: [16,0) S: [16,0)
+  -->  %6 U: full-set S: full-set
+  -->  %7 U: full-set S: full-set
+  -->  (16 + %7)<nuw> U: [16,0) S: [16,0)
+  -->  %9 U: full-set S: full-set
+  -->  (24 + %9)<nuw> U: [24,0) S: [24,0)
+  -->  %11 U: full-set S: full-set
+  -->  %12 U: full-set S: full-set
+  -->  (16 + %12)<nuw> U: [16,0) S: [16,0)
+  -->  %14 U: full-set S: full-set
+  -->  %15 U: full-set S: full-set
+  -->  (24 + %15)<nuw> U: [24,0) S: [24,0)
+  -->  %17 U: full-set S: full-set
+  -->  %2 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %3 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %4 U: full-set S: full-set
+  -->  (16 + %4)<nuw> U: [16,0) S: [16,0)
+  -->  %6 U: full-set S: full-set
+  -->  %9 U: full-set S: full-set
+  -->  %10 U: full-set S: full-set
+  -->  (16 + %10)<nuw> U: [16,0) S: [16,0)
+  -->  %12 U: full-set S: full-set
+  -->  (4 + %12)<nuw> U: [4,0) S: [4,0)
+  -->  %14 U: full-set S: full-set
+  -->  %15 U: full-set S: full-set
+  -->  %17 U: full-set S: full-set
+  -->  (24 + %17)<nuw> U: [24,0) S: [24,0)
+  -->  %19 U: full-set S: full-set
+  -->  %22 U: full-set S: full-set
+  -->  %23 U: full-set S: full-set
+  -->  (24 + %23)<nuw> U: [24,0) S: [24,0)
+  -->  %25 U: full-set S: full-set
+  -->  (4 + %25)<nuw> U: [4,0) S: [4,0)
+  -->  %27 U: full-set S: full-set
+  -->  %28 U: full-set S: full-set
+  -->  %30 U: full-set S: full-set
+  -->  (1 + %30) U: full-set S: full-set
+  -->  %32 U: full-set S: full-set
+  -->  (4 + %32)<nuw> U: [4,0) S: [4,0)
+  -->  %2 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %5 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %6 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %7 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %8 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %9 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %10 U: full-set S: full-set
+  -->  (16 + %10)<nuw> U: [16,0) S: [16,0)
+  -->  %12 U: full-set S: full-set
+  -->  %16 U: full-set S: full-set
+  -->  (16 + %16)<nuw> U: [16,0) S: [16,0)
+  -->  %18 U: full-set S: full-set
+  -->  (4 + %18)<nuw> U: [4,0) S: [4,0)
+  -->  %20 U: full-set S: full-set
+  -->  %22 U: full-set S: full-set
+  -->  %23 U: full-set S: full-set
+  -->  (24 + %23)<nuw> U: [24,0) S: [24,0)
+  -->  %25 U: full-set S: full-set
+  -->  %29 U: full-set S: full-set
+  -->  (24 + %29)<nuw> U: [24,0) S: [24,0)
+  -->  %31 U: full-set S: full-set
+  -->  (4 + %31)<nuw> U: [4,0) S: [4,0)
+  -->  %33 U: full-set S: full-set
+  -->  %35 U: full-set S: full-set
+  -->  %36 U: full-set S: full-set
+  -->  %37 U: full-set S: full-set
+  -->  ((-1 * %37) + %36) U: full-set S: full-set
+  -->  %39 U: full-set S: full-set
+  -->  %42 U: full-set S: full-set
+  -->  %43 U: full-set S: full-set
+  -->  %45 U: full-set S: full-set
+  -->  %46 U: full-set S: full-set
+  -->  %49 U: full-set S: full-set
+  -->  (24 + %49)<nuw> U: [24,0) S: [24,0)
+  -->  %51 U: full-set S: full-set
+  -->  (16 + %51)<nuw> U: [16,0) S: [16,0)
+  -->  %53 U: full-set S: full-set
+  -->  %57 U: full-set S: full-set
+  -->  (24 + %57)<nuw> U: [24,0) S: [24,0)
+  -->  %59 U: full-set S: full-set
+  -->  (16 + %59)<nuw> U: [16,0) S: [16,0)
+  -->  %61 U: full-set S: full-set
+  -->  (4 + %61)<nuw> U: [4,0) S: [4,0)
+  -->  %63 U: full-set S: full-set
+  -->  %65 U: full-set S: full-set
+  -->  %66 U: full-set S: full-set
+  -->  (24 + %66)<nuw> U: [24,0) S: [24,0)
+  -->  %68 U: full-set S: full-set
+  -->  (24 + %68)<nuw> U: [24,0) S: [24,0)
+  -->  %70 U: full-set S: full-set
+  -->  %74 U: full-set S: full-set
+  -->  (24 + %74)<nuw> U: [24,0) S: [24,0)
+  -->  %76 U: full-set S: full-set
+  -->  (24 + %76)<nuw> U: [24,0) S: [24,0)
+  -->  %78 U: full-set S: full-set
+  -->  (4 + %78)<nuw> U: [4,0) S: [4,0)
+  -->  %80 U: full-set S: full-set
+  -->  %82 U: full-set S: full-set
+  -->  %83 U: full-set S: full-set
+  -->  %84 U: full-set S: full-set
+  -->  (1 + %84)<nsw> U: [-2147483647,-2147483648) S: [-2147483647,-2147483648)
+  -->  %88 U: full-set S: full-set
+  -->  (24 + %88)<nuw> U: [24,0) S: [24,0)
+  -->  %90 U: full-set S: full-set
+  -->  %91 U: full-set S: full-set
+  -->  %92 U: full-set S: full-set
+  -->  (24 + %92)<nuw> U: [24,0) S: [24,0)
+  -->  %95 U: full-set S: full-set
+  -->  %96 U: full-set S: full-set
+  -->  %97 U: full-set S: full-set
+  -->  (16 + %97)<nuw> U: [16,0) S: [16,0)
+  -->  %99 U: full-set S: full-set
+  -->  %100 U: full-set S: full-set
+  -->  %102 U: full-set S: full-set
+  -->  (16 + %102)<nuw> U: [16,0) S: [16,0)
+  -->  %104 U: full-set S: full-set
+  -->  (16 + %104)<nuw> U: [16,0) S: [16,0)
+  -->  %106 U: full-set S: full-set
+  -->  %110 U: full-set S: full-set
+  -->  (16 + %110)<nuw> U: [16,0) S: [16,0)
+  -->  %112 U: full-set S: full-set
+  -->  (16 + %112)<nuw> U: [16,0) S: [16,0)
+  -->  %114 U: full-set S: full-set
+  -->  (4 + %114)<nuw> U: [4,0) S: [4,0)
+  -->  %116 U: full-set S: full-set
+  -->  %118 U: full-set S: full-set
+  -->  %119 U: full-set S: full-set
+  -->  (16 + %119)<nuw> U: [16,0) S: [16,0)
+  -->  %121 U: full-set S: full-set
+  -->  (24 + %121)<nuw> U: [24,0) S: [24,0)
+  -->  %123 U: full-set S: full-set
+  -->  %127 U: full-set S: full-set
+  -->  (16 + %127)<nuw> U: [16,0) S: [16,0)
+  -->  %129 U: full-set S: full-set
+  -->  (24 + %129)<nuw> U: [24,0) S: [24,0)
+  -->  %131 U: full-set S: full-set
+  -->  (4 + %131)<nuw> U: [4,0) S: [4,0)
+  -->  %133 U: full-set S: full-set
+  -->  %135 U: full-set S: full-set
+  -->  %136 U: full-set S: full-set
+  -->  %137 U: full-set S: full-set
+  -->  (1 + %137)<nsw> U: [-2147483647,-2147483648) S: [-2147483647,-2147483648)
+  -->  %141 U: full-set S: full-set
+  -->  (16 + %141)<nuw> U: [16,0) S: [16,0)
+  -->  %143 U: full-set S: full-set
+  -->  %144 U: full-set S: full-set
+  -->  %145 U: full-set S: full-set
+  -->  (16 + %145)<nuw> U: [16,0) S: [16,0)
+  -->  %147 U: full-set S: full-set
+  -->  %148 U: full-set S: full-set
+  -->  %149 U: full-set S: full-set
+  -->  (24 + %149)<nuw> U: [24,0) S: [24,0)
+  -->  %151 U: full-set S: full-set
+  -->  %152 U: full-set S: full-set
+  -->  %155 U: full-set S: full-set
+  -->  %157 U: full-set S: full-set
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %5 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %6 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %7 U: full-set S: full-set
+  -->  %10 U: full-set S: full-set
+  -->  %10 U: full-set S: full-set
+  -->  %12 U: full-set S: full-set
+  -->  %13 U: full-set S: full-set
+  -->  %13 U: full-set S: full-set
+  -->  %15 U: full-set S: full-set
+  -->  (4 + %15)<nuw> U: [4,0) S: [4,0)
+  -->  %17 U: full-set S: full-set
+  -->  (8 + %17)<nuw> U: [8,0) S: [8,0)
+  -->  %19 U: full-set S: full-set
+  -->  %21 U: full-set S: full-set
+  -->  %21 U: full-set S: full-set
+  -->  %23 U: full-set S: full-set
+  -->  %24 U: full-set S: full-set
+  -->  %27 U: full-set S: full-set
+  -->  (16 + %27)<nuw> U: [16,0) S: [16,0)
+  -->  %29 U: full-set S: full-set
+  -->  %30 U: full-set S: full-set
+  -->  %31 U: full-set S: full-set
+  -->  %32 U: full-set S: full-set
+  -->  (16 + %32)<nuw> U: [16,0) S: [16,0)
+  -->  %35 U: full-set S: full-set
+  -->  %35 U: full-set S: full-set
+  -->  %37 U: full-set S: full-set
+  -->  %38 U: full-set S: full-set
+  -->  %41 U: full-set S: full-set
+  -->  (24 + %41)<nuw> U: [24,0) S: [24,0)
+  -->  %43 U: full-set S: full-set
+  -->  %44 U: full-set S: full-set
+  -->  %45 U: full-set S: full-set
+  -->  %46 U: full-set S: full-set
+  -->  (24 + %46)<nuw> U: [24,0) S: [24,0)
+  -->  %49 U: full-set S: full-set
+  -->  (8 + %49)<nuw> U: [8,0) S: [8,0)
+  -->  %51 U: full-set S: full-set
+  -->  (1 + %51) U: full-set S: full-set
+  -->  %55 U: full-set S: full-set
+  -->  %56 U: full-set S: full-set
+  -->  %58 U: full-set S: full-set
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %5 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %6 U: full-set S: full-set
+  -->  %9 U: full-set S: full-set
+  -->  (16 + %9)<nuw> U: [16,0) S: [16,0)
+  -->  %11 U: full-set S: full-set
+  -->  %12 U: full-set S: full-set
+  -->  %14 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %15 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  (8 + %15)<nuw> U: [8,0) S: [8,0)		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %17 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %20 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %21 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %21 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %23 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %25 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  (1 + %25) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %13: Variant }
+  -->  %28 U: full-set S: full-set
+  -->  (24 + %28)<nuw> U: [24,0) S: [24,0)
+  -->  %30 U: full-set S: full-set
+  -->  %31 U: full-set S: full-set
+  -->  %32 U: full-set S: full-set
+  -->  %32 U: full-set S: full-set
+  -->  %1 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %2 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %3 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %4 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %5 U: [8,-23) S: [-9223372036854775808,9223372036854775801)
+  -->  %6 U: [8,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %7 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %8 U: full-set S: full-set
+  -->  %9 U: full-set S: full-set
+  -->  %4 U: [4,-7) S: [-9223372036854775808,9223372036854775805)
+  -->  %11 U: full-set S: full-set
+  -->  %12 U: full-set S: full-set
+  -->  %13 U: full-set S: full-set
+  -->  (sext i32 %13 to i64) U: [-2147483648,2147483648) S: [-2147483648,2147483648)
+  -->  %15 U: full-set S: full-set
+  -->  %15 U: full-set S: full-set
+  -->  %5 U: [8,-23) S: [-9223372036854775808,9223372036854775801)
+  -->  %5 U: [8,-23) S: [-9223372036854775808,9223372036854775801)
+  -->  %19 U: full-set S: full-set
+  -->  %19 U: full-set S: full-set
+  -->  %21 U: full-set S: full-set
+  -->  (sext i32 %21 to i64) U: [-2147483648,2147483648) S: [-2147483648,2147483648)
+  -->  %23 U: full-set S: full-set
+  -->  %24 U: full-set S: full-set
+  -->  %5 U: [8,-23) S: [-9223372036854775808,9223372036854775801)
+  -->  %26 U: full-set S: full-set
+  -->  %27 U: full-set S: full-set
+  -->  %29 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  %30 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  %33 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  %5 U: [8,-23) S: [-9223372036854775808,9223372036854775801)		Exits: %5		LoopDispositions: { %28: Invariant }
+  -->  %35 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  %36 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  (sext i32 %36 to i64) U: [-2147483648,2147483648) S: [-2147483648,2147483648)		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  ((4 * (sext i32 %36 to i64))<nsw> + %35) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  %39 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  %40 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  %42 U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  (1 + %42) U: full-set S: full-set		Exits: <<Unknown>>		LoopDispositions: { %28: Variant }
+  -->  (8 + %5)<nuw> U: [16,-15) S: [-9223372036854775808,9223372036854775801)
+  -->  %46 U: full-set S: full-set
+  -->  %5 U: [8,-23) S: [-9223372036854775808,9223372036854775801)
+  -->  %48 U: full-set S: full-set
+  -->  %48 U: full-set S: full-set
+  -->  %50 U: full-set S: full-set
+  -->  (sext i32 %50 to i64) U: [-2147483648,2147483648) S: [-2147483648,2147483648)
+  -->  %52 U: full-set S: full-set
+  -->  %53 U: full-set S: full-set
+  -->  %5 U: [8,-23) S: [-9223372036854775808,9223372036854775801)
+  -->  %55 U: full-set S: full-set
+  -->  %55 U: full-set S: full-set
+  -->  %57 U: full-set S: full-set
+  -->  %58 U: full-set S: full-set
+  -->  %59 U: full-set S: full-set
+  -->  %60 U: full-set S: full-set

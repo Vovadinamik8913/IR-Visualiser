@@ -48,7 +48,7 @@ public class ScevController {
         }
 
         Scev scev = scevService.get(ir, opt);
-        String res = scev.parsedLine(line).orElse("Error fetching scev for line " + line);
+        String res = scev.parsedLine(line).orElse("No scev for line " + line);
 
         return res;
     }
