@@ -8,7 +8,6 @@ import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.core.parser.loops.LoopBlock;
 import ru.ir.visualiser.core.parser.loops.LoopIR;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,10 +34,17 @@ public class Parser {
         return line;
     }
 
-
-    public static String getEntryBlockName(String entry) {
-        for(int i = 0; i < 100; i++) {
-            if (!entry.contains("%"+i)) {
+    /**
+     * Method to get label of the entry block.
+     * This label is %*lastArgumentOfFunction + 1*. and arguments is numbered starting from 0
+     *
+     * @param params - params of the function
+     *
+     * @return entry block label
+     */
+    public static String getEntryBlockName(String params) {
+        for (int i = 0; i < 100; i++) {
+            if (!params.contains("%" + i)) {
                 return String.valueOf(i);
             }
         }
@@ -320,7 +326,7 @@ public class Parser {
      * @return Root of the domtree
      */
     public static DomTreeNode findDomtreeInfofromOpt(FunctionIR function, String text) {
-        String regex = "DominatorTree for function: "+function.getFunctionName()+
+        String regex = "DominatorTree for function: " + function.getFunctionName() +
                         "\\n[\\s\\S]*?Inorder Dominator Tree[\\s\\S]*?\\n([\\s\\S]*?)\\nRoots: ([\\s\\S]*?) \\n";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);

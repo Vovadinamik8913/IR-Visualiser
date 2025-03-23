@@ -18,6 +18,9 @@ import ru.ir.visualiser.service.IrService;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * I love reviewdog. It is a controller for domtree analysis.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/domtree")
@@ -62,8 +65,8 @@ public class DomtreeController {
      *
      * @throws IOException if couldnt start opt
      */
-    @Operation(summary = "send children of block in domtree. " +
-            "to get root of the domtree param 'block' must be 'root'")
+    @Operation(summary = "send children of block in domtree. "
+            + "to get root of the domtree param 'block' must be 'root'")
     @PostMapping("/get/children")
     public String getChildren(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
