@@ -6,9 +6,9 @@ import ru.ir.visualiser.model.ir.BlockIR;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class DomTreeNode {
     private final BlockIR block;
-    @Getter
     private final int Depth;
     private final List<DomTreeNode> children;
 

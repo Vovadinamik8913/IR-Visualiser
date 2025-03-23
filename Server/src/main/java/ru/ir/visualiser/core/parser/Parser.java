@@ -37,14 +37,12 @@ public class Parser {
 
 
     public static String getEntryBlockName(String entry) {
-        int number = 0;
         for(int i = 0; i < 100; i++) {
-            if (!entry.contains("%"+number)) {
-                number = i;
-                break;
+            if (!entry.contains("%"+i)) {
+                return String.valueOf(i);
             }
         }
-        return "%"+number;
+        return "";
     }
 
     /**
@@ -312,6 +310,15 @@ public class Parser {
         return new Scev(scev);
     }
 
+    /**
+     * Method to extract domtree info for certain function  and then parse that info.
+     *
+     * @param function - function to find info from.
+     *
+     * @param text - text of opt analysis.
+     *
+     * @return Root of the domtree
+     */
     public static DomTreeNode findDomtreeInfofromOpt(FunctionIR function, String text) {
         String regex = "DominatorTree for function: "+function.getFunctionName()+
                         "\\n[\\s\\S]*?Inorder Dominator Tree[\\s\\S]*?\\n([\\s\\S]*?)\\nRoots: ([\\s\\S]*?) \\n";
@@ -327,12 +334,23 @@ public class Parser {
     }
 
 
+    /**
+     * Method to parse domtree info
+     *
+     * @param function - function
+     *
+     * @param body - body of domtree analysis
+     *
+     * @param roots - roots of the domtree.
+     *
+     * @return Root of the domtree
+     */
     public static DomTreeNode parseDomtree(FunctionIR function, String body, String roots) {
         String[] lines = body.split("\n");
         for (int i = 0; i < lines.length; i++) {
             lines[i] = lines[i].trim();
         }
-        DomTreeNode root = (new DomTreeNode(function.getBlock(roots), 1));
+        DomTreeNode root = (new DomTreeNode(function.getBlock(roots.substring(1)), 1));
         Stack<DomTreeNode> stack = new Stack<>();
         stack.push(root);
 
@@ -340,6 +358,7 @@ public class Parser {
             String[] parts = lines[i].split(" ");
             int depth = Integer.parseInt(parts[0].substring(1, parts[0].length() - 1));
             String id = parts[1];
+            id = id.substring(1);
             DomTreeNode node = new DomTreeNode(function.getBlock(id), depth);
 
             while (stack.peek().getDepth() >= depth) {

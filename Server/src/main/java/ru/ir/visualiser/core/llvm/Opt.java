@@ -114,4 +114,19 @@ public class Opt {
     public static String printScev(String opt, Ir ir) throws IOException {
         return print(opt, ir, "scalar-evolution");
     }
+
+    /**
+     * Prints info about domtree by starting opt as a process.
+     *
+     * @param opt - path to opt
+     *
+     * @param ir - Ir, which domtree info is needed
+     *
+     * @return Loop info from opt
+     *
+     * @throws IOException if couldnt start a process.
+     */
+    public static String printDomtree(String opt, Ir ir) throws IOException {
+        return print(opt, ir, "domtree");
+    }
 }
