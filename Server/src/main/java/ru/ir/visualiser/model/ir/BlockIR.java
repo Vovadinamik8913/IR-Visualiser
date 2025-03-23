@@ -3,6 +3,7 @@ package ru.ir.visualiser.model.ir;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 /**
@@ -15,7 +16,7 @@ public class BlockIR {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Getter
+    @Getter @Setter
     private String label;
     @Getter
     private int startLine;

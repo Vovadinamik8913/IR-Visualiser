@@ -1,5 +1,6 @@
 package ru.ir.visualiser.core.parser;
 
+import ru.ir.visualiser.core.parser.domtree.DomTreeNode;
 import ru.ir.visualiser.model.analysis.Scev;
 import ru.ir.visualiser.model.ir.BlockIR;
 import ru.ir.visualiser.model.ir.Dot;
@@ -7,10 +8,8 @@ import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.core.parser.loops.LoopBlock;
 import ru.ir.visualiser.core.parser.loops.LoopIR;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +33,18 @@ public class Parser {
             }
         }
         return line;
+    }
+
+
+    public static String getEntryBlockName(String entry) {
+        int number = 0;
+        for(int i = 0; i < 100; i++) {
+            if (!entry.contains("%"+number)) {
+                number = i;
+                break;
+            }
+        }
+        return "%"+number;
     }
 
     /**
@@ -119,13 +130,15 @@ public class Parser {
      * @return FunctionIR
      */
     private static FunctionIR parseFunction(String input, int startLine, int endLine) {
-        String regexFuncName = "(define|declare)[^@]* @(\\w*)";
+        String regexFuncName = "(define|declare)[^@]* @(\\w*)(\\([\\s\\S]*?\\))";
         Pattern patternName = Pattern.compile(regexFuncName);
 
         Matcher matcher = patternName.matcher(input);
         String functionID = "";
+        String params = "";
         if (matcher.find()) {
             functionID = matcher.group(2);
+            params = matcher.group(3);
         }
 
         FunctionIR functionIR = new FunctionIR(functionID, input, startLine, endLine);
@@ -138,6 +151,7 @@ public class Parser {
                 BlockIR blockIr = parseBlock(matcher.group(1),
                         startLine + getLineNumber(input, matcher.start()),
                         startLine + getLineNumber(input, matcher.end()));
+                blockIr.setLabel(getEntryBlockName(params));
                 functionIR.addBlock(blockIr);
                 continue;
             }
@@ -298,8 +312,9 @@ public class Parser {
         return new Scev(scev);
     }
 
-    public static String findDomtreeInfofromOpt(FunctionIR function, String text) {
-        String regex = "DominatorTree for function: max\\n[\\s\\S]*?Inorder Dominator Tree[\\s\\S]*?\\n([\\s\\S]*?)\\nRoots: ([\\s\\S]*?) \\n";
+    public static DomTreeNode findDomtreeInfofromOpt(FunctionIR function, String text) {
+        String regex = "DominatorTree for function: "+function.getFunctionName()+
+                        "\\n[\\s\\S]*?Inorder Dominator Tree[\\s\\S]*?\\n([\\s\\S]*?)\\nRoots: ([\\s\\S]*?) \\n";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         String body = "";
@@ -308,7 +323,31 @@ public class Parser {
             body = matcher.group(1);
             roots = matcher.group(2);
         }
+        return parseDomtree(function, body, roots);
+    }
 
 
+    public static DomTreeNode parseDomtree(FunctionIR function, String body, String roots) {
+        String[] lines = body.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            lines[i] = lines[i].trim();
+        }
+        DomTreeNode root = (new DomTreeNode(function.getBlock(roots), 1));
+        Stack<DomTreeNode> stack = new Stack<>();
+        stack.push(root);
+
+        for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split(" ");
+            int depth = Integer.parseInt(parts[0].substring(1, parts[0].length() - 1));
+            String id = parts[1];
+            DomTreeNode node = new DomTreeNode(function.getBlock(id), depth);
+
+            while (stack.peek().getDepth() >= depth) {
+                stack.pop();
+            }
+            stack.peek().addChild(node);
+            stack.push(node);
+        }
+        return root;
     }
 }
