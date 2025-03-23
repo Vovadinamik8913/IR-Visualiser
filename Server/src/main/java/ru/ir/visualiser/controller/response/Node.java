@@ -13,6 +13,7 @@ import java.util.List;
 public class Node {
     private final long id;
     private final String name;
+    private final String flags;
     private final List<Node> children;
 
     /** constructor.
@@ -22,6 +23,7 @@ public class Node {
     public Node(Ir ir) {
         this.name = ir.getFilename().substring(0, ir.getFilename().lastIndexOf('.'));
         this.id = ir.getId();
+        this.flags = ir.getFlags();
         children = new ArrayList<>();
         setChildren(ir);
     }

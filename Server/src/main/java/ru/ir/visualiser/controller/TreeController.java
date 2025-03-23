@@ -4,10 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.ir.visualiser.config.Config;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.core.llvm.Opt;
@@ -69,9 +66,9 @@ public class TreeController {
      * @param id id of ir description
      */
     @Operation(summary = "Удаление ветки")
-    @PostMapping(value = "/delete")
+    @DeleteMapping(value = "/delete")
     public ResponseEntity<?> deleteBranch(
-            @Parameter(description = "file", required = true) @RequestParam("file") Long id
+            @Parameter(description = "node", required = true) @RequestParam("node") Long id
     ) {
         try {
             irService.deleteById(id);
