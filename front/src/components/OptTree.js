@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./styles/OptTree.css";
+import { getTree, loadProjects, deleteTreeNode } from './api/opttree-api';
 
 const OptTree = ({ isOpen, onClose, onSelect }) => {
   const [projects, setProjects] = useState([]);
@@ -7,28 +8,19 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
   const [projectTree, setProjectTree] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Загрузка проектов
   useEffect(() => {
     if (!isOpen) return;
-    
-    fetch('/files/get/projects', {
-      method: 'POST'
-    })
-      .then(res => res.json())
-      .then(data => setProjects(data));
+    try {
+      loadProjects().then(data => setProjects(data));
+    } catch (error) {
+      console.error('Ошибка загрузки проектов:', error);
+    }
   }, [isOpen]);
 
-  // Загрузка дерева проекта
   const loadProjectTree = async (projectId) => {
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.append("project", projectId);
-      const response = await fetch(`/tree/get`, {
-        method: 'POST',
-        body: formData,
-      });
-      const treeData = await response.json();
+      const treeData = await getTree(projectId);
       setProjectTree(treeData);
     } catch (error) {
       console.error('Ошибка загрузки дерева:', error);
@@ -37,17 +29,15 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
     }
   };
 
-  // Удаление узла
   const deleteNode = async (nodeId) => {
     try {
-      await fetch(`/api/nodes/${nodeId}`, { method: 'DELETE' });
+      await deleteTreeNode(nodeId);
       setProjectTree(prev => removeNodeFromTree(prev, nodeId));
     } catch (error) {
       console.error('Ошибка удаления:', error);
     }
   };
 
-  // Рекурсивное удаление узлов
   const removeNodeFromTree = (node, targetId) => {
     if (!node) return null;
     if (node.id === targetId) return null;
@@ -109,7 +99,7 @@ const TreeNode = ({ node, onDelete, level, onSelect }) => {
   const handleSelect = () => {
     setIsOpen(!isOpen);
     if(isOpen === true) {
-       onSelect(node.id);
+       onSelect(node.id, node.flags);
     }
   }
 

@@ -6,6 +6,7 @@ import './styles/TXT.css';
 const TXTpart = ({
   content,
   compilerFlags, setCompilerFlags,
+  generatingFlags,
   handleProcessCode,
   onLineClick, 
   optionRef,
@@ -59,8 +60,18 @@ const TXTpart = ({
 
     return (
         <div className="window">
+          {generatingFlags && <div className="info">
+            <label className="text-input">
+              Скомпилирован с:
+            </label>
+            <div className="flex-grow">
+              <label
+                value={generatingFlags}
+                className="text-input"
+              />
+            </div>
+          </div>}
           <div className="info">
-            {/* Ввод ключей для компилятора */}
             <div className="flex-grow">
               <input
                 id="compiler-flags"

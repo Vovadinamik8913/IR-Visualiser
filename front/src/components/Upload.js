@@ -80,6 +80,7 @@ const Upload = ({onClose, onFileUpload, onBuildByFileRequest, onBuildByPathReque
                       <input
                       type="file"
                       id="file-upload"
+                      accept=".ll"
                       onChange={handleFileUpload}
                       style={{display: 'none'}}/>
 

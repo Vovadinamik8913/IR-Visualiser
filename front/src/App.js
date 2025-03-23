@@ -21,6 +21,7 @@ function App() {
     const irIdRef = useRef(irId);
     const optionRef = useRef(selectedOption);
     const [compilerFlags, setCompilerFlags] =  useState(''); 
+    const [generatingFlags, setGeneratingFlags] =  useState(''); 
     const [howManyClicks, setHowManyClicks] = useState(0);
 
     useEffect(() => {
@@ -186,7 +187,7 @@ function App() {
     const handleOptimize= async () => {
         try {
          const newId = await optimize(irId, compilerFlags);
-         const id = parseInt(newId, 10);// Преобразуем строку в целое число
+         const id = parseInt(newId, 10);
          if (isNaN(id)) {
              throw new Error('Сервер вернул некорректный ID');
          }
@@ -205,16 +206,22 @@ function App() {
         }
     };
 
-    const handleSelect = async(id) => {
+    const handleSelect = async(id, flags) => {
         try {
             const content = await getCode(id);
             setLlContent(content);
             const svgsNames = await getFunctions(id);
             setListOfFunctions(svgsNames);
+            setGeneratingFlags(flags);
+            setSvgContent('');
+            setSelectedFunction('');
+            setCompilerFlags('');
         } catch (error) {
             console.error('Ошибка при обработке кода:', error);
         }
     }
+
+    
 
     return (
         <div className="App">
