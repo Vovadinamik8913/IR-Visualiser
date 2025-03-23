@@ -30,12 +30,24 @@ public class Scev {
     @Getter
     private Map<Integer, String> lineToScevString;
 
+    /**
+     * A map from line in the source to the line of she scalar evolution for the
+     * binding, without the `-->` in the beginning.
+     */
+    @ElementCollection
+    @CollectionTable(name = "scev_loop_count", joinColumns = @JoinColumn(name = "scev_id"))
+    @MapKeyColumn(name = "scev_loop_block")
+    @Column(name = "scev_count_of_block")
+    @Getter
+    private Map<String, String> loopCount; 
+
     @OneToOne @JoinColumn(name = "ir_id")
     @Setter @Getter
     private Ir ir;
 
-    public Scev(Map<Integer, String> lineToScevString) {
+    public Scev(Map<Integer, String> lineToScevString, Map<String, String> loopCount) {
         this.lineToScevString = lineToScevString;
+        this.loopCount = loopCount;
     }
 
     /**
@@ -80,5 +92,16 @@ public class Scev {
         str.append(scevString, from, scevString.length());
 
         return Optional.of(str.toString());
+    }
+
+    /**
+     * Returns the loop count string for the given block.
+     * 
+     * @param loopBlock the loop block
+     * @return the loop count string
+     */
+    public Optional<String> loopCount(String function, String block) {
+        String loopBlock = function + ":" + block;
+        return Optional.ofNullable(loopCount.get(loopBlock));
     }
 }

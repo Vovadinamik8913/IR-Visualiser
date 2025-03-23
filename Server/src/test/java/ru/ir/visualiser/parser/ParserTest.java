@@ -200,5 +200,22 @@ U: [8,-23)
 S: [-9223372036854775808,9223372036854775801)
 Exits: %5
 LoopDispositions: { %28: Invariant }"""), scev.parsedLine(681));
+
+
+        assertEquals(3, scev.getLoopCount().size());
+        assertEquals(Optional.of("""
+Unpredictable backedge-taken count.
+Unpredictable constant max backedge-taken count. 
+Unpredictable symbolic max backedge-taken count. """), scev.loopCount("shuffle", "%9"));
+
+        assertEquals(Optional.of("""
+Unpredictable backedge-taken count.
+Unpredictable constant max backedge-taken count. 
+Unpredictable symbolic max backedge-taken count. """), scev.loopCount("in_order_traversal", "%13"));
+
+        assertEquals(Optional.of("""
+Unpredictable backedge-taken count.
+Unpredictable constant max backedge-taken count.
+Unpredictable symbolic max backedge-taken count. """), scev.loopCount("main", "%28"));
     }
 }
