@@ -42,8 +42,8 @@ const Header = ({
                  onSelect={onSelect}
                  />
               </div>
-              <div class="dropdown">
-                <button onClick={() => setIsDropboxOpen(!isDropboxOpen)} class="dropdown-button">
+              <div className="dropdown">
+                <button onClick={() => setIsDropboxOpen(!isDropboxOpen)} className="dropdown-button">
                   {selectedOption}
                 </button>
                 {isDropboxOpen && (

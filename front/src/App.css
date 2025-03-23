@@ -32,8 +32,8 @@
     border: 2px solid #228B22;
     padding: 10px;
     border-radius: 5px;
-    background-color: snow;
-    max-width: 899px;
+    background-color: white;
+    max-width: 770px;
     display: flex;
     flex-direction: column;
     height: 100vh;

@@ -32,7 +32,7 @@ export const generateSvg = async(id) => {
         method: 'POST',
         body: buildFormData,
     });
-    if(!response.ok) throw new Error("/files/generate/bad request");
+    if(!response.ok) throw new Error("/files/generate/bad request" + await response.text());
 }
 
 export const optimize = async(id, flags) => {

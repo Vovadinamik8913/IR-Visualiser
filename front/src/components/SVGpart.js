@@ -41,8 +41,8 @@ const SVGpart = ({
             const number = textElement?.textContent.trim().replace(':', '') || 'Нет данных';
             setBlockNumber(number);
             console.log("Информация о блоке:", blockTitle); // Выводим информацию о блоке в консоль
-            onBlockClick(number);
-            if (selectedOption === "LoopsInfo") {
+            onBlockClick(blockNumber);
+            if (selectedOption === "LoopsInfo" || selectedOption === "Scev") {
                 if(event.ctrlKey) {
                     setPopupVisible(true);
                     setPopupPosition({ x: event.clientX, y: event.clientY });

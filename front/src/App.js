@@ -7,7 +7,7 @@ import { generateSvg, optimize, saveByFile, saveByPath} from './components/api/b
 import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/svg-api';
 import { getCode } from './components/api/code-api';
 import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './components/api/loops-api';
-import { getScevInfo } from './components/api/scev-api';
+import { getScevInfo, getScevLoopInfo } from './components/api/scev-api';
 
 function App() {
     const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
@@ -126,7 +126,7 @@ function App() {
         }
     };
 
-    //клик для лупса
+    //клик на блок
     const handleBlockClick = async (blockTitle) => {
         console.log(selectedOption);
         if (selectedOption === "LoopsInfo" && selectedFunction) {
@@ -137,12 +137,19 @@ function App() {
                 console.error("Ошибка при получении информации о цикле:", error);
                 setLoopInfo("Ошибка загрузки данных");
             }
-
             try {
                 const svgText = await getNestedLoops(irId, selectedFunction, blockTitle, howManyClicks);
                 setSvgContent(svgText);
             } catch (error) {
                 console.error('Ошибка запроса:', error);
+            }
+        } else if (selectedOption === "Scev" && selectedFunction) {
+            try {
+                const info = await getScevLoopInfo(irId, selectedFunction, blockTitle);
+                setLoopInfo(info);
+            } catch (error) {
+                console.error("Ошибка при получении информации о цикле:", error);
+                setLoopInfo("Ошибка загрузки данных");
             }
         }
     };

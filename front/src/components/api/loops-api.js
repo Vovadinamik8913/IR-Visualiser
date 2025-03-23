@@ -23,8 +23,7 @@ export const getLoopInfo = async (irId, funcName, svgBlock) => {
         body: loopInfoFormData,
     });
     if(!response.ok) throw new Error("/loops/get/block/by/name bad request");
-    const info = await response.text();
-    return info;
+    return await response.text();
 }
 
 export const getNestedLoops= async (irId, funcName, svgBlock, howManyClicks) => {
@@ -39,6 +38,5 @@ export const getNestedLoops= async (irId, funcName, svgBlock, howManyClicks) => 
         body: loopInfoFormData,
     });
     if(!response.ok) throw new Error("/loops/get/loop/svg/by/click bad request");
-    const info = await response.text();
-    return info;
+    return await response.text();
 }
