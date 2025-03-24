@@ -32,38 +32,28 @@ const TXTpart = ({
     }, [line]);
 
     const handleEditorMount = (editor, monaco) => {
-      editorRef.current = editor;
-      editor.onMouseDown((mouseEvent) => {
-          if (!mouseEvent.target) return;
-  
-          const { position } = mouseEvent.target;
-          if (!position) return;
-  
-          const { lineNumber } = position;
-  
-          if (mouseEvent.event.ctrlKey) {  
-              onLineClick(lineNumber);
-              if (optionRef.current === "Scev") {
-                console.log("Попап должен появиться на строке:", lineNumber);
-                setPopupVisible(true);
-                setPopupPosition({
-                    x: editorRef.current.clientX,
-                    y: editorRef.current.clientY
-                });
-                console.log(posRef);
+        editorRef.current = editor;
+        editor.onMouseDown((mouseEvent) => {
+            if (!mouseEvent.target) return;
+            const { lineNumber } = mouseEvent.target.position;
+            if (mouseEvent.event.ctrlKey) {
+                onLineClick(lineNumber);
+                if (optionRef.current === "Scev") {
+                    console.log("Попап должен появиться на строке:", lineNumber);
+                    setPopupPosition({
+                        x: mouseEvent.event.posx,
+                        y: mouseEvent.event.posy
+                    });
+                    setPopupVisible(true);
+                    console.log(posRef);
             }
           }
+        });
 
-
-      });
-
-      editor.onMouseDown((mouseEvent) => {
-        if (popupVisible && !mouseEvent.target.element?.closest(".popup-info")) {
-          setPopupVisible(false);
-        }
-      });
-  };
-  
+        editor.onDidScrollChange(() => {
+            setPopupVisible(false);
+        });
+    };
     
     const handleCompilerFlagsChange = (event) => {
       setCompilerFlags(event.target.value);

@@ -11,7 +11,8 @@
 }
 
 .svg-container {
-    max-height: 730px;
+    height: 730px;
+    width: 700px;
     overflow: auto;
     padding: 20px;
     align-items: center;

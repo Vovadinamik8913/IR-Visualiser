@@ -185,7 +185,6 @@ function App() {
             if (optionRef.current === "Scev") {
                 try {
                     const scev = await getScevInfo(irIdRef.current, parseInt(index));
-                    console.log(scev);
                     setScevInfo(scev);
                 } catch (error) {
                     console.error('Ошибка запроса getScevInfo:', error);

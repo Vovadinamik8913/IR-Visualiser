@@ -119,7 +119,7 @@ const SVGpart = ({
                               ${svgContent}
                             </div>` }}
                     />
-                    {popupVisible && selectedOption === "LoopsInfo" && (
+                    {popupVisible && (selectedOption === "LoopsInfo" || selectedOption === "Scev") && (
                         <div 
                             className="popup-info" 
                             style={{ top: popupPosition.y, left: popupPosition.x }}
