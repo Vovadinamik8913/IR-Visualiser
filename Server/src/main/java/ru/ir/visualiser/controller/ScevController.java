@@ -52,4 +52,34 @@ public class ScevController {
 
         return res;
     }
+
+    /**
+     * Get text that should show up when requesting loop count.
+     *
+     * @param id - id of ir in database
+     * @param opt - number of opt
+     * @param function - name of the function
+     * @param block - name of the block
+     * @return text that shuld show up
+     * @throws IOException if couldn`t launch opt
+     */
+    @Operation(summary = "text that should when requesting loop count")
+    @PostMapping("/get/scev/loop/count")
+    @ResponseBody
+    public String scevOfLine(
+        @Parameter(description = "Id of ir") @RequestParam("file") Long id,
+        @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
+        @Parameter(description = "Function name") @RequestParam("function") String function,
+        @Parameter(description = "Block name") @RequestParam("block") String block
+    ) throws IOException {
+        Ir ir = irService.get(id);
+        if (ir == null) {
+            return null;
+        }
+
+        Scev scev = scevService.get(ir, opt);
+        String res = scev.loopCount(function, block).orElse("No loop count for " + function + ", " + block);
+
+        return res;
+    }
 }

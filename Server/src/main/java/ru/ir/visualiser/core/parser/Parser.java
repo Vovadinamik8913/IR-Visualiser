@@ -268,6 +268,11 @@ public class Parser {
         return new LoopIR(blocks, depth);
     }
 
+    private enum ScevParseState {
+        CLASSIFYING_EXPRESSIONS,
+        LOOP_COUNT,
+    }
+
     /**
      * Method that parses scev analysis.
      *
@@ -278,25 +283,43 @@ public class Parser {
      * @return - parsed scev
      */
     public static Scev parseScev(String input, ModuleIR module) {
+        
+
         List<String> moduleLines = module.getModuleText();
         String[] scevLines = input.split("\n");
 
         Map<Integer, String> scev = new java.util.HashMap<>();
+        Map<String, String> loopCountMap = new java.util.HashMap<>();
 
         int moduleLine = 0;
         int scevLine = 0;
+        String currentFunction = "";
 
-        boolean collecting = false;
+        ScevParseState state = ScevParseState.CLASSIFYING_EXPRESSIONS;
+        final String analyzingFunction = "Printing analysis 'Scalar Evolution Analysis' for function '";
+        final String classifyingExpressions = "Classifying expressions for: @";
+        final String loopCount = "Determining loop execution counts for: @";
+        Pattern loopCountPattern = Pattern.compile("Loop ([^:]+): (.*)");
 
         while (scevLine < scevLines.length) {
-            if (collecting) {
-                if (scevLines[scevLine].startsWith("Determining loop execution counts for:")) {
-                    collecting = false;
-                    continue;
-                }
+            if (scevLines[scevLine].startsWith(analyzingFunction)) {
+                scevLine += 1;
+                continue;
+            } else if (scevLines[scevLine].startsWith(classifyingExpressions)) {
+                state = ScevParseState.CLASSIFYING_EXPRESSIONS;
+                currentFunction = scevLines[scevLine].substring(classifyingExpressions.length()).strip();
+                scevLine += 1;
+                continue;
+            } else if (scevLines[scevLine].startsWith(loopCount)) {
+                state = ScevParseState.LOOP_COUNT;
+                currentFunction = scevLines[scevLine].substring(loopCount.length()).strip();
+                scevLine += 1;
+                continue;
+            }
 
+            if (state == ScevParseState.CLASSIFYING_EXPRESSIONS) {
                 String scevExpr = scevLines[scevLine].strip().split(" ")[0];
-                
+
                 while (!moduleLines.get(moduleLine).startsWith(scevExpr)) {
                     moduleLine += 1;
                 }
@@ -307,13 +330,23 @@ public class Parser {
                 scevLine += 1;
                 moduleLine += 1;
             } else {
-                if (scevLines[scevLine].startsWith("Classifying expressions for:")) {
-                    collecting = true;
+                Matcher loopCountMatcher = loopCountPattern.matcher(scevLines[scevLine]);
+                if (loopCountMatcher.matches()) {
+                    String loopBlock = loopCountMatcher.group(1);
+                    String count = loopCountMatcher.group(2);
+
+                    String mapKey = currentFunction + ":" + loopBlock;
+
+                    String currentLoopCount = loopCountMap.get(mapKey);
+                    if (currentLoopCount != null) {
+                        count = currentLoopCount + "\n" + count.strip();
+                    }
+                    loopCountMap.put(mapKey, count);
                 }
                 scevLine += 1;
             }
         }
 
-        return new Scev(scev);
+        return new Scev(scev, loopCountMap);
     }
 }
