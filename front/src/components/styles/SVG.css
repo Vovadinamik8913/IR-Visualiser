@@ -10,7 +10,7 @@
     color: #228B22;
 }
 
-.svg-win {
+.svg-container {
     max-height: 730px;
     overflow: auto;
     padding: 20px;

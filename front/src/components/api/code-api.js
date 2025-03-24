@@ -19,6 +19,19 @@ export const getCode = async (id) => {
     }
 
     const blob = new Blob(chunks);
-    const doneRes = await blob.text();
-    return doneRes;
+    return await blob.text();
 };
+
+export const getLineNumberFromBlock = async (id, blockTitle, funcName) => {
+    const lineNumberFormData = new FormData();
+    lineNumberFormData.append("file", id);
+    lineNumberFormData.append("id", blockTitle);
+    lineNumberFormData.append("function", funcName);
+    const response = await fetch('/fromline/get/line', {
+        method: 'POST',
+        body: lineNumberFormData,
+    });
+
+    if(!response.ok) throw new Error("/fromline/get/line bad request");
+    return parseInt(await response.text());
+}

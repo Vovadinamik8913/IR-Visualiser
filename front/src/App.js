@@ -5,7 +5,7 @@ import TXTpart from "./components/TXTpart";
 import './App.css';
 import { generateSvg, optimize, saveByFile, saveByPath} from './components/api/build-api'
 import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/svg-api';
-import { getCode } from './components/api/code-api';
+import { getCode, getLineNumberFromBlock } from './components/api/code-api';
 import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './components/api/loops-api';
 import { getScevInfo, getScevLoopInfo } from './components/api/scev-api';
 
@@ -14,6 +14,7 @@ function App() {
     const [listOfFunctions, setListOfFunctions] = useState([]);
     const [svgContent, setSvgContent] = useState(''); // Содержимое SVG
     const [irId, setIrId] = useState(0);
+    const [lineNumber, setLineNumber] = useState(0);
     const [selectedFunction, setSelectedFunction] = useState('');// выбранное значение
     const [selectedOption, setSelectedOption] = useState("Анализы");
     const [loopInfo, setLoopInfo] = useState('');
@@ -127,25 +128,31 @@ function App() {
     };
 
     //клик на блок
-    const handleBlockClick = async (blockTitle) => {
+    const handleBlockClick = async (blockNumber, blockTitle) => {
         console.log(selectedOption);
+        try {
+            const lineToCenter = await getLineNumberFromBlock(irId, blockTitle, selectedFunction);
+            setLineNumber(lineToCenter);
+        } catch (error) {
+            console.error("Ошибка при получении номера строки:", error);
+        }
         if (selectedOption === "LoopsInfo" && selectedFunction) {
             try {
-                const info = await getLoopInfo(irId, selectedFunction, blockTitle);
+                const info = await getLoopInfo(irId, selectedFunction, blockNumber);
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
                 setLoopInfo("Ошибка загрузки данных");
             }
             try {
-                const svgText = await getNestedLoops(irId, selectedFunction, blockTitle, howManyClicks);
+                const svgText = await getNestedLoops(irId, selectedFunction, blockNumber, howManyClicks);
                 setSvgContent(svgText);
             } catch (error) {
                 console.error('Ошибка запроса:', error);
             }
         } else if (selectedOption === "Scev" && selectedFunction) {
             try {
-                const info = await getScevLoopInfo(irId, selectedFunction, blockTitle);
+                const info = await getScevLoopInfo(irId, selectedFunction, blockNumber);
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
@@ -248,6 +255,7 @@ function App() {
                     setCompilerFlags={setCompilerFlags}
                     optionRef={optionRef}
                     infoContent={scevInfo}
+                    line={lineNumber}
                 />
                 <SVGpart    
                     functions={listOfFunctions}

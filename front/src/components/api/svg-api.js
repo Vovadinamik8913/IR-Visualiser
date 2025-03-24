@@ -6,8 +6,7 @@ export const getFunctions = async (id) => {
         body: getFunctionsFormData,
     });
     if(!response.ok) throw new Error("/files/get/functions bad request");
-    const svgsNames = await response.json()
-    return svgsNames;
+    return await response.json();
 }
 
 
@@ -33,8 +32,7 @@ export const getSvgByFunction = async (irId, funcName) => {
     }
 
     const blob = new Blob(chunks);
-    const doneRes = await blob.text();
-    return doneRes;
+    return await blob.text();
 }
 
 

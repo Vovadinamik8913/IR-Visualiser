@@ -10,20 +10,29 @@ const TXTpart = ({
   handleProcessCode,
   onLineClick, 
   optionRef,
-  infoContent
+  infoContent,
+  line
 }) => {
 
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     const visibleRef = useRef(popupVisible);
     const posRef = useRef(popupPosition);
+    const editorRef = useRef(null);
 
     useEffect(() => {
         visibleRef.current = popupVisible;
-        posRef.current = popupPosition
+        posRef.current = popupPosition;
     }, [popupVisible, popupPosition]);
 
+    useEffect(() => {
+        if (editorRef.current && line) {
+            editorRef.current.revealLineInCenter(line);
+        }
+    }, [line]);
+
     const handleEditorMount = (editor, monaco) => {
+      editorRef.current = editor;
       editor.onMouseDown((mouseEvent) => {
           if (!mouseEvent.target) return;
   
@@ -38,12 +47,14 @@ const TXTpart = ({
                 console.log("Попап должен появиться на строке:", lineNumber);
                 setPopupVisible(true);
                 setPopupPosition({
-                    x: mouseEvent.event.posx,
-                    y: mouseEvent.event.posy
+                    x: editorRef.current.clientX,
+                    y: editorRef.current.clientY
                 });
                 console.log(posRef);
             }
           }
+
+
       });
 
       editor.onMouseDown((mouseEvent) => {
