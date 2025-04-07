@@ -15,6 +15,9 @@ import ru.ir.visualiser.service.ProjectService;
 import ru.ir.visualiser.controller.response.Node;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /** controller for tree.
  *
@@ -45,6 +48,7 @@ public class TreeController {
         if (parent == null) {
             return ResponseEntity.notFound().build();
         }
+        parent.getProject().setChanged(LocalDate.now());
         Ir child = new Ir(parent, flags);
         FileWorker.createPath(child.getDotPath());
         FileWorker.createPath(child.getSvgPath());
@@ -85,15 +89,18 @@ public class TreeController {
      */
     @Operation(summary = "Получение дерева")
     @PostMapping(value = "/get")
-    public ResponseEntity<Node> get(
+    public ResponseEntity<List<Node>> get(
             @Parameter(description = "Project", required = true) @RequestParam("project") Long id
     ) {
         Project project = projectService.find(id);
         if (project == null) {
             return ResponseEntity.notFound().build();
         }
-        Ir parent = project.getIr();
-        Node res = new Node(parent);
-        return ResponseEntity.ok(res);
+        List<Ir> parents = project.getIrs();
+        List<Node> nodes = new ArrayList<>();
+        for (Ir parent : parents) {
+            nodes.add(new Node(parent));
+        }
+        return ResponseEntity.ok(nodes);
     }
 }
