@@ -5,7 +5,7 @@ import { getTree, loadProjects, deleteTreeNode } from './api/opttree-api';
 const OptTree = ({ isOpen, onClose, onSelect }) => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [projectTree, setProjectTree] = useState(null);
+  const [projectTree, setProjectTree] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,15 +38,19 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
     }
   };
 
-  const removeNodeFromTree = (node, targetId) => {
-    if (!node) return null;
-    if (node.id === targetId) return null;
-    return {
-      ...node,
-      children: node.children 
-        ? node.children.map(child => removeNodeFromTree(child, targetId)).filter(Boolean)
-        : []
-    };
+  const removeNodeFromTree = (nodes, targetId) => {
+    if (!nodes) return [];
+    return nodes
+      .map(node => {
+        if (node.id === targetId) return null;
+        return {
+          ...node,
+          children: node.children 
+            ? removeNodeFromTree(node.children, targetId)
+            : []
+        };
+      })
+      .filter(Boolean);
   };
 
   if (!isOpen) return null;
@@ -78,14 +82,17 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
 
         {loading && <div className="loading">Загрузка дерева...</div>}
 
-        {projectTree && (
+        {projectTree && projectTree.length > 0 && (
           <div className="tree-container">
-            <TreeNode
-              node={projectTree}
-              onDelete={deleteNode}
-              level={0}
-              onSelect={onSelect}
-            />
+            {projectTree.map(node => (
+              <TreeNode
+                key={node.id}
+                node={node}
+                onDelete={deleteNode}
+                level={0}
+                onSelect={onSelect}
+              />
+            ))}
           </div>
         )}
       </div>
