@@ -34,14 +34,57 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.3.1'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    
+    testImplementation platform('org.junit:junit-bom:5.10.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 jacocoTestReport {
     reports {
         xml.required = true
+        html.required = true
+    }
+    
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, includes: [
+                'ru/ir/visualiser/**/*.class'
+            ], excludes: [
+                '**/*Test.class',
+                '**/*Mock.class'
+            ])
+        }))
+        sourceDirectories.setFrom(files(sourceSets.main.allSource.srcDirs))
+        executionData.setFrom(fileTree(dir: project.buildDir, includes: [
+            'jacoco/*.exec',
+            'jacoco/test.exec'
+        ]))
     }
 }
+
+test {
+    jacoco {
+        enabled = true
+        includes = ['ru.ir.visualiser.*']
+        excludes = ['**/*Test*']
+    }
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir('reports/jacoco')
+}
+
+check.dependsOn jacocoTestReport

@@ -3,6 +3,7 @@ package ru.ir.visualiser.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.ir.visualiser.model.ir.ModuleIR;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Ir {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter
     private Long id;
     private String flags;
     private String filename;
