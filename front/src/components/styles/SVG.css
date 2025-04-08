@@ -4,17 +4,14 @@
     border-radius: 4px;
     border: none;
     width: 250px;
-}
-
-.zoom-slider {
-    color: #228B22;
+    cursor: pointer;
 }
 
 .svg-container {
-    height: 730px;
+    height: 800px;
     width: 700px;
     overflow: auto;
-    padding: 20px;
+    padding: 5px;
     align-items: center;
     justify-content: center;
 }

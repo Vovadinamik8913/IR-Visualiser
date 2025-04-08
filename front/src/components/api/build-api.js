@@ -45,6 +45,5 @@ export const optimize = async(id, flags) => {
         body: buildFormData,
     });
     if(!response.ok) throw new Error("/tree/add bad request");
-    const doneRes = await response.text();
-    return doneRes;
+    return await response.text();
 }

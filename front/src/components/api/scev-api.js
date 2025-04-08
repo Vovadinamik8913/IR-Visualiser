@@ -16,7 +16,7 @@ export const getScevLoopInfo = async (irId, funcName, svgBlock) => {
     loopInfoFormData.append("file", irId);
     loopInfoFormData.append("opt", 0);
     loopInfoFormData.append("function", funcName);
-    loopInfoFormData.append("block", svgBlock);
+    loopInfoFormData.append("block", "%" + svgBlock);
     const response = await fetch('/scev/get/scev/loop/count', {
         method: 'POST',
         body: loopInfoFormData,

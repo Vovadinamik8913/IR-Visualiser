@@ -256,7 +256,7 @@ function App() {
                     infoContent={scevInfo}
                     line={lineNumber}
                 />
-                <SVGpart    
+                <SVGpart
                     functions={listOfFunctions}
                     selectedFunction={selectedFunction}
                     setSelectedFunction={setSelectedFunction}

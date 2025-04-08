@@ -1,9 +1,10 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
+import Snap from 'snapsvg-cjs';
 import './styles/SVG.css';
 
 let clickCounter = 0;
 
-const SVGpart = ({ 
+const SVGpart = ({
     svgContent,
     functions,
     selectedFunction,
@@ -22,6 +23,11 @@ const SVGpart = ({
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     const [scale, setScale] = useState(1);
     const svgContainerRef = useRef(null);
+    const viewTransform = useRef({
+        scale: 1,
+        translateX: 0,
+        translateY: 0
+    });
     
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
@@ -69,11 +75,83 @@ const SVGpart = ({
         onGetRequest(event.target.value);
     };
 
-    const handleSliderChange = (event) => {
-        setScale(event.target.value);
-    };
+    useEffect(() => {
+        const container = svgContainerRef.current;
+        if (!container) return;
+        const svgEl = container.querySelector('svg');
+        if (!svgEl) return;
 
-    
+        const s = Snap(svgEl);
+
+        let g = s.select('g#zoom-layer');
+        if (!g) {
+            g = s.group().attr({ id: 'zoom-layer' });
+
+            s.append(g);
+
+            const children = Array.from(svgEl.childNodes);
+            children.forEach((child) => {
+                if (
+                    child.tagName !== 'defs' &&
+                    child !== g.node
+                ) {
+                    g.append(child);
+                }
+            });
+        }
+
+        let isPanning = false;
+        let panStart = { x: 0, y: 0 };
+
+        const applyTransform = () => {
+            const { scale, translateX, translateY } = viewTransform.current;
+            g.transform(`translate(${translateX},${translateY}) scale(${scale})`);
+            setPopupVisible(false);
+        };
+
+        const handleWheel = (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.01 : 0.01;
+            let newScale = viewTransform.current.scale + delta;
+            newScale = Math.max(0.1, Math.min(2, newScale));
+            viewTransform.current.scale = newScale;
+            applyTransform();
+        };
+
+        const handleMouseDown = (e) => {
+            isPanning = true;
+            panStart = { x: e.clientX, y: e.clientY };
+        };
+
+        const handleMouseMove = (e) => {
+            if (!isPanning) return;
+            const dx = e.clientX - panStart.x;
+            const dy = e.clientY - panStart.y;
+            viewTransform.current.translateX += dx;
+            viewTransform.current.translateY += dy;
+            panStart = { x: e.clientX, y: e.clientY };
+            applyTransform();
+        };
+
+        const handleMouseUp = () => {
+            isPanning = false;
+        };
+
+        svgEl.addEventListener('wheel', handleWheel, { passive: false });
+        svgEl.addEventListener('mousedown', handleMouseDown);
+        svgEl.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+
+        return () => {
+            svgEl.removeEventListener('wheel', handleWheel);
+            svgEl.removeEventListener('mousedown', handleMouseDown);
+            svgEl.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [svgContent]);
+
+
+
     return (
         <div className="window">
             { llContent &&
@@ -95,18 +173,9 @@ const SVGpart = ({
                 )}
                 </select>
             </div>}
-            <input 
-                type="range" 
-                min="0.1" 
-                max="1"
-                step="0.01" 
-                value={scale} 
-                onChange={handleSliderChange} 
-                className="zoom-slider"
-            />
             {svgContent ? (
                 <div className="svg-container">
-                    <div className="svg-win"
+                    <div
                         ref={svgContainerRef}
                         onClick={handleSvgClick}
                         dangerouslySetInnerHTML={{ __html: `
@@ -114,8 +183,7 @@ const SVGpart = ({
                             display: inline-block; 
                             align-items: center;
                             justify-content: center;
-                            transform: scale(${scale}); 
-                            transform-origin: top left;'>
+                            height: fit-content;'>
                               ${svgContent}
                             </div>` }}
                     />
