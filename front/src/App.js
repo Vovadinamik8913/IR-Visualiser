@@ -12,6 +12,7 @@ import { getScevInfo, getScevLoopInfo } from './components/api/scev-api';
 function App() {
     const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
     const [listOfFunctions, setListOfFunctions] = useState([]);
+    const [listOfLoopBlocks, setListOfLoopBlocks] = useState([]);
     const [svgContent, setSvgContent] = useState(''); // Содержимое SVG
     const [irId, setIrId] = useState(0);
     const [lineNumber, setLineNumber] = useState(0);
@@ -24,6 +25,7 @@ function App() {
     const [compilerFlags, setCompilerFlags] =  useState(''); 
     const [generatingFlags, setGeneratingFlags] =  useState(''); 
     const [howManyClicks, setHowManyClicks] = useState(0);
+    //let nums = [];
 
     useEffect(() => {
       document.body.style.overflow = 'hidden';
@@ -105,25 +107,29 @@ function App() {
         }
     };
 
-    //получение свг(обычной и со всеми лупсами)
-    const handleGetRequest = async (funcName) => {
+    const handleGetLoopsInfo = async (funcName) => {
+        try {
+            const svgBlockNums = await getSvgWithLoops(irId, funcName);
+            const nums = svgBlockNums.split('\n')
+                .map(s => s.trim())
+                .filter(s => s !== '')
+                .map(Number)
+                .sort();
+            setListOfLoopBlocks(nums);
+        } catch (error) {
+            console.error('Ошибка запроса:', error);
+            alert('Произошла ошибка при выполнении запроса');
+        }
+    };
 
-        if(selectedOption === "LoopsInfo") {
-            try {
-                const svgText = await getSvgWithLoops(irId, funcName, howManyClicks);
-                setSvgContent(svgText);
-            } catch (error) {
-                console.error('Ошибка запроса:', error);
-                alert('Произошла ошибка при выполнении запроса');
-            }
-        } else {
-            try {
-                const svgText = await getSvgByFunction(irId, funcName);
-                setSvgContent(svgText);
-            } catch (error) {
-                console.error('Ошибка запроса:', error);
-                alert('Произошла ошибка при выполнении запроса');
-            }
+    //получение свг
+    const handleGetRequest = async (funcName) => {
+        try {
+            const svgText = await getSvgByFunction(irId, funcName);
+            setSvgContent(svgText);
+        } catch (error) {
+            console.error('Ошибка запроса:', error);
+            alert('Произошла ошибка при выполнении запроса');
         }
     };
 
@@ -144,12 +150,12 @@ function App() {
                 console.error("Ошибка при получении информации о цикле:", error);
                 setLoopInfo("Ошибка загрузки данных");
             }
-            try {
+            /*try {
                 const svgText = await getNestedLoops(irId, selectedFunction, blockNumber, howManyClicks);
                 setSvgContent(svgText);
             } catch (error) {
                 console.error('Ошибка запроса:', error);
-            }
+            }*/
         } else if (selectedOption === "Scev" && selectedFunction) {
             try {
                 const info = await getScevLoopInfo(irId, selectedFunction, blockNumber);
@@ -234,8 +240,6 @@ function App() {
         }
     }
 
-    
-
     return (
         <div className="App">
             <Header 
@@ -267,6 +271,8 @@ function App() {
                     infoContent={loopInfo}
                     onBlockClick={handleBlockClick}
                     howManyClicks={setHowManyClicks}
+                    listOfLoopBlocks={listOfLoopBlocks}
+                    onGetLoopsInfo={handleGetLoopsInfo}
                 />
             </div>
         </div>

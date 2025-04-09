@@ -15,6 +15,8 @@ const SVGpart = ({
     infoContent,
     onBlockClick,
     howManyClicks,
+    listOfLoopBlocks,
+    onGetLoopsInfo
 }) => {
 
     const [blockTitle, setBlockTitle] = useState('');
@@ -28,6 +30,7 @@ const SVGpart = ({
         translateX: 0,
         translateY: 0
     });
+    const lastHighlighted = useRef(null);
     
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
@@ -58,6 +61,33 @@ const SVGpart = ({
                 }
                 howManyClicks(clickCounter);
             }
+
+            const s = Snap(svgContainerRef.current.querySelector('svg'));
+            const snapNode = Snap(node);
+            const polygon = snapNode.select('polygon');
+
+            if(selectedOption !== 'LoopsInfo') {
+                if (lastHighlighted.current) {
+                    lastHighlighted.current.attr({
+                        fill: '#b70d28',
+                        stroke: '#b70d28',
+                        'stroke-width': 1,
+                        'fill-opacity': 0.44
+                    });
+                }
+
+                if (polygon && clickCounter===2) {
+                    polygon.attr({
+                        fill: 'rgba(241,45,80,0.66)',
+                        stroke: '#000',
+                        'stroke-width': 2,
+                        'fill-opacity': 1
+                    });
+
+                    lastHighlighted.current = polygon;
+                }
+            }
+
         } else if (edge) {
             const blockFrom = edge.querySelector('title')?.textContent.split("->")[0] || 'NO NAME';
             console.log("Ребро из блока:", blockFrom);
@@ -71,8 +101,10 @@ const SVGpart = ({
     };
 
     const handleDropdownChange = (event) => {
-        setSelectedFunction(event.target.value);// Обновляем выбранное значение
+        setSelectedFunction(event.target.value);
         onGetRequest(event.target.value);
+        onGetLoopsInfo(event.target.value);
+        //console.log(listOfLoopBlocks);
     };
 
     useEffect(() => {
@@ -150,6 +182,28 @@ const SVGpart = ({
         };
     }, [svgContent]);
 
+    useEffect(() => {
+        if (selectedOption === 'LoopsInfo' && listOfLoopBlocks.length > 0) {
+            if (!svgContent || !svgContainerRef.current) return;
+
+            const highlightBlocks = listOfLoopBlocks;
+            console.log(highlightBlocks);
+            const svg = Snap(svgContainerRef.current.querySelector('svg'));
+
+            svg.selectAll('.node').forEach(node => {
+                const textEl = node.select('text');
+                const blockNumber = textEl?.node.textContent.trim().replace(':', '');
+
+                if (highlightBlocks.includes(parseInt(blockNumber))) {
+                    const polygon = node.select('polygon');
+                    polygon?.attr({
+                        stroke: 'blue',
+                        'stroke-width': 4,
+                    });
+                }
+            });
+        }
+    }, [svgContent, listOfLoopBlocks]);
 
 
     return (

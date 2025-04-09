@@ -8,8 +8,8 @@ export const getSvgWithLoops = async (irId, funcName) => {
         body: svgLoopsFormData,
     });
     if(!response.ok) throw new Error("/loops/get/svg bad request");
-    const svgText = await response.text();
-    return svgText;
+    const svgNums = await response.text();
+    return svgNums;
 }
 
 export const getLoopInfo = async (irId, funcName, svgBlock) => {
