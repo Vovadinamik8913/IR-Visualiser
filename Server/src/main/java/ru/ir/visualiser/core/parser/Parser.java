@@ -147,7 +147,7 @@ public class Parser {
 
         FunctionIR functionIR = new FunctionIR(functionID, input, startLine, endLine);
 
-        String regexBlock = "(\\{[\\s\\S]*?(?:\\n\\n|}))|(\\d+:[\\s\\S]*?(?:\\n\\n|\\n}))";
+        String regexBlock = "(\\{[\\s\\S]*?(?:\\n\\n|}))|([\\S]*?:[\\s\\S]*?(?:\\n\\n|\\n}))";
         Pattern patternBlock = Pattern.compile(regexBlock);
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {
@@ -176,7 +176,7 @@ public class Parser {
      * @return - BlockIR
      */
     private static BlockIR parseBlock(String input, int startLine, int endLine) {
-        String regexId = "(\\d+):";
+        String regexId = "([\\S]*?):";
         Pattern patternId = Pattern.compile(regexId);
         Matcher matcher = patternId.matcher(input);
         String label = "";
