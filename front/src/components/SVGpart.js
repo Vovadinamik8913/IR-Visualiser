@@ -14,13 +14,12 @@ const SVGpart = ({
     selectedOption,
     infoContent,
     onBlockClick,
-    howManyClicks,
     listOfLoopBlocks,
+    listOfCurLoop,
     onGetLoopsInfo
 }) => {
 
     const [blockTitle, setBlockTitle] = useState('');
-    const [blockNumber, setBlockNumber] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     const [scale, setScale] = useState(1);
@@ -48,9 +47,7 @@ const SVGpart = ({
             setBlockTitle(title);
             const textElement = node.querySelector('text');
             const number = textElement?.textContent.trim().replace(':', '') || 'Нет данных';
-            setBlockNumber(number);
-            console.log("Информация о блоке:", blockTitle); // Выводим информацию о блоке в консоль
-            onBlockClick(blockNumber, blockTitle);
+            console.log("Информация о блоке:", blockTitle);
             if (selectedOption === "LoopsInfo" || selectedOption === "Scev") {
                 if(event.ctrlKey) {
                     setPopupVisible(true);
@@ -59,8 +56,8 @@ const SVGpart = ({
                 else { 
                     setPopupVisible(false);
                 }
-                howManyClicks(clickCounter);
             }
+            onBlockClick(number, title, clickCounter);
 
             const s = Snap(svgContainerRef.current.querySelector('svg'));
             const snapNode = Snap(node);
@@ -104,7 +101,6 @@ const SVGpart = ({
         setSelectedFunction(event.target.value);
         onGetRequest(event.target.value);
         onGetLoopsInfo(event.target.value);
-        //console.log(listOfLoopBlocks);
     };
 
     useEffect(() => {
@@ -183,11 +179,41 @@ const SVGpart = ({
     }, [svgContent]);
 
     useEffect(() => {
+        if (selectedOption === 'LoopsInfo' && listOfCurLoop.length > 0) {
+            const highlightBlocks = listOfCurLoop;
+            const svg = Snap(svgContainerRef.current.querySelector('svg'));
+
+            svg.selectAll('.node').forEach(node => {
+                const polygon = node.select('polygon');
+                polygon?.attr({
+                    fill: '#b70d28',
+                    'fill-opacity': 0.44
+                })
+            })
+
+            console.log(highlightBlocks);
+            svg.selectAll('.node').forEach(node => {
+                const textEl = node.select('text');
+                const blockNumber = textEl?.node.textContent.trim().replace(':', '');
+
+                if (highlightBlocks.includes(parseInt(blockNumber))) {
+                    const polygon = node.select('polygon');
+                    polygon?.attr({
+                        fill: 'yellow',
+                        stroke: 'blue',
+                        'stroke-width': 4,
+                        'fill-opacity': 0.5
+                    });
+                }
+            });
+        }
+    }, [listOfCurLoop]);
+
+    useEffect(() => {
         if (selectedOption === 'LoopsInfo' && listOfLoopBlocks.length > 0) {
             if (!svgContent || !svgContainerRef.current) return;
 
             const highlightBlocks = listOfLoopBlocks;
-            console.log(highlightBlocks);
             const svg = Snap(svgContainerRef.current.querySelector('svg'));
 
             svg.selectAll('.node').forEach(node => {
@@ -204,7 +230,6 @@ const SVGpart = ({
             });
         }
     }, [svgContent, listOfLoopBlocks]);
-
 
     return (
         <div className="window">
@@ -236,8 +261,7 @@ const SVGpart = ({
                             <div style='
                             display: inline-block; 
                             align-items: center;
-                            justify-content: center;
-                            height: fit-content;'>
+                            justify-content: center;'>
                               ${svgContent}
                             </div>` }}
                     />
