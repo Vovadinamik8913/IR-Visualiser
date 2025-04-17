@@ -3,6 +3,7 @@ package ru.ir.visualiser.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.service.IrService;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -102,4 +104,27 @@ public class DomtreeController {
         return result.toString();
     }
 
+
+    @Operation(summary = "get domtree ")
+    @PostMapping("/get")
+    public ResponseEntity<DomTreeNode> getDomtree(
+            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
+            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
+            @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
+    ) throws IOException {
+        Ir ir = irService.get(id);
+        if (ir == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ModuleIR moduleIr = ir.getModuleIR();
+        FunctionIR function;
+        function = moduleIr.getFunction(functionName);
+        if (function == null) {
+            return ResponseEntity.notFound().build();
+        }
+        String optPath = Config.getInstance().getOptsPath()[opt];
+        String domTreeInfo = Opt.printDomtree(optPath, ir);
+        DomTreeNode res = Parser.findDomtreeInfofromOpt(function, domTreeInfo);
+        return ResponseEntity.ok(res);
+    }
 }

@@ -398,7 +398,6 @@ public class Parser {
             String[] parts = lines[i].split(" ");
             int depth = Integer.parseInt(parts[0].substring(1, parts[0].length() - 1));
             String id = parts[1];
-            BlockIR blo = function.getBlock(id);
             DomTreeNode node = new DomTreeNode(function.getBlock(id), depth);
 
             while (stack.peek().getDepth() >= depth) {
