@@ -206,16 +206,16 @@ LoopDispositions: { %28: Invariant }"""), scev.parsedLine(681));
         assertEquals(Optional.of("""
 Unpredictable backedge-taken count.
 Unpredictable constant max backedge-taken count. 
-Unpredictable symbolic max backedge-taken count. """), scev.loopCount("shuffle", "%9"));
+Unpredictable symbolic max backedge-taken count."""), scev.loopCount("shuffle", "%9"));
 
         assertEquals(Optional.of("""
 Unpredictable backedge-taken count.
 Unpredictable constant max backedge-taken count. 
-Unpredictable symbolic max backedge-taken count. """), scev.loopCount("in_order_traversal", "%13"));
+Unpredictable symbolic max backedge-taken count."""), scev.loopCount("in_order_traversal", "%13"));
 
         assertEquals(Optional.of("""
 Unpredictable backedge-taken count.
 Unpredictable constant max backedge-taken count.
-Unpredictable symbolic max backedge-taken count. """), scev.loopCount("main", "%28"));
+Unpredictable symbolic max backedge-taken count."""), scev.loopCount("main", "%28"));
     }
 }
