@@ -42,8 +42,8 @@ public class Dot {
     }
 
     public void addSvgIdToLabel(String svgId, String label) {
-        svgIdToLabel.put(svgId, label);
-        labelToSvgId.put(label, svgId);
+        svgIdToLabel.put(svgId, "%" + label);
+        labelToSvgId.put("%" + label, svgId);
     }
 
     /**
