@@ -14,6 +14,7 @@ function App() {
     const [llContent, setLlContent] = useState(null);
     const [listOfFunctions, setListOfFunctions] = useState([]);
     const [listOfLoopBlocks, setListOfLoopBlocks] = useState([]);
+    const [listOfCurLoop, setListOfCurLoop] = useState([]);
     const [svgContent, setSvgContent] = useState('');
     const [irId, setIrId] = useState(0);
     const [lineNumber, setLineNumber] = useState(0);
@@ -112,8 +113,7 @@ function App() {
             const nums = svgBlockNums.split('\n')
                 .map(s => s.trim())
                 .filter(s => s !== '')
-                .map(Number)
-                .sort();
+                .map(Number);
             setListOfLoopBlocks(nums);
         } catch (error) {
             console.error('Ошибка запроса:', error);
@@ -133,7 +133,7 @@ function App() {
     };
 
     //клик на блок
-    const handleBlockClick = async (blockNumber, blockTitle) => {
+    const handleBlockClick = async (blockNumber, blockTitle, howManyClicks) => {
         console.log(selectedOption);
         try {
             const lineToCenter = await getLineNumberFromBlock(irId, blockTitle, selectedFunction);
@@ -149,12 +149,17 @@ function App() {
                 console.error("Ошибка при получении информации о цикле:", error);
                 setLoopInfo("Ошибка загрузки данных");
             }
-            /*try {
+            try {
                 const svgText = await getNestedLoops(irId, selectedFunction, blockNumber, howManyClicks);
-                setSvgContent(svgText);
+                const nums = svgText.split('\n')
+                    .map(s => s.trim())
+                    .filter(s => s !== '')
+                    .map(Number);
+                setListOfCurLoop(nums);
+                console.log(nums, howManyClicks);
             } catch (error) {
                 console.error('Ошибка запроса:', error);
-            }*/
+            }
         } else if (selectedOption === "Scev" && selectedFunction) {
             try {
                 const info = await getScevLoopInfo(irId, selectedFunction, blockNumber);
@@ -288,8 +293,8 @@ function App() {
                     selectedOption={selectedOption}
                     infoContent={loopInfo}
                     onBlockClick={handleBlockClick}
-                    howManyClicks={setHowManyClicks}
                     listOfLoopBlocks={listOfLoopBlocks}
+                    listOfCurLoop={listOfCurLoop}
                     onGetLoopsInfo={handleGetLoopsInfo}
                 />
             </div>
