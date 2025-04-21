@@ -143,7 +143,7 @@ function App() {
         }
         if (selectedOption === "LoopsInfo" && selectedFunction) {
             try {
-                const info = await getLoopInfo(irId, selectedFunction, blockNumber);
+                const info = await getLoopInfo(irId, selectedFunction, "%" + blockNumber);
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
@@ -165,7 +165,7 @@ function App() {
             }
         } else if (selectedOption === "DomTree" && selectedFunction) {
             try {
-                const info = await getDomTreeChildren(irId, selectedFunction, blockNumber);
+                const info = await getDomTreeChildren(irId, selectedFunction, "%" + blockNumber);
                 console.log(info);
                 setLoopInfo(info);
             } catch (error) {

@@ -51,7 +51,7 @@ const SVGpart = ({
             setBlockNumber(number);
             console.log("Информация о блоке:", blockTitle); // Выводим информацию о блоке в консоль
             onBlockClick(blockNumber, blockTitle);
-            if (selectedOption === "LoopsInfo" || selectedOption === "Scev") {
+            if (selectedOption === "LoopsInfo" || selectedOption === "Scev" || selectedOption === "DomTree") {
                 if(event.ctrlKey) {
                     setPopupVisible(true);
                     setPopupPosition({ x: event.clientX, y: event.clientY });
@@ -87,7 +87,6 @@ const SVGpart = ({
                     lastHighlighted.current = polygon;
                 }
             }
-
         } else if (edge) {
             const blockFrom = edge.querySelector('title')?.textContent.split("->")[0] || 'NO NAME';
             console.log("Ребро из блока:", blockFrom);
@@ -104,7 +103,6 @@ const SVGpart = ({
         setSelectedFunction(event.target.value);
         onGetRequest(event.target.value);
         onGetLoopsInfo(event.target.value);
-        //console.log(listOfLoopBlocks);
     };
 
     useEffect(() => {
@@ -241,7 +239,7 @@ const SVGpart = ({
                               ${svgContent}
                             </div>` }}
                     />
-                    {popupVisible && (selectedOption === "LoopsInfo" || selectedOption === "Scev") && (
+                    {popupVisible && (selectedOption === "LoopsInfo" || selectedOption === "Scev" || selectedOption === "DomTree") && (
                         <div 
                             className="popup-info" 
                             style={{ top: popupPosition.y, left: popupPosition.x }}
