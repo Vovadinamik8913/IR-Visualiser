@@ -8,23 +8,25 @@ import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/s
 import { getCode, getLineNumberFromBlock } from './components/api/code-api';
 import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './components/api/loops-api';
 import { getScevInfo, getScevLoopInfo } from './components/api/scev-api';
+import { getDomTree, getDomTreeChildren } from './components/api/domtree-api';
 
 function App() {
-    const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
+    const [llContent, setLlContent] = useState(null);
     const [listOfFunctions, setListOfFunctions] = useState([]);
     const [listOfLoopBlocks, setListOfLoopBlocks] = useState([]);
     const [listOfCurLoop, setListOfCurLoop] = useState([]);
-    const [svgContent, setSvgContent] = useState(''); // Содержимое SVG
+    const [svgContent, setSvgContent] = useState('');
     const [irId, setIrId] = useState(0);
     const [lineNumber, setLineNumber] = useState(0);
-    const [selectedFunction, setSelectedFunction] = useState('');// выбранное значение
+    const [selectedFunction, setSelectedFunction] = useState('');
     const [selectedOption, setSelectedOption] = useState("Анализы");
     const [loopInfo, setLoopInfo] = useState('');
     const [scevInfo, setScevInfo] = useState('');
     const irIdRef = useRef(irId);
     const optionRef = useRef(selectedOption);
     const [compilerFlags, setCompilerFlags] =  useState(''); 
-    const [generatingFlags, setGeneratingFlags] =  useState('');
+    const [generatingFlags, setGeneratingFlags] =  useState(''); 
+    const [howManyClicks, setHowManyClicks] = useState(0);
 
     useEffect(() => {
       document.body.style.overflow = 'hidden';
@@ -38,12 +40,11 @@ function App() {
       optionRef.current = selectedOption;
     }, [irId, selectedOption]);
 
-    // Функция для загрузки .ll файла
     const handleFileUpload = (file) => {
-        if (file.name.endsWith('.ll')) { // Проверка расширения
+        if (file.name.endsWith('.ll')) { 
             const reader = new FileReader();
             reader.onload = (event) => {
-                setLlContent(event.target.result); // Сохраняем текстовое содержимое .ll файла
+                setLlContent(event.target.result);
                 setSvgContent('');
                 setListOfFunctions([]);
             };
@@ -59,7 +60,7 @@ function App() {
             if (!doneRes) {
                 alert('Произошла ошибка при отправке файла');
             } else {
-                const id = parseInt(doneRes, 10);// Преобразуем строку в целое число
+                const id = parseInt(doneRes, 10);
                 if (isNaN(id)) {
                     throw new Error('Сервер вернул некорректный ID');
                 }
@@ -84,7 +85,7 @@ function App() {
             if (!doneRes) {
                 alert('Произошла ошибка при отправке файла');
             } else {
-                const id = parseInt(doneRes, 10);// Преобразуем строку в целое число
+                const id = parseInt(doneRes, 10);
                 console.log(id);
                 if (isNaN(id)) {
                     throw new Error('Сервер вернул некорректный ID');
@@ -142,7 +143,7 @@ function App() {
         }
         if (selectedOption === "LoopsInfo" && selectedFunction) {
             try {
-                const info = await getLoopInfo(irId, selectedFunction, blockNumber);
+                const info = await getLoopInfo(irId, selectedFunction, "%" + blockNumber);
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
@@ -165,6 +166,15 @@ function App() {
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
+                setLoopInfo("Ошибка загрузки данных");
+            }
+        } else if (selectedOption === "DomTree" && selectedFunction) {
+            try {
+                const info = await getDomTreeChildren(irId, selectedFunction, "%" + blockNumber);
+                console.log(info);
+                setLoopInfo(info);
+            } catch (error) {
+                console.error("Ошибка при получении информации о дереве:", error);
                 setLoopInfo("Ошибка загрузки данных");
             }
         }
@@ -230,6 +240,7 @@ function App() {
 
     const handleSelect = async(id, flags) => {
         try {
+            setIrId(id);
             const content = await getCode(id);
             setLlContent(content);
             const svgsNames = await getFunctions(id);
@@ -243,6 +254,14 @@ function App() {
         }
     }
 
+    const handleGetDomTree = async() => {
+        try {
+            return await getDomTree(irId, selectedFunction);
+        } catch (error) {
+            console.error('Ошибка при обработке кода:', error);
+        }
+    }
+
     return (
         <div className="App">
             <Header 
@@ -250,7 +269,8 @@ function App() {
                 onBuildByFileRequest={handleBuildByFileRequest}
                 onBuildByPathRequest={handleBuildByPathRequest}
                 onAnalysChange={setSelectedOption}
-                onSelect={handleSelect}
+                onTreeSelect={handleSelect}
+                onDomTreeLoad={handleGetDomTree}
             />
             <div className="main-container">
                 <TXTpart
