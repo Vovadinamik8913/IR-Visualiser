@@ -8,9 +8,12 @@ import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.core.parser.loops.LoopBlock;
 import ru.ir.visualiser.core.parser.loops.LoopIR;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import ru.ir.visualiser.model.analysis.Memoryssa;
 
 /**
  * Class that performs parsing of llvm ir files.
@@ -407,5 +410,53 @@ public class Parser {
             stack.push(node);
         }
         return root;
+    }
+
+    public static Memoryssa parseMemoryssa(String input, ModuleIR module) {
+        List<String> moduleLines = module.getModuleText();
+        String[] memoryssaLines = input.split("\n");
+
+        Map<Integer, String> lineToMemoryssaString = new HashMap<>();
+        Map<String, Integer> accessToLine = new HashMap<>();
+
+        int moduleLine = 0;
+        int memoryssaLine = 0;
+        String currentFunction = "";
+
+        final String newFunction = "MemorySSA function: ";
+
+        while (memoryssaLine < memoryssaLines.length) {
+            if (memoryssaLines[memoryssaLine].startsWith(newFunction)) {
+                currentFunction = memoryssaLines[memoryssaLine].substring(newFunction.length()).strip();
+                do {
+                    memoryssaLine += 1;
+                } while (!memoryssaLines[memoryssaLine].startsWith("define "));
+                memoryssaLine += 1;
+
+                continue;
+            }
+
+            String memoryssaLineString = memoryssaLines[memoryssaLine].strip();
+            StringBuilder memoryssaForLine = new StringBuilder();
+
+            while (memoryssaLineString.startsWith(";")) {
+                memoryssaForLine.append(memoryssaLineString.substring(1).strip());
+                memoryssaForLine.append('\n');
+                
+                memoryssaLine += 1;
+                memoryssaLineString = memoryssaLines[memoryssaLine].strip();
+            }
+
+            String firstWord = memoryssaLineString.split(" ")[0];
+            while (!moduleLines.get(moduleLine).startsWith(firstWord)) {
+                moduleLine += 1;
+            }
+
+            lineToMemoryssaString.put(moduleLine + 1, memoryssaForLine.toString());
+            memoryssaLine += 1;
+            moduleLine += 1;
+        }
+
+        return new Memoryssa(lineToMemoryssaString, accessToLine);
     }
 }

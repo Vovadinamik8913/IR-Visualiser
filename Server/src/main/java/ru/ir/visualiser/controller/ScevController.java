@@ -1,18 +1,20 @@
 package ru.ir.visualiser.controller;
 
 import java.io.IOException;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import ru.ir.visualiser.model.Ir;
 import ru.ir.visualiser.model.analysis.Scev;
 import ru.ir.visualiser.service.IrService;
-import ru.ir.visualiser.service.ScevService;
+import ru.ir.visualiser.service.AnalysisService;
 
 /**
  * Controller for scev analysis.
@@ -23,7 +25,7 @@ import ru.ir.visualiser.service.ScevService;
 public class ScevController {
 
     private final IrService irService;
-    private final ScevService scevService;
+    private final AnalysisService analysisService;
 
     /**
      * Get text that should show up by clicking on line.
@@ -47,7 +49,7 @@ public class ScevController {
             return null;
         }
 
-        Scev scev = scevService.get(ir, opt);
+        Scev scev = analysisService.getScev(ir, opt);
         String res = scev.parsedLine(line).orElse("No scev for line " + line);
 
         return res;
@@ -77,7 +79,7 @@ public class ScevController {
             return null;
         }
 
-        Scev scev = scevService.get(ir, opt);
+        Scev scev = analysisService.getScev(ir, opt);
         String res = scev.loopCount(function, block).orElse("No loop count for " + function + ", " + block);
 
         return res;

@@ -1,18 +1,20 @@
 package ru.ir.visualiser.controller;
 
 import java.io.IOException;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import ru.ir.visualiser.model.Ir;
-import ru.ir.visualiser.model.analysis.Scev;
+import ru.ir.visualiser.model.analysis.Memoryssa;
 import ru.ir.visualiser.service.IrService;
-import ru.ir.visualiser.service.ScevService;
+import ru.ir.visualiser.service.AnalysisService;
 
 /**
  * Controller for scev analysis.
@@ -23,7 +25,7 @@ import ru.ir.visualiser.service.ScevService;
 public class MemoryssaController {
 
     private final IrService irService;
-    private final ScevService scevService;
+    private final AnalysisService analysisService;
 
     /**
      * Get text that should show up by clicking on line.
@@ -47,39 +49,33 @@ public class MemoryssaController {
             return null;
         }
 
-        Scev scev = scevService.get(ir, opt);
-        String res = scev.parsedLine(line).orElse("No scev for line " + line);
+        Memoryssa memoryssa = analysisService.getMemoryssa(ir, opt);
+        String res = memoryssa.fromLine(line).orElse("No memoryssa for line " + line);
 
         return res;
     }
 
     /**
-     * Get text that should show up when requesting loop count.
-     *
-     * @param id - id of ir in database
-     * @param opt - number of opt
-     * @param function - name of the function
-     * @param block - name of the block
-     * @return text that shuld show up
-     * @throws IOException if couldn`t launch opt
+     * 
      */
-    @Operation(summary = "text that should when requesting loop count")
-    @PostMapping("/get/memoryssa/loop/count")
+    @Operation(summary = "text that should show up by clicking")
+    @PostMapping("/get/memoryssa/of/line")
     @ResponseBody
-    public String scevOfLine(
+    public String memoryssaOfLine(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
         @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
-        @Parameter(description = "Function name") @RequestParam("function") String function,
-        @Parameter(description = "Block name") @RequestParam("block") String block
+        @Parameter(description = "Function name") @RequestParam("functionName") String functionName,
+        @Parameter(description = "Access") @RequestParam("access") int access,
     ) throws IOException {
         Ir ir = irService.get(id);
         if (ir == null) {
             return null;
         }
 
-        Scev scev = scevService.get(ir, opt);
-        String res = scev.loopCount(function, block).orElse("No loop count for " + function + ", " + block);
+        Memoryssa memoryssa = analysisService.getMemoryssa(ir, opt);
+        String res = memoryssa.fromLine(line).orElse("No memoryssa for line " + line);
 
         return res;
     }
+
 }

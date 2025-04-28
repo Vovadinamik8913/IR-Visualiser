@@ -1,6 +1,7 @@
 package ru.ir.visualiser.core.llvm;
 
 import ru.ir.visualiser.model.Ir;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -85,6 +86,14 @@ public class Opt {
         return output.toString();
     }
 
+    public static String printScev(String opt, Ir ir) throws IOException {
+        return print(opt, ir, "scalar-evolution");
+    }
+
+    public static String printMemoryssa(String opt, Ir ir) throws IOException {
+        return print(opt, ir, "memoryssa");
+    }
+
     /**
      * Prints info about loops by starting opt as a process.
      *
@@ -98,21 +107,6 @@ public class Opt {
      */
     public static String printLoops(String opt, Ir ir) throws IOException {
         return print(opt, ir, "loops");
-    }
-
-    /**
-     * Prints info about scev by starting opt as a process.
-     *
-     * @param opt - path to opt
-     *
-     * @param ir - Ir, which scev info is needed
-     *
-     * @return Scev info from opt
-     *
-     * @throws IOException if couldnt start a process.
-     */
-    public static String printScev(String opt, Ir ir) throws IOException {
-        return print(opt, ir, "scalar-evolution");
     }
 
     /**

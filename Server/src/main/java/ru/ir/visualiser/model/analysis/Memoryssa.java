@@ -27,7 +27,7 @@ public class Memoryssa {
     @MapKeyColumn(name = "memoryssa_line_number")
     @Column(name = "memoryssa_string")
     @Getter
-    private Map<Integer, String> lineToMemoryssaString;
+    private final Map<Integer, String> lineToMemoryssaString;
 
     /**
      * A map from function name and MemoryAccess to the line in the source file.
@@ -37,7 +37,7 @@ public class Memoryssa {
     @MapKeyColumn(name = "memoryssa_access_id")
     @Column(name = "memoryssa_access_line")
     @Getter
-    private Map<String, Integer> accessToLine;
+    private final Map<String, Integer> accessToLine;
 
     @OneToOne @JoinColumn(name = "memoryssa_id")
     @Setter @Getter
@@ -49,57 +49,34 @@ public class Memoryssa {
     }
 
     /**
+     * Returns concatenated function name and access. It sholud be the key for `accessToLine`.
+     *
+     * @param functionName function name
+     * @param access access
+     * @return concatenated function name and access
+     */
+    public String concatNameAndAccess(String functionName, int access) {
+        return functionName + ":" + access;
+    }
+
+    /**
      * Returns text in the format in which it should show up.
      *
      * @param line line in the .ll file
      * @return text that should show up in the box or empty if no text should show up
      */
-    public Optional<String> ofLine(int line) {
-        String scevString = lineToScevString.get(line);
-
-        if (scevString == null) {
-            return Optional.empty();
-        }
-
-        StringBuilder str = new StringBuilder();
-
-        int from = 0;
-        String[] statStart = new String[]{"U:", "S:", "Exits:", "LoopDispositions:"};
-
-        for (int i = 0; i <= scevString.length(); i++) {
-            for (String ss : statStart) {
-                if (ss.length() > i - from) {
-                    continue;
-                }
-
-                int upto = i - ss.length();
-                if (scevString.substring(upto, i).equals(ss)) {
-                    int uptoWithoutWhitespace = upto;
-                    while (uptoWithoutWhitespace > from && Character.isWhitespace(scevString.charAt(uptoWithoutWhitespace - 1))) {
-                        uptoWithoutWhitespace--;
-                    }
-
-                    str.append(scevString, from, uptoWithoutWhitespace);
-                    str.append("\n");
-                    from = upto;
-                    break;
-                }
-            }
-        }
-
-        str.append(scevString, from, scevString.length());
-
-        return Optional.of(str.toString());
+    public Optional<String> fromLine(int line) {
+        String val = lineToMemoryssaString.get(line);
+        return Optional.ofNullable(val);
     }
 
     /**
-     * Returns the loop count string for the given block.
-     * 
-     * @param loopBlock the loop block
-     * @return the loop count string
+     * Returns the line in the source file that corresponds to the given MemoryAccess.
      */
-    public Optional<String> loopCount(String function, String block) {
-        String loopBlock = function + ":" + block;
-        return Optional.ofNullable(loopCount.get(loopBlock));
+    public Optional<Integer> fromAccess(String functionName, int access) {
+        String key = concatNameAndAccess(functionName, access);
+        Integer val = accessToLine.get(key);
+        return Optional.ofNullable(val);
     }
+
 }
