@@ -425,37 +425,52 @@ public class Parser {
 
         final String newFunction = "MemorySSA function: ";
 
-        while (memoryssaLine < memoryssaLines.length) {
-            if (memoryssaLines[memoryssaLine].startsWith(newFunction)) {
-                currentFunction = memoryssaLines[memoryssaLine].substring(newFunction.length()).strip();
-                do {
-                    memoryssaLine += 1;
-                } while (!memoryssaLines[memoryssaLine].startsWith("define "));
-                memoryssaLine += 1;
+        // while (memoryssaLine < memoryssaLines.length) {
+        //     if (memoryssaLines[memoryssaLine].startsWith(newFunction)) {
+        //         currentFunction = memoryssaLines[memoryssaLine].substring(newFunction.length()).strip();
+        //         do {
+        //             memoryssaLine += 1;
+        //         } while (!memoryssaLines[memoryssaLine].startsWith("define "));
+        //         memoryssaLine += 1;
 
-                continue;
-            }
+        //         continue;
+        //     }
 
-            String memoryssaLineString = memoryssaLines[memoryssaLine].strip();
-            StringBuilder memoryssaForLine = new StringBuilder();
+        //     String memoryssaLineString = memoryssaLines[memoryssaLine].strip();
+        //     StringBuilder memoryssaForLine = new StringBuilder();
 
-            while (memoryssaLineString.startsWith(";")) {
-                memoryssaForLine.append(memoryssaLineString.substring(1).strip());
-                memoryssaForLine.append('\n');
+        //     List<String> accesses = new ArrayList<>();
+
+        //     while (memoryssaLineString.startsWith(";")) {
+        //         String substring = memoryssaLineString.substring(1).strip();
+        //         int index = substring.indexOf(' ');
+
+        //         if (index != -1 && substring.startsWith(" = ", index)) {
+        //             int access = Integer.parseInt(substring.substring(0, index));
+        //             String key = Memoryssa.concatNameAndAccess(currentFunction, access);
+        //             accesses.add(key);
+        //         }
+
+        //         memoryssaForLine.append('\n');
                 
-                memoryssaLine += 1;
-                memoryssaLineString = memoryssaLines[memoryssaLine].strip();
-            }
+        //         memoryssaLine += 1;
+        //         memoryssaLineString = memoryssaLines[memoryssaLine].strip();
+        //     }
 
-            String firstWord = memoryssaLineString.split(" ")[0];
-            while (!moduleLines.get(moduleLine).startsWith(firstWord)) {
-                moduleLine += 1;
-            }
+        //     String firstWord = memoryssaLineString.split(" ")[0];
+        //     if (!moduleLines.get(moduleLine).startsWith(firstWord)) {
+        //         moduleLine += 1;
+        //         continue;
+        //     }
 
-            lineToMemoryssaString.put(moduleLine + 1, memoryssaForLine.toString());
-            memoryssaLine += 1;
-            moduleLine += 1;
-        }
+        //     lineToMemoryssaString.put(moduleLine + 1, memoryssaForLine.toString());
+        //     for (String access : accesses) {
+        //         accessToLine.put(access, moduleLine + 1);
+        //     }
+
+        //     memoryssaLine += 1;
+        //     moduleLine += 1;
+        // }
 
         return new Memoryssa(lineToMemoryssaString, accessToLine);
     }

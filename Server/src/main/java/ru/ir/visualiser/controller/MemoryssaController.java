@@ -1,7 +1,9 @@
 package ru.ir.visualiser.controller;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,43 +41,47 @@ public class MemoryssaController {
     @Operation(summary = "text that should show up by clicking")
     @PostMapping("/get/memoryssa/of/line")
     @ResponseBody
-    public String memoryssaOfLine(
+    public ResponseEntity<String> memoryssaOfLine(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
         @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
         @Parameter(description = "Line number") @RequestParam("line") int line
     ) throws IOException {
         Ir ir = irService.get(id);
         if (ir == null) {
-            return null;
+            return ResponseEntity.badRequest().build();
         }
 
         Memoryssa memoryssa = analysisService.getMemoryssa(ir, opt);
         String res = memoryssa.fromLine(line).orElse("No memoryssa for line " + line);
 
-        return res;
+        return ResponseEntity.ok(res);
     }
 
     /**
      * 
      */
     @Operation(summary = "text that should show up by clicking")
-    @PostMapping("/get/memoryssa/of/line")
+    @PostMapping("/get/memoryssa/of/access")
     @ResponseBody
-    public String memoryssaOfLine(
+    public ResponseEntity<Integer> memoryssaOfAccess(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
         @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
         @Parameter(description = "Function name") @RequestParam("functionName") String functionName,
-        @Parameter(description = "Access") @RequestParam("access") int access,
+        @Parameter(description = "Access") @RequestParam("access") int access
     ) throws IOException {
         Ir ir = irService.get(id);
         if (ir == null) {
-            return null;
+            return ResponseEntity.badRequest().build();
         }
 
         Memoryssa memoryssa = analysisService.getMemoryssa(ir, opt);
-        String res = memoryssa.fromLine(line).orElse("No memoryssa for line " + line);
+        Optional<Integer> line = memoryssa.fromAccess(functionName, access);
 
-        return res;
+        if (line.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        } else {
+            return ResponseEntity.ok(line.get());
+        }
     }
 
 }

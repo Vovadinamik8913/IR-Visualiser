@@ -27,7 +27,7 @@ public class Memoryssa {
     @MapKeyColumn(name = "memoryssa_line_number")
     @Column(name = "memoryssa_string")
     @Getter
-    private final Map<Integer, String> lineToMemoryssaString;
+    private Map<Integer, String> lineToMemoryssaString;
 
     /**
      * A map from function name and MemoryAccess to the line in the source file.
@@ -37,7 +37,7 @@ public class Memoryssa {
     @MapKeyColumn(name = "memoryssa_access_id")
     @Column(name = "memoryssa_access_line")
     @Getter
-    private final Map<String, Integer> accessToLine;
+    private Map<String, Integer> accessToLine;
 
     @OneToOne @JoinColumn(name = "memoryssa_id")
     @Setter @Getter
@@ -55,7 +55,7 @@ public class Memoryssa {
      * @param access access
      * @return concatenated function name and access
      */
-    public String concatNameAndAccess(String functionName, int access) {
+    public static String concatNameAndAccess(String functionName, int access) {
         return functionName + ":" + access;
     }
 

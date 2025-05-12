@@ -15,6 +15,7 @@ import ru.ir.visualiser.config.Config;
 import ru.ir.visualiser.model.analysis.Memoryssa;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.repository.ModuleRepository;
+import ru.ir.visualiser.repository.MemoryssaRepository;
 
 /**
  * Request info about scev analysis for the given ir.
