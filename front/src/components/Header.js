@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Upload from './Upload';
 import OptTree from './OptTree';
+import DomTree from './DomTree';
 import './styles/Header.css';
 
 const Header = ({
@@ -8,12 +9,15 @@ const Header = ({
   onBuildByFileRequest, 
   onBuildByPathRequest, 
   onAnalysChange,
-  onSelect
+  onTreeSelect,
+  onDomTreeSelect,
+  onDomTreeLoad
 }) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [isDropboxOpen, setIsDropboxOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState("Анализы");
     const [isOptTreeOpen, setIsOptTreeOpen] = useState(false);
+    const [isDomTreeOpen, setIsDomTreeOpen] = useState(false);
 
     const handleOpenOverlay = () => {
       setIsOverlayOpen(true);
@@ -39,7 +43,7 @@ const Header = ({
                 <OptTree
                  isOpen={isOptTreeOpen} 
                  onClose={() => setIsOptTreeOpen(false)}
-                 onSelect={onSelect}
+                 onSelect={onTreeSelect}
                  />
               </div>
               <div className="dropdown">
@@ -67,7 +71,18 @@ const Header = ({
             </div>
             
             <h1 className="header-title">IR VISUALIZER</h1>
-            {/* Сам оверлей со вкладками. Показывается только, если isOverlayOpen === true */}
+            <div className="opt-tree">
+                <button onClick={() => setIsDomTreeOpen(true)} className="opt-tree-button">
+                  Дерево доминации
+                </button>
+                <DomTree
+                 isOpen={isDomTreeOpen} 
+                 onClose={() => setIsDomTreeOpen(false)}
+                 onSelect={onDomTreeSelect}
+                 onLoad={onDomTreeLoad}
+                 />
+            </div>
+
             {isOverlayOpen && (
               <Upload
                 onClose={handleCloseOverlay}
