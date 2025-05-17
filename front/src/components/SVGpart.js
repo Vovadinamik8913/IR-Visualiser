@@ -16,9 +16,9 @@ const SVGpart = ({
     onBlockClick,
     listOfLoopBlocks,
     listOfCurLoop,
-    onGetLoopsInfo
+    onGetLoopsInfo,
+    selectedBlock
 }) => {
-
     const [blockTitle, setBlockTitle] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -37,17 +37,13 @@ const SVGpart = ({
 
         if (node) {
             const title = node.querySelector('title')?.textContent || 'Без названия';
-            if(blockTitle === title) {
-                clickCounter = clickCounter + 1 > 3 ? 1 : clickCounter + 1;
-                console.log(clickCounter);
-            } else {
-                clickCounter = 1;
-                console.log(clickCounter);
-            }
+            clickCounter = (blockTitle === title) ? (clickCounter % 3) + 1 : 1;
             setBlockTitle(title);
+
             const textElement = node.querySelector('text');
             const number = textElement?.textContent.trim().replace(':', '') || 'Нет данных';
             console.log("Информация о блоке:", blockTitle);
+
             if (selectedOption === "LoopsInfo" || selectedOption === "Scev") {
                 if(event.ctrlKey) {
                     setPopupVisible(true);
@@ -73,7 +69,7 @@ const SVGpart = ({
                     });
                 }
 
-                if (polygon && clickCounter===2) {
+                if (polygon && clickCounter===1) {
                     polygon.attr({
                         fill: 'rgba(241,45,80,0.66)',
                         stroke: '#000',
@@ -86,10 +82,8 @@ const SVGpart = ({
             }
 
         } else if (edge) {
-            const blockFrom = edge.querySelector('title')?.textContent.split("->")[0] || 'NO NAME';
-            console.log("Ребро из блока:", blockFrom);
-            const blockTo = edge.querySelector('title')?.textContent.split('->')[1] || 'NO NAME';
-            console.log("в блок:", blockTo);
+            const [blockFrom, blockTo] = edge.querySelector('title')?.textContent.split('->') || ['NO NAME', 'NO NAME'];
+            console.log("Ребро из блока:", blockFrom, "в блок:", blockTo);
             setPopupVisible(false);
         } else {
             console.log("Клик вне блоков и рёбер");
@@ -117,14 +111,8 @@ const SVGpart = ({
 
             s.append(g);
 
-            const children = Array.from(svgEl.childNodes);
-            children.forEach((child) => {
-                if (
-                    child.tagName !== 'defs' &&
-                    child !== g.node
-                ) {
-                    g.append(child);
-                }
+            Array.from(svgEl.childNodes).forEach(child => {
+                if (child.tagName !== 'defs' && child !== g.node) g.append(child);
             });
         }
 
@@ -207,7 +195,7 @@ const SVGpart = ({
                 }
             });
         }
-    }, [listOfCurLoop]);
+    }, [selectedOption, listOfCurLoop]);
 
     useEffect(() => {
         if (selectedOption === 'LoopsInfo' && listOfLoopBlocks.length > 0) {
@@ -229,7 +217,46 @@ const SVGpart = ({
                 }
             });
         }
-    }, [svgContent, listOfLoopBlocks]);
+    }, [selectedOption, svgContent, listOfLoopBlocks]);
+
+    useEffect(() => {
+        if (!selectedBlock || !svgContainerRef.current) return;
+
+        const svgEl = svgContainerRef.current.querySelector('svg');
+        if (!svgEl) return;
+
+        const s = Snap(svgEl);
+        const zoomLayer = s.select('g#zoom-layer');
+        if (!zoomLayer) return;
+
+        const allNodes = s.selectAll('.node');
+        let targetNode = null;
+
+        allNodes.forEach(node => {
+            const text = node.select('text');
+            const number = text?.node.textContent.trim().replace(':', '');
+            if (number === selectedBlock.toString()) {
+                targetNode = node;
+            }
+        });
+
+        if (targetNode) {
+            const bbox = targetNode.getBBox();
+            const svgRect = svgEl.getBoundingClientRect();
+
+            const centerX = svgRect.width / 2;
+            const centerY = svgRect.height / 2;
+
+            const translateX = centerX - (bbox.x + bbox.width / 2) * viewTransform.current.scale;
+            const translateY = centerY - (bbox.y + bbox.height / 2) * viewTransform.current.scale;
+
+            viewTransform.current.translateX = translateX;
+            viewTransform.current.translateY = translateY;
+
+            zoomLayer.transform(`translate(${translateX}, ${translateY}) scale(${viewTransform.current.scale})`);
+        }
+    }, [selectedBlock]);
+
 
     return (
         <div className="window">

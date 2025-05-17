@@ -45,6 +45,5 @@ export const getSvgByLine = async (irId, index) => {
         body: lineFormData,
     });
     if(!response.ok) throw new Error("/fromline/get/svg bad request");
-    const info = await response.json();
-    return info;
+    return await response.json();
 }
