@@ -78,7 +78,7 @@ public class LoopsController {
         for (LoopIR loop : loops) {
             for (LoopBlock block : loop.getBlocks()) {
                 BlockIR nowBlock = block.getBlock();
-                sb.append(nowBlock.getLabel()).append("\n");
+                sb.append(nowBlock.getLabel().substring(1)).append("\n");
             }
         }
         return sb.toString();

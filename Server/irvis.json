@@ -1,4 +1,4 @@
 {
-  "optsPath" : ["/home/abrikosjr/Downloads/LLVM-19.1.0-Linux-X64/bin/opt", "opt"],
-  "workPath":"/home/abrikosjr/Desktop/pak/test/work"
+  "optsPath" : ["opt", "/home/abrikosjr/Downloads/LLVM-19.1.0-Linux-X64/bin/opt"],
+  "workPath":"/home/abrikosjr/Desktop/pak/work"
 }

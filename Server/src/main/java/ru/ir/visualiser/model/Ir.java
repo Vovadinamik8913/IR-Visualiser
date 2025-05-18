@@ -51,7 +51,16 @@ public class Ir {
         this.svgPath = irPath + File.separator + "svg_files";
         this.dotPath = irPath + File.separator + "dot_files";
         this.flags = flags;
-        this.filename = flags + ".ll";
+        if (flags.contains("-passes")) {
+            String[] split = flags.split(" ");
+            for (String s : split) {
+                if (s.contains("-passes")) {
+                    this.flags = s;
+                    break;
+                }
+            }
+        }
+        this.filename = this.flags + ".ll";
         this.children = new ArrayList<>();
     }
 }
