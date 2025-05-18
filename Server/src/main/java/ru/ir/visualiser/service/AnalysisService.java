@@ -18,7 +18,7 @@ import ru.ir.visualiser.repository.ModuleRepository;
 import ru.ir.visualiser.repository.MemoryssaRepository;
 
 /**
- * Request info about scev analysis for the given ir.
+ * Request info about analysis for the given ir.
  */
 @Service
 @RequiredArgsConstructor

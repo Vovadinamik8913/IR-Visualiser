@@ -2,14 +2,12 @@ package ru.ir.visualiser.controller;
 
 import java.io.IOException;
 import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,7 @@ import ru.ir.visualiser.service.IrService;
 import ru.ir.visualiser.service.AnalysisService;
 
 /**
- * Controller for scev analysis.
+ * Controller for memoryssa analysis.
  */
 @RestController
 @RequiredArgsConstructor
@@ -58,7 +56,14 @@ public class MemoryssaController {
     }
 
     /**
-     * 
+     * Get text that should show up by clicking on analysis number.
+     *
+     * @param id - id of ir in database
+     * @param opt - number of opt
+     * @param functionName - name of a function currently being worked on
+     * @param access - access to jump to
+     * @return line to jump to
+     * @throws IOException if couldn`t launch opt
      */
     @Operation(summary = "text that should show up by clicking")
     @PostMapping("/get/memoryssa/of/access")
