@@ -150,7 +150,7 @@ function App() {
                 setLoopInfo("Ошибка загрузки данных");
             }
             try {
-                const svgText = await getNestedLoops(irId, selectedFunction, blockNumber, howManyClicks);
+                const svgText = await getNestedLoops(irId, selectedFunction, "%" + blockNumber, howManyClicks);
                 const nums = svgText.split('\n')
                     .map(s => s.trim())
                     .filter(s => s !== '');
