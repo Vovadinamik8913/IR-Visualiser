@@ -56,7 +56,7 @@ public class ParserTest {
         FunctionIR function = functions.iterator().next();
 
         assertEquals(21, functions.size());
-        assertEquals(144, function.getStartLine());
+        assertEquals(145, function.getStartLine());
         assertEquals(167,function.getEndLine());
         assertEquals(11, dots.size());
         assertEquals(747, moduleIR.getModuleText().size());
@@ -67,13 +67,13 @@ public class ParserTest {
         URI path = getClass().getClassLoader().getResource("dot/test1.dot").toURI();
         String content = Files.readString(Path.of(path));
         Dot dot = Parser.parseDot(content);
-        assertEquals("Node0x55cdef5b4ad0", dot.getSvgIdByLabel("2"));
-        assertEquals("Node0x55cdef5b5320", dot.getSvgIdByLabel("14"));
-        assertEquals("Node0x55cdef5b5380", dot.getSvgIdByLabel("20"));
-        assertEquals("Node0x55cdef5b5900", dot.getSvgIdByLabel("21"));
-        assertEquals("Node0x55cdef5b5d60", dot.getSvgIdByLabel("28"));
-        assertEquals("Node0x55cdef5b5dc0", dot.getSvgIdByLabel("32"));
-        assertEquals("Node0x55cdef5b5830", dot.getSvgIdByLabel("44"));
+        assertEquals("Node0x55cdef5b4ad0", dot.getSvgIdByLabel("%2"));
+        assertEquals("Node0x55cdef5b5320", dot.getSvgIdByLabel("%14"));
+        assertEquals("Node0x55cdef5b5380", dot.getSvgIdByLabel("%20"));
+        assertEquals("Node0x55cdef5b5900", dot.getSvgIdByLabel("%21"));
+        assertEquals("Node0x55cdef5b5d60", dot.getSvgIdByLabel("%28"));
+        assertEquals("Node0x55cdef5b5dc0", dot.getSvgIdByLabel("%32"));
+        assertEquals("Node0x55cdef5b5830", dot.getSvgIdByLabel("%44"));
     }
 
     @Test
