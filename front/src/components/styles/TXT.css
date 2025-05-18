@@ -1,21 +1,13 @@
 .info{
-    padding: 0px;  
+    padding: 0;
     display: flex;
     align-items: center;
     color: #fff;
 }
 
-.line-number {
-    color: #888;
-    margin-right: 10px;
-    user-select: none;
-    cursor: default;
-}
-
 .flex-grow {
     flex-grow: 1;
 }
-
 
 .text-input {
     border: 1px solid #555;
@@ -34,6 +26,7 @@
     border: 2px dashed #ccc;
     color: #888;
     font-size: 16px;
+    margin-top: 100px;
 }
 
 .popup-info {
@@ -51,5 +44,5 @@
 
 .txt-container {
     margin-top: 10px;
-    height: 95%;
+    height: 627px;
 }

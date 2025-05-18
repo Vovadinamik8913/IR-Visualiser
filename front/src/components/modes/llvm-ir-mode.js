@@ -362,4 +362,13 @@ export const handleLLVMIRMount = (monaco) => {
         ],
     },
     });
+    monaco.languages.registerHoverProvider('LLVM IR', {
+        provideHover: function (model, position) {
+            return {
+                contents: [
+                    { value: `Для получения информации по анализу или СFG зажмите **ctrl** и кликните на нужную строку` }
+                ]
+            };
+        }
+    });
 };

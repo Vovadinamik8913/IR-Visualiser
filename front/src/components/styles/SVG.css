@@ -7,6 +7,31 @@
     cursor: pointer;
 }
 
+
+.dropdown-menu {
+    position: absolute;
+    top: 80%;
+    left: 25%;
+    width: 150px;
+    background: white;
+    border-radius: 4px;
+    margin-top: 5px;
+    color: black;
+    font-size: 16px;
+    border: 2px solid #0b2405;
+    z-index: 50;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 2px solid #0b2405;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
 .svg-container {
     height: 750px;
     width: 730px;
@@ -26,7 +51,7 @@
     border: 2px dashed #ccc;
     color: #888;
     font-size: 16px;
-    margin-top: 15px;
+    margin-top: 139px;
 }
 
 .popup-info {

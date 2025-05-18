@@ -62,19 +62,15 @@ const SVGpart = ({
             if(selectedOption !== 'LoopsInfo') {
                 if (lastHighlighted.current) {
                     lastHighlighted.current.attr({
-                        fill: '#b70d28',
-                        stroke: '#b70d28',
-                        'stroke-width': 1,
-                        'fill-opacity': 0.44
+                        stroke: '#000',
+                        'stroke-width': 0.1,
                     });
                 }
 
                 if (polygon && clickCounter===1) {
                     polygon.attr({
-                        fill: 'rgba(241,45,80,0.66)',
-                        stroke: '#000',
-                        'stroke-width': 2,
-                        'fill-opacity': 1
+                        stroke: '#b222d2',
+                        'stroke-width': 5,
                     });
 
                     lastHighlighted.current = polygon;

@@ -22,11 +22,11 @@ function App() {
     const [selectedOption, setSelectedOption] = useState("Анализы");
     const [loopInfo, setLoopInfo] = useState('');
     const [scevInfo, setScevInfo] = useState('');
+    const [compilerFlags, setCompilerFlags] =  useState(''); 
+    const [generatingFlags, setGeneratingFlags] =  useState('');
+
     const irIdRef = useRef(irId);
     const optionRef = useRef(selectedOption);
-    const [compilerFlags, setCompilerFlags] =  useState(''); 
-    const [generatingFlags, setGeneratingFlags] =  useState(''); 
-    const [howManyClicks, setHowManyClicks] = useState(0);
 
     useEffect(() => {
       document.body.style.overflow = 'hidden';
@@ -192,6 +192,9 @@ function App() {
     
             const functionName = info[0]; 
             setSelectedFunction(functionName);
+
+            const blockLabel = info[2];
+            console.log(blockLabel, index);
     
             try {
                 const svgText = await getSvgByFunction(irIdRef.current, functionName);

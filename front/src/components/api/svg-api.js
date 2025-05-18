@@ -39,7 +39,7 @@ export const getSvgByFunction = async (irId, funcName) => {
 export const getSvgByLine = async (irId, index) => {
     const lineFormData = new FormData();
     lineFormData.append("file", irId);
-    lineFormData.append("line", index - 1);
+    lineFormData.append("line", index);
     const response = await fetch('/fromline/get/svg', {
         method: 'POST',
         body: lineFormData,

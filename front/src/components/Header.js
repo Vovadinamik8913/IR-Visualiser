@@ -55,14 +55,26 @@ const Header = ({
                     <div>
                       <div className="dropdown-item" onClick={() => handleSelect("Normal")}>Normal</div>
                       <div className="dropdown-item" onClick={() => handleSelect("LoopsInfo")}>LoopsInfo</div>
-                      <div className="dropdown-item" onClick={() => handleSelect("DomTree")}>DomTree</div>
                       <div className="dropdown-item" onClick={() => handleSelect("Scev")}>Scev</div>
-                      <div className="dropdown-item" onClick={() => handleSelect("Опция 4")}>Опция 4</div>
+                      <div className="dropdown-item" onClick={() => handleSelect("Memoryssa")}>Memoryssa</div>
+                        <div className='dropdown-item'
+                             onClick={() => {
+                                 setIsDomTreeOpen(true);
+                                 handleSelect("DomTree")}}>
+                            DomTree
+                        </div>
                     </div>
                   </div>
                 )}
               </div> 
             </div>
+
+            <DomTree
+                isOpen={isDomTreeOpen}
+                onClose={() => setIsDomTreeOpen(false)}
+                onSelect={onDomTreeSelect}
+                onLoad={onDomTreeLoad}
+            />
 
             <div className="header-center">
                 <button onClick={handleOpenOverlay} className="open-upload-button">
@@ -71,17 +83,6 @@ const Header = ({
             </div>
             
             <h1 className="header-title">IR VISUALIZER</h1>
-            <div className="opt-tree">
-                <button onClick={() => setIsDomTreeOpen(true)} className="opt-tree-button">
-                  Дерево доминации
-                </button>
-                <DomTree
-                 isOpen={isDomTreeOpen} 
-                 onClose={() => setIsDomTreeOpen(false)}
-                 onSelect={onDomTreeSelect}
-                 onLoad={onDomTreeLoad}
-                 />
-            </div>
 
             {isOverlayOpen && (
               <Upload
