@@ -30,7 +30,7 @@ export const getNestedLoops= async (irId, funcName, svgBlock, howManyClicks) => 
     loopInfoFormData.append("file", irId);
     loopInfoFormData.append("opt", 0);
     loopInfoFormData.append("function", funcName);
-    loopInfoFormData.append("block", svgBlock);
+    loopInfoFormData.append("block", '%' + svgBlock);
     loopInfoFormData.append("click", howManyClicks);
     const response = await fetch('/loops/get/loop/svg/by/click', {
         method: 'POST',

@@ -153,8 +153,7 @@ function App() {
                 const svgText = await getNestedLoops(irId, selectedFunction, blockNumber, howManyClicks);
                 const nums = svgText.split('\n')
                     .map(s => s.trim())
-                    .filter(s => s !== '')
-                    .map(Number);
+                    .filter(s => s !== '');
                 setListOfCurLoop(nums);
                 console.log(nums, howManyClicks);
             } catch (error) {

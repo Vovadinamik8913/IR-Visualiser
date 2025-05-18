@@ -67,7 +67,7 @@ const SVGpart = ({
                     });
                 }
 
-                if (polygon && clickCounter===1) {
+                if (polygon && clickCounter !== 2) {
                     polygon.attr({
                         stroke: '#b222d2',
                         'stroke-width': 5,
@@ -164,31 +164,35 @@ const SVGpart = ({
 
     useEffect(() => {
         if (selectedOption === 'LoopsInfo' && listOfCurLoop.length > 0) {
-            const highlightBlocks = listOfCurLoop;
             const svg = Snap(svgContainerRef.current.querySelector('svg'));
 
-            svg.selectAll('.node').forEach(node => {
-                const polygon = node.select('polygon');
-                polygon?.attr({
-                    fill: '#b70d28',
-                    'fill-opacity': 0.44
-                })
-            })
-
-            console.log(highlightBlocks);
             svg.selectAll('.node').forEach(node => {
                 const textEl = node.select('text');
                 const blockNumber = textEl?.node.textContent.trim().replace(':', '');
 
-                if (highlightBlocks.includes(parseInt(blockNumber))) {
+                const polygon = node.select('polygon');
+                polygon?.attr({
+                    stroke: '#b70d28',
+                    'stroke-width': 0.44
+                })
+
+                if (listOfLoopBlocks.includes(parseInt(blockNumber))) {
                     const polygon = node.select('polygon');
                     polygon?.attr({
-                        fill: 'yellow',
                         stroke: 'blue',
                         'stroke-width': 4,
-                        'fill-opacity': 0.5
                     });
                 }
+
+                if (listOfCurLoop.includes('%'+blockNumber)) {
+                    const polygon = node.select('polygon');
+                    polygon?.attr({
+                        stroke: 'yellow',
+                        'stroke-width': 8,
+                    });
+                }
+
+
             });
         }
     }, [selectedOption, listOfCurLoop]);
@@ -197,14 +201,13 @@ const SVGpart = ({
         if (selectedOption === 'LoopsInfo' && listOfLoopBlocks.length > 0) {
             if (!svgContent || !svgContainerRef.current) return;
 
-            const highlightBlocks = listOfLoopBlocks;
             const svg = Snap(svgContainerRef.current.querySelector('svg'));
 
             svg.selectAll('.node').forEach(node => {
                 const textEl = node.select('text');
                 const blockNumber = textEl?.node.textContent.trim().replace(':', '');
 
-                if (highlightBlocks.includes(parseInt(blockNumber))) {
+                if (listOfLoopBlocks.includes(parseInt(blockNumber))) {
                     const polygon = node.select('polygon');
                     polygon?.attr({
                         stroke: 'blue',
