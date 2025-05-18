@@ -29,7 +29,7 @@ public class LineToSvgController {
      * @param line - line number in .ll file
      * @param id - id of the ir
      *
-     * @return - Array of two elements. String[0] - name of the function, String[1] - svg id
+     * @return - Array of three elements. String[0] - name of the function, String[1] - svg id, String[2] - label of a block
      */
     @Operation(summary = "send function info corresponding to a line")
     @PostMapping(value = "/get/svg")
@@ -71,7 +71,7 @@ public class LineToSvgController {
         if(dot != null) {
             svgId = dot.getSvgIdByLabel(block.getLabel());
         }
-        return ResponseEntity.ok(new String[]{function.getFunctionName(), svgId});
+        return ResponseEntity.ok(new String[]{function.getFunctionName(), svgId, block.getLabel()});
     }
 
     /**
