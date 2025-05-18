@@ -274,5 +274,7 @@ Unpredictable symbolic max backedge-taken count. """), scev.loopCount("main", "%
 
         Memoryssa memoryssa = Parser.parseMemoryssa(parserInput, moduleIR);
 
+        assertEquals(289, memoryssa.getLineToMemoryssaString().size());
+        assertEquals(117, memoryssa.getAccessToLine().size());
     }
 }

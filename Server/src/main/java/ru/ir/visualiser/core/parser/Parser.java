@@ -423,54 +423,51 @@ public class Parser {
         int memoryssaLine = 0;
         String currentFunction = "";
 
-        final String newFunction = "MemorySSA function: ";
+        final String newFunction = "MemorySSA for function: ";
 
-        // while (memoryssaLine < memoryssaLines.length) {
-        //     if (memoryssaLines[memoryssaLine].startsWith(newFunction)) {
-        //         currentFunction = memoryssaLines[memoryssaLine].substring(newFunction.length()).strip();
-        //         do {
-        //             memoryssaLine += 1;
-        //         } while (!memoryssaLines[memoryssaLine].startsWith("define "));
-        //         memoryssaLine += 1;
+        StringBuilder commentForLine = new StringBuilder();
+        List<String> accessesForLine = new ArrayList<>();
 
-        //         continue;
-        //     }
+        while (memoryssaLine < memoryssaLines.length) {
+            String memoryssaLineString = memoryssaLines[memoryssaLine].strip();
 
-        //     String memoryssaLineString = memoryssaLines[memoryssaLine].strip();
-        //     StringBuilder memoryssaForLine = new StringBuilder();
+            if (memoryssaLineString.startsWith(";")) {
+                if (!memoryssaLineString.startsWith("; Function Attrs")) {
+                    String substring = memoryssaLineString.substring(1).strip();
+                    int index = substring.indexOf(' ');
 
-        //     List<String> accesses = new ArrayList<>();
+                    if (index != -1 && substring.startsWith(" = ", index)) {
+                        int access = Integer.parseInt(substring.substring(0, index));
+                        String key = Memoryssa.concatNameAndAccess(currentFunction, access);
+                        accessesForLine.add(key);
+                    }
 
-        //     while (memoryssaLineString.startsWith(";")) {
-        //         String substring = memoryssaLineString.substring(1).strip();
-        //         int index = substring.indexOf(' ');
+                    commentForLine.append(substring);
+                    commentForLine.append('\n');
+                }
+            } else {
+                if (memoryssaLineString.startsWith(newFunction)) {
+                    currentFunction = memoryssaLines[memoryssaLine].substring(newFunction.length()).strip();
+                } else {
+                    String firstWord = memoryssaLineString.split(" ")[0];
+                    while (moduleLines.size() < moduleLine && !moduleLines.get(moduleLine).startsWith(firstWord)) {
+                        moduleLine += 1;
+                    }
+                    moduleLine += 1;
+                    if (commentForLine.length() != 0) {
+                        lineToMemoryssaString.put(moduleLine, commentForLine.toString());
+                    }
+                    for (String access : accessesForLine) {
+                        accessToLine.put(access, moduleLine);
+                    }
+                }
 
-        //         if (index != -1 && substring.startsWith(" = ", index)) {
-        //             int access = Integer.parseInt(substring.substring(0, index));
-        //             String key = Memoryssa.concatNameAndAccess(currentFunction, access);
-        //             accesses.add(key);
-        //         }
+                commentForLine.setLength(0);
+                accessesForLine.clear();
+            }
 
-        //         memoryssaForLine.append('\n');
-                
-        //         memoryssaLine += 1;
-        //         memoryssaLineString = memoryssaLines[memoryssaLine].strip();
-        //     }
-
-        //     String firstWord = memoryssaLineString.split(" ")[0];
-        //     if (!moduleLines.get(moduleLine).startsWith(firstWord)) {
-        //         moduleLine += 1;
-        //         continue;
-        //     }
-
-        //     lineToMemoryssaString.put(moduleLine + 1, memoryssaForLine.toString());
-        //     for (String access : accesses) {
-        //         accessToLine.put(access, moduleLine + 1);
-        //     }
-
-        //     memoryssaLine += 1;
-        //     moduleLine += 1;
-        // }
+            memoryssaLine += 1;
+        }
 
         return new Memoryssa(lineToMemoryssaString, accessToLine);
     }
