@@ -195,7 +195,7 @@ const SVGpart = ({
 
             });
         }
-    }, [selectedOption, listOfCurLoop]);
+    }, [selectedOption, listOfCurLoop, listOfLoopBlocks]);
 
     useEffect(() => {
         if (selectedOption === 'LoopsInfo' && listOfLoopBlocks.length > 0) {
@@ -219,6 +219,7 @@ const SVGpart = ({
     }, [selectedOption, svgContent, listOfLoopBlocks]);
 
     useEffect(() => {
+        console.log(selectedBlock);
         if (!selectedBlock || !svgContainerRef.current) return;
 
         const svgEl = svgContainerRef.current.querySelector('svg');
@@ -266,7 +267,7 @@ const SVGpart = ({
                 onChange={handleDropdownChange}
                 className="dropdown"
                 >
-                <option value="start">Выберите функцию</option>
+                <option value="">Выберите функцию</option>
                 {functions.length > 0 ? (
                     functions.map((func, index) => (
                         <option key={index} value={func}>

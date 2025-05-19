@@ -24,6 +24,7 @@ function App() {
     const [scevInfo, setScevInfo] = useState('');
     const [compilerFlags, setCompilerFlags] =  useState(''); 
     const [generatingFlags, setGeneratingFlags] =  useState('');
+    const [selectedBlock, setSelectedBlock] = useState('');
 
     const irIdRef = useRef(irId);
     const optionRef = useRef(selectedOption);
@@ -122,6 +123,10 @@ function App() {
 
     //получение свг
     const handleGetRequest = async (funcName) => {
+        if(funcName === ''){
+            setSvgContent('');
+            return;
+        }
         try {
             const svgText = await getSvgByFunction(irId, funcName);
             setSvgContent(svgText);
@@ -192,15 +197,10 @@ function App() {
             setSelectedFunction(functionName);
 
             const blockLabel = info[2];
-            console.log(blockLabel, index);
-    
-            try {
-                const svgText = await getSvgByFunction(irIdRef.current, functionName);
-                setSvgContent(svgText);
-            } catch (error) {
-                console.error('Ошибка при загрузке SVG:', error);
-                alert('Ошибка при загрузке SVG');
-            }
+            setSelectedBlock(blockLabel);
+
+            await handleGetRequest(functionName);
+
             console.log(optionRef.current);
             if (optionRef.current === "Scev") {
                 try {
@@ -297,6 +297,7 @@ function App() {
                     listOfLoopBlocks={listOfLoopBlocks}
                     listOfCurLoop={listOfCurLoop}
                     onGetLoopsInfo={handleGetLoopsInfo}
+                    selectedBlock={selectedBlock}
                 />
             </div>
         </div>
