@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Server/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - visualizer
+    volumes:
+      - /home/abrikosjr/Desktop/pak/work:/app/work
+      - ./Server/data:/app/data
+    environment:
+      OPT_PATH: "opt"
+      WORK_PATH: "/app/work"
+      DATASOURCE_URL: "jdbc:sqlite:/app/data/visualiser.db"
+      FRONT_PATH: "http://front:80"
+
+  front:
+    build:
+      context: .
+      dockerfile: front/Dockerfile
+      args:
+        REACT_APP_BACKEND_URL: "http://localhost:8080"
+        REACT_APP_CONTAINER: "true"
+    ports:
+      - "3000:80"
+    networks:
+      - visualizer
+
+networks:
+  visualizer:
+    driver: bridge
