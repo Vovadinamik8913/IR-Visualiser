@@ -176,7 +176,7 @@ const SVGpart = ({
                     'stroke-width': 0.44
                 })
 
-                if (listOfLoopBlocks.includes(parseInt(blockNumber))) {
+                if (listOfLoopBlocks.includes(blockNumber)) {
                     const polygon = node.select('polygon');
                     polygon?.attr({
                         stroke: 'blue',
@@ -184,7 +184,7 @@ const SVGpart = ({
                     });
                 }
 
-                if (listOfCurLoop.includes('%'+blockNumber)) {
+                if (listOfCurLoop.includes('%' + blockNumber)) {
                     const polygon = node.select('polygon');
                     polygon?.attr({
                         stroke: 'yellow',
@@ -207,7 +207,7 @@ const SVGpart = ({
                 const textEl = node.select('text');
                 const blockNumber = textEl?.node.textContent.trim().replace(':', '');
 
-                if (listOfLoopBlocks.includes(parseInt(blockNumber))) {
+                if (listOfLoopBlocks.includes(blockNumber)) {
                     const polygon = node.select('polygon');
                     polygon?.attr({
                         stroke: 'blue',

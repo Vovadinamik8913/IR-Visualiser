@@ -112,8 +112,7 @@ function App() {
             const svgBlockNums = await getSvgWithLoops(irId, funcName);
             const nums = svgBlockNums.split('\n')
                 .map(s => s.trim())
-                .filter(s => s !== '')
-                .map(Number);
+                .filter(s => s !== '');
             setListOfLoopBlocks(nums);
         } catch (error) {
             console.error('Ошибка запроса:', error);
