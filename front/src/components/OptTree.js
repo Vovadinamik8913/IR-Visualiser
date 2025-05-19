@@ -18,6 +18,9 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
   }, [isOpen]);
 
   const loadProjectTree = async (projectId) => {
+    if(projectId === null) {
+      setProjectTree([]);
+    }
     setLoading(true);
     try {
       const treeData = await getTree(projectId);
@@ -65,6 +68,11 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
           <select
             value={selectedProject?.id || ''}
             onChange={(e) => {
+              if (e.target.value === '') {
+                setSelectedProject(null);
+                loadProjectTree(null);
+                return;
+              }
               const project = projects.find(p => p.id === parseInt(e.target.value, 10));
               setSelectedProject(project);
               loadProjectTree(project.id);
