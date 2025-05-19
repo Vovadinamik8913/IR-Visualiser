@@ -1,9 +1,10 @@
 name: CI
 
-# Controls when the workflow will run
 on:
   pull_request:
-    branches: [ "main", "backend", "inwork" ]  
+    branches: [ "main", "backend", "inwork" ]
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
