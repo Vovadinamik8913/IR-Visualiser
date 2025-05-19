@@ -11,7 +11,7 @@ import ru.ir.visualiser.model.analysis.Scev;
 import ru.ir.visualiser.repository.ScevRepository;
 import ru.ir.visualiser.core.parser.Parser;
 import ru.ir.visualiser.core.llvm.Opt;
-import ru.ir.visualiser.config.Config;
+import ru.ir.visualiser.config.LocalConfig;
 import ru.ir.visualiser.model.analysis.Memoryssa;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.repository.ModuleRepository;
@@ -27,23 +27,23 @@ public class AnalysisService {
     private final ScevRepository scevRepository;
     private final MemoryssaRepository memoryssaRepository;
     private final ModuleRepository moduleRepository;
+    private final LocalConfig localConfig;
 
     /**
      * Get cached Scev analysis for given IR or parse and cache it.
      *
      * @param ir - ID of IR to get Scev analysis for.
-     * @param opt - Index of opt to use.
      *
      * @return Scev analysis for given IR.
      */
-    public Scev getScev(Ir ir, int opt) throws IOException {
+    public Scev getScev(Ir ir) throws IOException {
         Optional<Scev> scev = scevRepository.findByIr(ir);
         if (scev.isPresent()) {
             return scev.get();
         }
 
         // TODO: Potential index out of bounds 
-        String optPath = Config.getInstance().getOptsPath()[opt];
+        String optPath = localConfig.getOptPath();
         String input = Opt.printScev(optPath, ir);
         Optional<ModuleIR> module = moduleRepository.findByIr(ir);
 
@@ -61,17 +61,16 @@ public class AnalysisService {
      * Get cached Memoryssa analysis for given IR or parse and cache it.
      *
      * @param ir - ID of IR to get Memoryssa analysis for.
-     * @param opt - Index of opt to use.
      *
      * @return Memoryssa analysis for given IR.
      */    
-    public Memoryssa getMemoryssa(Ir ir, int opt) throws IOException {
+    public Memoryssa getMemoryssa(Ir ir) throws IOException {
         Optional<Memoryssa> memoryssa = memoryssaRepository.findByIr(ir);
         if (memoryssa.isPresent()) {
             return memoryssa.get();
         }
 
-        String optPath = Config.getInstance().getOptsPath()[opt];
+        String optPath = localConfig.getOptPath();
         String input = Opt.printMemoryssa(optPath, ir);
         Optional<ModuleIR> module = moduleRepository.findByIr(ir);
 

@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ir.visualiser.config.Config;
+import ru.ir.visualiser.config.LocalConfig;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.core.llvm.Opt;
 import ru.ir.visualiser.model.Ir;
@@ -28,6 +28,7 @@ import java.util.List;
 public class TreeController {
     private final IrService irService;
     private final ProjectService projectService;
+    private final LocalConfig localConfig;
 
     /** generating new ir.
      * by applying optimizations
@@ -41,7 +42,6 @@ public class TreeController {
     @PostMapping(value = "/add")
     public ResponseEntity<Long> optimizeFile(
             @Parameter(description = "Parent", required = true) @RequestParam("file") Long id,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "Optimization", required = true) @RequestParam("flags") String flags
     ) {
         Ir parent = irService.get(id);
@@ -52,7 +52,7 @@ public class TreeController {
         Ir child = new Ir(parent, flags);
         FileWorker.createPath(child.getDotPath());
         FileWorker.createPath(child.getSvgPath());
-        String optPath = Config.getInstance().getOptsPath()[opt];
+        String optPath = localConfig.getOptPath();
         try {
             Opt.optimizeOpt(optPath, parent, child);
             child = irService.create(child);

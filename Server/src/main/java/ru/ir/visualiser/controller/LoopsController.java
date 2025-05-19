@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.ir.visualiser.config.Config;
+import ru.ir.visualiser.config.LocalConfig;
 import ru.ir.visualiser.model.Ir;
 import ru.ir.visualiser.model.ir.BlockIR;
 import ru.ir.visualiser.model.ir.Dot;
@@ -16,7 +16,7 @@ import ru.ir.visualiser.core.parser.*;
 import ru.ir.visualiser.core.parser.loops.LoopBlock;
 import ru.ir.visualiser.core.parser.loops.LoopIR;
 import ru.ir.visualiser.core.llvm.Opt;
-import java.io.File;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -29,13 +29,12 @@ import java.util.List;
 @RequestMapping("/loops")
 public class LoopsController {
     private final IrService irService;
+    private final LocalConfig localConfig;
 
     /**
      * See operation summary.
      *
      * @param id - id of ir in database
-     *
-     * @param opt - number of opt
      *
      * @param functionName - function name ex. "add"
      *
@@ -48,7 +47,6 @@ public class LoopsController {
     @ResponseBody
     public String highlightedLoops(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
     ) throws IOException {
         Ir ir = irService.get(id);
@@ -66,7 +64,7 @@ public class LoopsController {
         if (dot == null) {
             return "Dot not found";
         }
-        String optPath = Config.getInstance().getOptsPath()[opt];
+        String optPath = localConfig.getOptPath();
         String loopInfoRaw = Opt.printLoops(optPath, ir);
         FunctionIR function;
         function = moduleIr.getFunction(functionName);
@@ -89,8 +87,6 @@ public class LoopsController {
      *
      * @param id - ir
      *
-     * @param opt - index of opt path in config
-     *
      * @param functionName - function to be analyzed
      *
      * @param blockName - name of clicked block
@@ -106,7 +102,6 @@ public class LoopsController {
     @ResponseBody
     public String highlightedLoopDepth(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName,
             @Parameter(description = "Block name", required = true) @RequestParam("block") String blockName,
             @Parameter(description = "Click", required = true) @RequestParam ("click") int click
@@ -126,7 +121,7 @@ public class LoopsController {
         if (dot == null) {
             return "Dot not found`";
         }
-        String optPath = Config.getInstance().getOptsPath()[opt];
+        String optPath = localConfig.getOptPath();
         String loopInfoRaw = Opt.printLoops(optPath, ir);
         FunctionIR function;
         function = moduleIr.getFunction(functionName);
@@ -171,8 +166,6 @@ public class LoopsController {
      *
      * @param id - id of ir
      *
-     * @param opt - id of opt
-     *
      * @param functionName - function name ex "add"
      *
      * @param blockName - block name without "%" ex "13"
@@ -186,7 +179,6 @@ public class LoopsController {
     @ResponseBody
     public String blockLoopInfo(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName,
             @Parameter(description = "Block name", required = true) @RequestParam("block") String blockName
     ) throws IOException {
@@ -195,7 +187,7 @@ public class LoopsController {
             return "IR not found";
         }
         ModuleIR moduleIR = ir.getModuleIR();
-        String optPath = Config.getInstance().getOptsPath()[opt];
+        String optPath = localConfig.getOptPath();
         String loopInfoRaw = Opt.printLoops(optPath, ir);
         if (moduleIR.getFunction(functionName) == null) {
             return "Function not found";

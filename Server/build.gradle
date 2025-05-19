@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.17.2'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 tasks.named('test') {

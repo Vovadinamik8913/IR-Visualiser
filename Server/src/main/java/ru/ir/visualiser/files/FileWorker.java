@@ -1,7 +1,7 @@
 package ru.ir.visualiser.files;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import ru.ir.visualiser.config.Config;
+import ru.ir.visualiser.config.LocalConfig;
 
 import java.io.*;
 
@@ -35,8 +35,8 @@ public class FileWorker {
      * @param path path
      * @return abs path in workpath
      */
-    public static String absolutePath(String path) {
-        String absolutePath = Config.getInstance().getWorkPath();
+    public static String absolutePath(LocalConfig config, String path) {
+        String absolutePath = config.getWorkPath();
         if (!path.isEmpty()) {
             absolutePath += File.separator + path;
         }

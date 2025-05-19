@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import ru.ir.visualiser.config.Config;
+import ru.ir.visualiser.config.LocalConfig;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.core.llvm.Opt;
 import ru.ir.visualiser.core.llvm.Svg;
@@ -44,15 +44,15 @@ public class BuilderController {
     private final IrService irService;
     private final ModuleService moduleService;
     private final ProjectService projectService;
+    private final LocalConfig config;
 
     /** generating opts and svgs.
      *
-     * @param opt number of opt in arr
      * @param ir description of our file
      * @throws IOException if problems with file
      */
-    private void generate(int opt, Ir ir) throws IOException {
-        String optPath = Config.getInstance().getOptsPath()[opt];
+    private void generate(Ir ir) throws IOException {
+        String optPath = config.getOptPath();
         if (Opt.validateOpt(optPath)) {
             if (Opt.generateDotFiles(
                     optPath,
@@ -69,7 +69,7 @@ public class BuilderController {
 
     private Ir create(Project project, String folder, String filename, InputStream stream) throws IOException {
         String folderName = FileWorker.getFolderName(filename);
-        String path = FileWorker.absolutePath(folder + File.separator + folderName);
+        String path = FileWorker.absolutePath(config,folder + File.separator + folderName);
 
 
         Ir ir = new Ir(filename,
@@ -149,21 +149,19 @@ public class BuilderController {
      * dots and svgs
      *
      * @param id id of class description
-     * @param opt index of opt
      * @return ok or badRequest
      */
     @Operation(summary = "Создание svg и dot")
     @PostMapping(value = "/generate")
     public ResponseEntity<?> buildSVGByFile(
-            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
-            @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt
+            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
     ) {
         Ir ir = irService.get(id);
         if (ir == null) {
             return ResponseEntity.badRequest().build();
         }
         try {
-            generate(opt, ir);
+            generate(ir);
             File file = new File(ir.getIrPath() + File.separator + ir.getFilename());
             byte[] content = Files.readAllBytes(file.toPath());
             String moduleContent = new String(content, StandardCharsets.UTF_8);

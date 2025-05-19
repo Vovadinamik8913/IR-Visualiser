@@ -31,7 +31,6 @@ public class ScevController {
      * Get text that should show up by clicking on line.
      *
      * @param id - id of ir in database
-     * @param opt - number of opt
      * @param line - line in the file
      * @return text that shuld show up
      * @throws IOException if couldn`t launch opt
@@ -41,7 +40,6 @@ public class ScevController {
     @ResponseBody
     public String scevOfLine(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
-        @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
         @Parameter(description = "Line number") @RequestParam("line") int line
     ) throws IOException {
         Ir ir = irService.get(id);
@@ -49,17 +47,15 @@ public class ScevController {
             return null;
         }
 
-        Scev scev = analysisService.getScev(ir, opt);
-        String res = scev.parsedLine(line).orElse("No scev for line " + line);
+        Scev scev = analysisService.getScev(ir);
 
-        return res;
+        return scev.parsedLine(line).orElse("No scev for line " + line);
     }
 
     /**
      * Get text that should show up when requesting loop count.
      *
      * @param id - id of ir in database
-     * @param opt - number of opt
      * @param function - name of the function
      * @param block - name of the block
      * @return text that shuld show up
@@ -70,7 +66,6 @@ public class ScevController {
     @ResponseBody
     public String scevOfLine(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
-        @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
         @Parameter(description = "Function name") @RequestParam("function") String function,
         @Parameter(description = "Block name") @RequestParam("block") String block
     ) throws IOException {
@@ -79,9 +74,8 @@ public class ScevController {
             return null;
         }
 
-        Scev scev = analysisService.getScev(ir, opt);
-        String res = scev.loopCount(function, block).orElse("No loop count for " + function + ", " + block);
+        Scev scev = analysisService.getScev(ir);
 
-        return res;
+        return scev.loopCount(function, block).orElse("No loop count for " + function + ", " + block);
     }
 }

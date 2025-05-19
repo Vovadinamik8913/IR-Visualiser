@@ -2,7 +2,7 @@ package ru.ir.visualiser;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import ru.ir.visualiser.config.Config;
+import ru.ir.visualiser.config.LocalConfig;
 
 import java.io.IOException;
 
@@ -10,12 +10,6 @@ import java.io.IOException;
 public class ServerApplication {
 
 	public static void main(String[] args) {
-        try {
-            Config.deserializeFromJson("irvis.json");
-			SpringApplication.run(ServerApplication.class, args);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-
+        SpringApplication.run(ServerApplication.class, args);
 	}
 }

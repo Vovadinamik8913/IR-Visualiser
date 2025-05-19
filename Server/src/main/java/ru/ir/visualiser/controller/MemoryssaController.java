@@ -31,7 +31,6 @@ public class MemoryssaController {
      * Get text that should show up by clicking on line.
      *
      * @param id - id of ir in database
-     * @param opt - number of opt
      * @param line - line in the file
      * @return text that shuld show up
      * @throws IOException if couldn`t launch opt
@@ -41,7 +40,6 @@ public class MemoryssaController {
     @ResponseBody
     public ResponseEntity<String> memoryssaOfLine(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
-        @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
         @Parameter(description = "Line number") @RequestParam("line") int line
     ) throws IOException {
         Ir ir = irService.get(id);
@@ -49,7 +47,7 @@ public class MemoryssaController {
             return ResponseEntity.badRequest().build();
         }
 
-        Memoryssa memoryssa = analysisService.getMemoryssa(ir, opt);
+        Memoryssa memoryssa = analysisService.getMemoryssa(ir);
         String res = memoryssa.fromLine(line).orElse("No memoryssa for line " + line);
 
         return ResponseEntity.ok(res);
@@ -59,7 +57,6 @@ public class MemoryssaController {
      * Get text that should show up by clicking on analysis number.
      *
      * @param id - id of ir in database
-     * @param opt - number of opt
      * @param functionName - name of a function currently being worked on
      * @param access - access to jump to
      * @return line to jump to
@@ -70,7 +67,6 @@ public class MemoryssaController {
     @ResponseBody
     public ResponseEntity<Integer> memoryssaOfAccess(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
-        @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
         @Parameter(description = "Function name") @RequestParam("functionName") String functionName,
         @Parameter(description = "Access") @RequestParam("access") int access
     ) throws IOException {
@@ -79,7 +75,7 @@ public class MemoryssaController {
             return ResponseEntity.badRequest().build();
         }
 
-        Memoryssa memoryssa = analysisService.getMemoryssa(ir, opt);
+        Memoryssa memoryssa = analysisService.getMemoryssa(ir);
         Optional<Integer> line = memoryssa.fromAccess(functionName, access);
 
         if (line.isEmpty()) {
