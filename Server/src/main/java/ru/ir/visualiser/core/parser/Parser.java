@@ -8,9 +8,12 @@ import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.core.parser.loops.LoopBlock;
 import ru.ir.visualiser.core.parser.loops.LoopIR;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import ru.ir.visualiser.model.analysis.Memoryssa;
 
 /**
  * Class that performs parsing of llvm ir files.
@@ -407,5 +410,65 @@ public class Parser {
             stack.push(node);
         }
         return root;
+    }
+
+    public static Memoryssa parseMemoryssa(String input, ModuleIR module) {
+        List<String> moduleLines = module.getModuleText();
+        String[] memoryssaLines = input.split("\n");
+
+        Map<Integer, String> lineToMemoryssaString = new HashMap<>();
+        Map<String, Integer> accessToLine = new HashMap<>();
+
+        int moduleLine = 0;
+        int memoryssaLine = 0;
+        String currentFunction = "";
+
+        final String newFunction = "MemorySSA for function: ";
+
+        StringBuilder commentForLine = new StringBuilder();
+        List<String> accessesForLine = new ArrayList<>();
+
+        while (memoryssaLine < memoryssaLines.length) {
+            String memoryssaLineString = memoryssaLines[memoryssaLine].strip();
+
+            if (memoryssaLineString.startsWith(";")) {
+                if (!memoryssaLineString.startsWith("; Function Attrs")) {
+                    String substring = memoryssaLineString.substring(1).strip();
+                    int index = substring.indexOf(' ');
+
+                    if (index != -1 && substring.startsWith(" = ", index)) {
+                        int access = Integer.parseInt(substring.substring(0, index));
+                        String key = Memoryssa.concatNameAndAccess(currentFunction, access);
+                        accessesForLine.add(key);
+                    }
+
+                    commentForLine.append(substring);
+                    commentForLine.append('\n');
+                }
+            } else {
+                if (memoryssaLineString.startsWith(newFunction)) {
+                    currentFunction = memoryssaLines[memoryssaLine].substring(newFunction.length()).strip();
+                } else {
+                    String firstWord = memoryssaLineString.split(" ")[0];
+                    while (moduleLines.size() < moduleLine && !moduleLines.get(moduleLine).startsWith(firstWord)) {
+                        moduleLine += 1;
+                    }
+                    moduleLine += 1;
+                    if (commentForLine.length() != 0) {
+                        lineToMemoryssaString.put(moduleLine, commentForLine.toString());
+                    }
+                    for (String access : accessesForLine) {
+                        accessToLine.put(access, moduleLine);
+                    }
+                }
+
+                commentForLine.setLength(0);
+                accessesForLine.clear();
+            }
+
+            memoryssaLine += 1;
+        }
+
+        return new Memoryssa(lineToMemoryssaString, accessToLine);
     }
 }

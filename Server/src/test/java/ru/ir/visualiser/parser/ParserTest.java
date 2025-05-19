@@ -7,6 +7,7 @@ import ru.ir.visualiser.model.ir.Dot;
 import ru.ir.visualiser.model.ir.FunctionIR;
 import ru.ir.visualiser.model.ir.ModuleIR;
 import ru.ir.visualiser.model.analysis.Scev;
+import ru.ir.visualiser.model.analysis.Memoryssa;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.File;
@@ -201,7 +202,6 @@ S: [-9223372036854775808,9223372036854775801)
 Exits: %5
 LoopDispositions: { %28: Invariant }"""), scev.parsedLine(681));
 
-
         assertEquals(3, scev.getLoopCount().size());
         assertEquals(Optional.of("""
 Unpredictable backedge-taken count.
@@ -217,5 +217,64 @@ Unpredictable symbolic max backedge-taken count. """), scev.loopCount("in_order_
 Unpredictable backedge-taken count.
 Unpredictable constant max backedge-taken count.
 Unpredictable symbolic max backedge-taken count. """), scev.loopCount("main", "%28"));
+    }
+
+    @Test
+    public void memoryssaTest() throws URISyntaxException, IOException {
+        URI uripath = getClass().getClassLoader().getResource("test1/test.ll").toURI();
+        Path path = Path.of(uripath);
+        String content = Files.readString(path);
+
+        List<String> dotFiles = List.of(
+                "test1/.add.dot",
+                "test1/.add_my_arr.dot",
+                "test1/.in_order_traversal.dot",
+                "test1/.main.dot",
+                "test1/.max.dot",
+                "test1/.rebalance.dot",
+                "test1/.rotation_left.dot",
+                "test1/.rotation_right.dot",
+                "test1/.shuffle.dot",
+                "test1/.swap.dot",
+                "test1/.update_height.dot"
+        );
+        List<String> dotContents = new java.util.ArrayList<>(dotFiles.size());
+        for (String dotFile : dotFiles) {
+            URI dotPath = getClass().getClassLoader().getResource(dotFile).toURI();
+            String dotContent = Files.readString(Path.of(dotPath));
+            dotContents.add(dotContent);
+        }
+
+        ModuleIR moduleIR = Parser.parseModule(content, dotContents);
+
+        File fileContent = path.toFile();
+        ProcessBuilder processBuilder = new ProcessBuilder("opt", "-passes=print<memoryssa>", "-disable-output");
+        processBuilder.redirectErrorStream(true); // Перенаправляем stderr в stdout
+        processBuilder.redirectInput(ProcessBuilder.Redirect.from(fileContent));
+
+        Process process = processBuilder.start();
+
+        // Читаем вывод процесса
+        StringBuilder output = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        }
+
+        // Ожидаем завершения процесса
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            throw new IOException("Process was interrupted", e);
+        }
+
+        String parserInput = output.toString();
+
+        Memoryssa memoryssa = Parser.parseMemoryssa(parserInput, moduleIR);
+
+        assertEquals(289, memoryssa.getLineToMemoryssaString().size());
+        assertEquals(117, memoryssa.getAccessToLine().size());
     }
 }
