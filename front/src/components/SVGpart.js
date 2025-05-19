@@ -266,7 +266,7 @@ const SVGpart = ({
                 onChange={handleDropdownChange}
                 className="dropdown"
                 >
-                <option value="start">Выберите функцию</option>
+                <option value="">Выберите функцию</option>
                 {functions.length > 0 ? (
                     functions.map((func, index) => (
                         <option key={index} value={func}>

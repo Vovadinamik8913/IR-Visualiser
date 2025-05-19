@@ -122,6 +122,10 @@ function App() {
 
     //получение свг
     const handleGetRequest = async (funcName) => {
+        if(funcName === ''){
+            setSvgContent('');
+            return;
+        }
         try {
             const svgText = await getSvgByFunction(irId, funcName);
             setSvgContent(svgText);
@@ -194,13 +198,8 @@ function App() {
             const blockLabel = info[2];
             console.log(blockLabel, index);
     
-            try {
-                const svgText = await getSvgByFunction(irIdRef.current, functionName);
-                setSvgContent(svgText);
-            } catch (error) {
-                console.error('Ошибка при загрузке SVG:', error);
-                alert('Ошибка при загрузке SVG');
-            }
+            await handleGetRequest(functionName);
+
             console.log(optionRef.current);
             if (optionRef.current === "Scev") {
                 try {
