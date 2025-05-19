@@ -1,0 +1,19 @@
+digraph "CFG for 'in_order_traversal' function" {
+	label="CFG for 'in_order_traversal' function";
+
+	Node0x561486ddf290 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#d24b4070" fontname="Courier",label="{2:\l|  %3 = alloca ptr, align 8\l  %4 = alloca ptr, align 8\l  %5 = alloca i32, align 4\l  store ptr %0, ptr %3, align 8\l  store ptr %1, ptr %4, align 8\l  %6 = load ptr, ptr %3, align 8\l  %7 = icmp ne ptr %6, null\l  br i1 %7, label %8, label %34\l|{<s0>T|<s1>F}}"];
+	Node0x561486ddf290:s0 -> Node0x561486ddf640[tooltip="2 -> 8\nProbability 62.50%" ];
+	Node0x561486ddf290:s1 -> Node0x561486ddf6a0[tooltip="2 -> 34\nProbability 37.50%" ];
+	Node0x561486ddf640 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#d6524470" fontname="Courier",label="{8:\l|  %9 = load ptr, ptr %3, align 8\l  %10 = getelementptr inbounds %struct.Node, ptr %9, i32 0, i32 3\l  %11 = load ptr, ptr %10, align 8\l  %12 = load ptr, ptr %4, align 8\l  call void @in_order_traversal(ptr noundef %11, ptr noundef %12)\l  store i32 0, ptr %5, align 4\l  br label %13\l}"];
+	Node0x561486ddf640 -> Node0x561486de0490[tooltip="8 -> 13\nProbability 100.00%" ];
+	Node0x561486de0490 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{13:\l|  %14 = load i32, ptr %5, align 4\l  %15 = load ptr, ptr %3, align 8\l  %16 = getelementptr inbounds %struct.Node, ptr %15, i32 0, i32 2\l  %17 = load i32, ptr %16, align 8\l  %18 = icmp slt i32 %14, %17\l  br i1 %18, label %19, label %27\l|{<s0>T|<s1>F}}"];
+	Node0x561486de0490:s0 -> Node0x561486de0830[tooltip="13 -> 19\nProbability 96.88%" ];
+	Node0x561486de0490:s1 -> Node0x561486de0890[tooltip="13 -> 27\nProbability 3.12%" ];
+	Node0x561486de0830 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{19:\l|  %20 = load ptr, ptr %4, align 8\l  %21 = load ptr, ptr %3, align 8\l  %22 = getelementptr inbounds %struct.Node, ptr %21, i32 0, i32 0\l  %23 = load i32, ptr %22, align 8\l  call void @add_my_arr(ptr noundef %20, i32 noundef %23)\l  br label %24\l}"];
+	Node0x561486de0830 -> Node0x561486de0cf0[tooltip="19 -> 24\nProbability 100.00%" ];
+	Node0x561486de0cf0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{24:\l|  %25 = load i32, ptr %5, align 4\l  %26 = add nsw i32 %25, 1\l  store i32 %26, ptr %5, align 4\l  br label %13, !llvm.loop !6\l}"];
+	Node0x561486de0cf0 -> Node0x561486de0490[tooltip="24 -> 13\nProbability 100.00%" ];
+	Node0x561486de0890 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#d6524470" fontname="Courier",label="{27:\l|  %28 = load ptr, ptr %3, align 8\l  %29 = getelementptr inbounds %struct.Node, ptr %28, i32 0, i32 4\l  %30 = load ptr, ptr %29, align 8\l  %31 = load ptr, ptr %4, align 8\l  call void @in_order_traversal(ptr noundef %30, ptr noundef %31)\l  %32 = load ptr, ptr %3, align 8\l  %33 = bitcast ptr %32 to ptr\l  call void @free(ptr noundef %33) #4\l  br label %34\l}"];
+	Node0x561486de0890 -> Node0x561486ddf6a0[tooltip="27 -> 34\nProbability 100.00%" ];
+	Node0x561486ddf6a0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#d24b4070" fontname="Courier",label="{34:\l|  ret void\l}"];
+}
