@@ -1,9 +1,10 @@
+import config from '../config/config.js';
+
 export const getScevInfo = async (irId, lineNumber) => {
     const scevInfoFormData = new FormData();
     scevInfoFormData.append("file", irId);
-    scevInfoFormData.append("opt", 0);
     scevInfoFormData.append("line", lineNumber);
-    const response = await fetch("/scev/get/scev/of/line", {
+    const response = await fetch(`${config.api.baseUrl}/scev/get/scev/of/line`, {
         method: 'POST',
         body: scevInfoFormData,
     });
@@ -14,10 +15,9 @@ export const getScevInfo = async (irId, lineNumber) => {
 export const getScevLoopInfo = async (irId, funcName, svgBlock) => {
     const loopInfoFormData = new FormData();
     loopInfoFormData.append("file", irId);
-    loopInfoFormData.append("opt", 0);
     loopInfoFormData.append("function", funcName);
     loopInfoFormData.append("block", "%" + svgBlock);
-    const response = await fetch('/scev/get/scev/loop/count', {
+    const response = await fetch(`${config.api.baseUrl}/scev/get/scev/loop/count`, {
         method: 'POST',
         body: loopInfoFormData,
     });

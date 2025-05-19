@@ -1,7 +1,9 @@
+import config from '../config/config.js';
+
 export const getFunctions = async (id) => {
     const getFunctionsFormData = new FormData();
     getFunctionsFormData.append("file", id);
-    const response = await fetch('/files/get/functions', {
+    const response = await fetch(`${config.api.baseUrl}/files/get/functions`, {
         method: 'POST',
         body: getFunctionsFormData,
     });
@@ -14,7 +16,7 @@ export const getSvgByFunction = async (irId, funcName) => {
     const svgFormData = new FormData();
     svgFormData.append("file", irId);
     svgFormData.append("function", funcName);
-    const response = await fetch('/files/get/svg', {
+    const response = await fetch(`${config.api.baseUrl}/files/get/svg`, {
         method: 'POST',
         body: svgFormData,
     });
@@ -40,7 +42,7 @@ export const getSvgByLine = async (irId, index) => {
     const lineFormData = new FormData();
     lineFormData.append("file", irId);
     lineFormData.append("line", index);
-    const response = await fetch('/fromline/get/svg', {
+    const response = await fetch(`${config.api.baseUrl}/fromline/get/svg`, {
         method: 'POST',
         body: lineFormData,
     });

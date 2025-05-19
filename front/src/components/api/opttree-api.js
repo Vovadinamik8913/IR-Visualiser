@@ -1,5 +1,7 @@
+import config from '../config/config.js';
+
 export const loadProjects = async () => {
-    const response = await fetch('/files/get/projects', {
+    const response = await fetch(`${config.api.baseUrl}/files/get/projects`, {
         method: 'POST',
     });
     if(!response.ok) throw new Error("/files/get/projects bad request");
@@ -9,7 +11,7 @@ export const loadProjects = async () => {
 export const getTree = async (project) => {
     const formData = new FormData();
     formData.append("project", project);
-    const response = await fetch(`/tree/get`, {
+    const response = await fetch(`${config.api.baseUrl}/tree/get`, {
       method: 'POST',
       body: formData,
     });
@@ -21,7 +23,7 @@ export const getTree = async (project) => {
 export const deleteTreeNode = async (node) => {
     const formData = new FormData();
     formData.append("node", node);
-    const response = await fetch(`/tree/delete`, {
+    const response = await fetch(`${config.api.baseUrl}/tree/delete`, {
       method: 'DELETE',
       body: formData,
     });

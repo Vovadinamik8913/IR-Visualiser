@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './styles/Upload.css';
 import '../App.css';
+import config from "./config/config.js";
 
 const Upload = ({onClose, onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
     const [activeTab, setActiveTab] = useState('fileUpload');
@@ -60,6 +61,7 @@ const Upload = ({onClose, onFileUpload, onBuildByFileRequest, onBuildByPathReque
                 <button onClick={onClose} className="close-button">X</button>
 
                 {/* Табы */}
+                { config.container === "false" && (
                 <div className="tabs">
                   <button
                     className={activeTab === 'fileUpload' ? 'active' : ''}
@@ -74,6 +76,7 @@ const Upload = ({onClose, onFileUpload, onBuildByFileRequest, onBuildByPathReque
                     Загрузка через путь
                   </button>
                 </div>
+                )}
                   {/* Содержимое вкладок */}
                   {activeTab === 'fileUpload' && (
                     <div className="tab-panel">
