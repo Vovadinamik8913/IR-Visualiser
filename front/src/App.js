@@ -24,6 +24,7 @@ function App() {
     const [scevInfo, setScevInfo] = useState('');
     const [compilerFlags, setCompilerFlags] =  useState(''); 
     const [generatingFlags, setGeneratingFlags] =  useState('');
+    const [selectedBlock, setSelectedBlock] = useState('');
 
     const irIdRef = useRef(irId);
     const optionRef = useRef(selectedOption);
@@ -196,8 +197,8 @@ function App() {
             setSelectedFunction(functionName);
 
             const blockLabel = info[2];
-            console.log(blockLabel, index);
-    
+            setSelectedBlock(blockLabel);
+
             await handleGetRequest(functionName);
 
             console.log(optionRef.current);
@@ -296,6 +297,7 @@ function App() {
                     listOfLoopBlocks={listOfLoopBlocks}
                     listOfCurLoop={listOfCurLoop}
                     onGetLoopsInfo={handleGetLoopsInfo}
+                    selectedBlock={selectedBlock}
                 />
             </div>
         </div>
