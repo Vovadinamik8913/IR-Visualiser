@@ -9,8 +9,8 @@ const SVGpart = ({
     functions,
     selectedFunction,
     setSelectedFunction,
-    llContent, 
-    onGetRequest, 
+    llContent,
+    onGetRequest,
     selectedOption,
     infoContent,
     onBlockClick,
@@ -22,7 +22,6 @@ const SVGpart = ({
     const [blockTitle, setBlockTitle] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-    const [scale, setScale] = useState(1);
     const svgContainerRef = useRef(null);
     const viewTransform = useRef({
         scale: 1,
@@ -30,7 +29,7 @@ const SVGpart = ({
         translateY: 0
     });
     const lastHighlighted = useRef(null);
-    
+
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
         const edge = event.target.closest('.edge');
@@ -49,7 +48,7 @@ const SVGpart = ({
                     setPopupVisible(true);
                     setPopupPosition({ x: event.clientX, y: event.clientY });
                 }
-                else { 
+                else {
                     setPopupVisible(false);
                 }
             }
@@ -60,20 +59,22 @@ const SVGpart = ({
             const polygon = snapNode.select('polygon');
 
             if(selectedOption !== 'LoopsInfo') {
-                if (lastHighlighted.current) {
-                    lastHighlighted.current.attr({
-                        stroke: '#000',
-                        'stroke-width': 0.1,
-                    });
-                }
+                const svg = Snap(svgContainerRef.current.querySelector('svg'));
+
+                svg.selectAll('.node').forEach(node => {
+
+                    const polygon = node.select('polygon');
+                    polygon?.attr({
+                        stroke: '#b70d28',
+                        'stroke-width': 0.44
+                    })
+                });
 
                 if (polygon && clickCounter !== 2) {
                     polygon.attr({
                         stroke: '#b222d2',
                         'stroke-width': 5,
                     });
-
-                    lastHighlighted.current = polygon;
                 }
             }
 
@@ -112,6 +113,13 @@ const SVGpart = ({
             });
         }
 
+        const initialScale = 0.5;
+        viewTransform.current.scale = initialScale;
+        viewTransform.current.translateX = 50;
+        viewTransform.current.translateY = 50;
+
+        g.transform(`translate(0, 0) scale(${initialScale})`);
+
         let isPanning = false;
         let panStart = { x: 0, y: 0 };
 
@@ -125,7 +133,7 @@ const SVGpart = ({
             e.preventDefault();
             const delta = e.deltaY > 0 ? -0.01 : 0.01;
             let newScale = viewTransform.current.scale + delta;
-            newScale = Math.max(0.1, Math.min(2, newScale));
+            newScale = Math.max(0.1, Math.min(5, newScale));
             viewTransform.current.scale = newScale;
             applyTransform();
         };
@@ -219,7 +227,6 @@ const SVGpart = ({
     }, [selectedOption, svgContent, listOfLoopBlocks]);
 
     useEffect(() => {
-        console.log(selectedBlock);
         if (!selectedBlock || !svgContainerRef.current) return;
 
         const svgEl = svgContainerRef.current.querySelector('svg');
@@ -235,25 +242,55 @@ const SVGpart = ({
         allNodes.forEach(node => {
             const text = node.select('text');
             const number = text?.node.textContent.trim().replace(':', '');
-            if (number === selectedBlock.toString()) {
+
+            const polygon = node.select('polygon');
+            polygon?.attr({
+                stroke: '#b70d28',
+                'stroke-width': 0.44
+            })
+
+            if ('%' + number === selectedBlock) {
                 targetNode = node;
+                const polygon = node.select('polygon');
+                polygon?.attr({
+                    stroke: '#b222d2',
+                    'stroke-width': 5
+                })
             }
         });
 
         if (targetNode) {
             const bbox = targetNode.getBBox();
-            const svgRect = svgEl.getBoundingClientRect();
 
-            const centerX = svgRect.width / 2;
-            const centerY = svgRect.height / 2;
+            const containerWidth = parseFloat(svgEl.getAttribute('width'));
+            const containerHeight = parseFloat(svgEl.getAttribute('height'));
+            console.log(containerWidth, containerHeight);
 
-            const translateX = centerX - (bbox.x + bbox.width / 2) * viewTransform.current.scale;
-            const translateY = centerY - (bbox.y + bbox.height / 2) * viewTransform.current.scale;
+            const scale = viewTransform.current.scale;
 
+            // Центр блока (в координатах SVG)
+            const cx = bbox.cx;
+            const cy = 0 - (bbox.y + bbox.y2 + bbox.height / 2);
+            console.log(cx, cy, selectedBlock);
+
+            const translateX = containerWidth/2 - cx * scale;
+            let translateY;
+            if(cy > containerHeight) {
+                translateY = (0 - bbox.y + bbox.y2 + bbox.height / 2) * scale;
+            } else {
+                translateY = (containerHeight / 2 + (bbox.y + bbox.y2 + bbox.height / 2))*scale;
+            }
+            console.log(translateY,'y');
+
+            const g = s.select('g#zoom-layer');
+            g.transform(`translate(${translateX}, ${translateY}) scale(${scale})`);
+
+            // Обновляем трансформацию
             viewTransform.current.translateX = translateX;
             viewTransform.current.translateY = translateY;
 
-            zoomLayer.transform(`translate(${translateX}, ${translateY}) scale(${viewTransform.current.scale})`);
+            //const g = s.select('g#zoom-layer');
+            g.transform(`translate(${translateX}, ${translateY}) scale(${scale})`);
         }
     }, [selectedBlock]);
 
@@ -284,17 +321,11 @@ const SVGpart = ({
                     <div
                         ref={svgContainerRef}
                         onClick={handleSvgClick}
-                        dangerouslySetInnerHTML={{ __html: `
-                            <div style='
-                            display: inline-block; 
-                            align-items: center;
-                            justify-content: center;'>
-                              ${svgContent}
-                            </div>` }}
+                        dangerouslySetInnerHTML={{ __html: svgContent }}
                     />
                     {popupVisible && (selectedOption === "LoopsInfo" || selectedOption === "Scev") && (
-                        <div 
-                            className="popup-info" 
+                        <div
+                            className="popup-info"
                             style={{ top: popupPosition.y, left: popupPosition.x }}
                         >
                             {infoContent || "Нет данных"}

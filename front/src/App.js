@@ -142,6 +142,7 @@ function App() {
         try {
             const lineToCenter = await getLineNumberFromBlock(irId, blockTitle, selectedFunction);
             setLineNumber(lineToCenter);
+            console.log(lineToCenter);
         } catch (error) {
             console.error("Ошибка при получении номера строки:", error);
         }
