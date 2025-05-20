@@ -1,7 +1,9 @@
+import config from '../config/config.js';
+
 export const getCode = async (id) => {
     const buildFormData = new FormData();
     buildFormData.append("file", id);
-    const response = await fetch('/files/get/code', {
+    const response = await fetch(`${config.api.baseUrl}/files/get/code`, {
         method: 'POST',
         body: buildFormData,
     });
@@ -27,7 +29,7 @@ export const getLineNumberFromBlock = async (id, blockTitle, funcName) => {
     lineNumberFormData.append("file", id);
     lineNumberFormData.append("id", blockTitle);
     lineNumberFormData.append("function", funcName);
-    const response = await fetch('/fromline/get/line', {
+    const response = await fetch(`${config.api.baseUrl}/fromline/get/line`, {
         method: 'POST',
         body: lineNumberFormData,
     });

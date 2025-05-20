@@ -1,8 +1,10 @@
+import config from '../config/config.js';
+
 export const saveByFile = async (folder, file) => {
     const buildFormData = new FormData();
     buildFormData.append("folder", folder);
     buildFormData.append("file", file);
-    const response = await fetch('/files/save/file', {
+    const response = await fetch(`${config.api.baseUrl}/files/save/file`, {
         method: 'POST',
         body: buildFormData,
     });
@@ -15,7 +17,7 @@ export const saveByPath = async (folder, path) => {
     const buildFormData = new FormData();
     buildFormData.append("folder", folder);
     buildFormData.append("filePath", path);
-    const response = await fetch('/files/save/path', {
+    const response = await fetch(`${config.api.baseUrl}/files/save/path`, {
         method: 'POST',
         body: buildFormData,
     });
@@ -27,8 +29,7 @@ export const saveByPath = async (folder, path) => {
 export const generateSvg = async(id) => {
     const buildFormData = new FormData();
     buildFormData.append("file", id);
-    buildFormData.append("opt", 0);
-    const response = await fetch('/files/generate', {
+    const response = await fetch(`${config.api.baseUrl}/files/generate`, {
         method: 'POST',
         body: buildFormData,
     });
@@ -38,9 +39,8 @@ export const generateSvg = async(id) => {
 export const optimize = async(id, flags) => {
     const buildFormData = new FormData();
     buildFormData.append("file", id);
-    buildFormData.append("opt", 0);
     buildFormData.append("flags", flags);
-    const response = await fetch('/tree/add', {
+    const response = await fetch(`${config.api.baseUrl}/tree/add`, {
         method: 'POST',
         body: buildFormData,
     });
