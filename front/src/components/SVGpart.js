@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import Snap from 'snapsvg-cjs';
-import './styles/SVG.css';
+import '../styles/SVG.css';
 
 let clickCounter = 0;
 
@@ -265,31 +265,17 @@ const SVGpart = ({
             const containerWidth = parseFloat(svgEl.getAttribute('width'));
             const containerHeight = parseFloat(svgEl.getAttribute('height'));
             console.log(containerWidth, containerHeight);
+            console.log(svgEl);
 
             const scale = viewTransform.current.scale;
 
-            // Центр блока (в координатах SVG)
-            const cx = bbox.cx;
-            const cy = 0 - (bbox.y + bbox.y2 + bbox.height / 2);
-            console.log(cx, cy, selectedBlock);
+            const translateX = -bbox.x * scale + 250;
+            const translateY = -bbox.y * scale - containerHeight/2 + 250;
 
-            const translateX = containerWidth/2 - cx * scale;
-            let translateY;
-            if(cy > containerHeight) {
-                translateY = (0 - bbox.y + bbox.y2 + bbox.height / 2) * scale;
-            } else {
-                translateY = (containerHeight / 2 + (bbox.y + bbox.y2 + bbox.height / 2))*scale;
-            }
-            console.log(translateY,'y');
-
-            const g = s.select('g#zoom-layer');
-            g.transform(`translate(${translateX}, ${translateY}) scale(${scale})`);
-
-            // Обновляем трансформацию
             viewTransform.current.translateX = translateX;
             viewTransform.current.translateY = translateY;
 
-            //const g = s.select('g#zoom-layer');
+            const g = s.select('g#zoom-layer');
             g.transform(`translate(${translateX}, ${translateY}) scale(${scale})`);
         }
     }, [selectedBlock]);

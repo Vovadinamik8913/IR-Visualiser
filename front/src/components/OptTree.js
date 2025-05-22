@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import "./styles/OptTree.css";
-import { getTree, loadProjects, deleteTreeNode } from './api/opttree-api';
+import "../styles/OptTree.css";
+import { getTree, loadProjects, deleteTreeNode } from '../api/opttree-api';
 
 const OptTree = ({ isOpen, onClose, onSelect }) => {
   const [projects, setProjects] = useState([]);

@@ -3,12 +3,13 @@ import Header from './components/Header';
 import SVGpart from './components/SVGpart';
 import TXTpart from "./components/TXTpart";
 import './App.css';
-import { generateSvg, optimize, saveByFile, saveByPath} from './components/api/build-api'
-import { getFunctions, getSvgByFunction, getSvgByLine } from './components/api/svg-api';
-import { getCode, getLineNumberFromBlock } from './components/api/code-api';
-import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './components/api/loops-api';
-import { getScevInfo, getScevLoopInfo } from './components/api/scev-api';
-import { getDomTree, getDomTreeChildren } from './components/api/domtree-api';
+import { generateSvg, optimize, saveByFile, saveByPath} from './api/build-api'
+import { getFunctions, getSvgByFunction, getSvgByLine } from './api/svg-api';
+import { getCode, getLineNumberFromBlock } from './api/code-api';
+import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './api/loops-api';
+import { getScevInfo, getScevLoopInfo } from './api/scev-api';
+import { getDomTree, getDomTreeChildren } from './api/domtree-api';
+import { getMemInfo, getMemOfAccess} from "./api/mem-api";
 
 function App() {
     const [llContent, setLlContent] = useState(null);
@@ -21,7 +22,7 @@ function App() {
     const [selectedFunction, setSelectedFunction] = useState('');
     const [selectedOption, setSelectedOption] = useState("Анализы");
     const [loopInfo, setLoopInfo] = useState('');
-    const [scevInfo, setScevInfo] = useState('');
+    const [info, setInfo] = useState('');
     const [compilerFlags, setCompilerFlags] =  useState(''); 
     const [generatingFlags, setGeneratingFlags] =  useState('');
     const [selectedBlock, setSelectedBlock] = useState('');
@@ -128,11 +129,10 @@ function App() {
             return;
         }
         try {
-            const svgText = await getSvgByFunction(irId, funcName);
+            const svgText = await getSvgByFunction(irIdRef.current, funcName);
             setSvgContent(svgText);
         } catch (error) {
             console.error('Ошибка запроса:', error);
-            alert('Произошла ошибка при выполнении запроса');
         }
     };
 
@@ -141,7 +141,7 @@ function App() {
         console.log(selectedOption);
         try {
             const lineToCenter = await getLineNumberFromBlock(irId, blockTitle, selectedFunction);
-            setLineNumber(lineToCenter);
+            setLineNumber(lineToCenter - 1);
             console.log(lineToCenter);
         } catch (error) {
             console.error("Ошибка при получении номера строки:", error);
@@ -206,15 +206,24 @@ function App() {
             if (optionRef.current === "Scev") {
                 try {
                     const scev = await getScevInfo(irIdRef.current, parseInt(index));
-                    setScevInfo(scev);
+                    setInfo(scev);
                 } catch (error) {
                     console.error('Ошибка запроса getScevInfo:', error);
                     alert('Ошибка при получении Scev информации');
                 }
             }
+            if (optionRef.current === "Memoryssa") {
+                try{
+                    const mem = await getMemInfo(irIdRef.current, parseInt(index));
+                    setInfo(mem);
+                } catch (error) {
+                    console.error('Ошибка запроса getMemInfo:');
+                    alert('Ошибка при получении Memoryssa информации');
+                }
+            }
         } catch (error) {
             console.error('Ошибка запроса getSvgByLine:', error);
-            alert('Произошла ошибка при обработке строки');
+            setSvgContent('');
         }
     };
     
@@ -256,9 +265,19 @@ function App() {
         }
     }
 
+    const handleMemoryssa = async (access) => {
+        try {
+            const line = await getMemOfAccess(irIdRef.current, selectedFunction, access);
+            setLineNumber(line);
+            console.log(line);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const handleGetDomTree = async() => {
         try {
-            return await getDomTree(irId, selectedFunction);
+            return await getDomTree(irIdRef.current, selectedFunction);
         } catch (error) {
             console.error('Ошибка при обработке кода:', error);
         }
@@ -282,8 +301,9 @@ function App() {
                     compilerFlags={compilerFlags}
                     setCompilerFlags={setCompilerFlags}
                     optionRef={optionRef}
-                    infoContent={scevInfo}
+                    infoContent={info}
                     line={lineNumber}
+                    onMemoryssa={handleMemoryssa}
                 />
                 <SVGpart
                     functions={listOfFunctions}

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Upload from './Upload';
 import OptTree from './OptTree';
 import DomTree from './DomTree';
-import './styles/Header.css';
+import '../styles/Header.css';
 
 const Header = ({
   onFileUpload,

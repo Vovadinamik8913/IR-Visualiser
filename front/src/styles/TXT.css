@@ -45,4 +45,9 @@
 .txt-container {
     margin-top: 10px;
     height: 627px;
+    cursor: default;
+}
+
+.highlighted-line {
+    background: lightblue;
 }

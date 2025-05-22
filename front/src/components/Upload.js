@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './styles/Upload.css';
+import '../styles/Upload.css';
 import '../App.css';
-import config from "./config/config.js";
+import config from "../config/config.js";
 
 const Upload = ({onClose, onFileUpload, onBuildByFileRequest, onBuildByPathRequest}) => {
     const [activeTab, setActiveTab] = useState('fileUpload');

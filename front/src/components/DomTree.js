@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import "./styles/OptTree.css";
+import "../styles/OptTree.css";
 
 
 const DomTree = ({ isOpen, onClose, onSelect, onLoad }) => {
