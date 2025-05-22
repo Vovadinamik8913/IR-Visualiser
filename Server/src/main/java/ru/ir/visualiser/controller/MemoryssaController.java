@@ -68,7 +68,7 @@ public class MemoryssaController {
     public ResponseEntity<Integer> memoryssaOfAccess(
         @Parameter(description = "Id of ir") @RequestParam("file") Long id,
         @Parameter(description = "Function name") @RequestParam("functionName") String functionName,
-        @Parameter(description = "Access") @RequestParam("access") int access
+        @Parameter(description = "Access") @RequestParam("access") String access
     ) throws IOException {
         Ir ir = irService.get(id);
         if (ir == null) {
@@ -76,7 +76,13 @@ public class MemoryssaController {
         }
 
         Memoryssa memoryssa = analysisService.getMemoryssa(ir);
-        Optional<Integer> line = memoryssa.fromAccess(functionName, access);
+
+        Optional<Integer> line = Optional.empty();
+        try {
+            int intAccess = Integer.parseInt(access);
+            line = memoryssa.fromAccess(functionName, intAccess);
+        } catch (NumberFormatException e) {
+        }
 
         if (line.isEmpty()) {
             return ResponseEntity.badRequest().build();
