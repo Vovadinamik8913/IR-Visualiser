@@ -46,7 +46,6 @@ public class Ir {
 
     public Ir(Ir parent, String flags) {
         this.parent = parent;
-        //flags = flags.substring(flags.lastIndexOf("-passes=") + "-passes=".length());
         this.irPath = parent.getIrPath() + File.separator + flags;
         this.svgPath = irPath + File.separator + "svg_files";
         this.dotPath = irPath + File.separator + "dot_files";
