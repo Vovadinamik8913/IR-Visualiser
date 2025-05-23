@@ -60,6 +60,7 @@ const TreeNode = ({ node, level, onSelect }) => {
     setIsOpen(!isOpen);
     if(isOpen === true && node?.block?.label) {
        onSelect(node.block.label);
+       console.log(node.block.label);
     }
   }
 

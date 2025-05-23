@@ -142,7 +142,7 @@ function App() {
         try {
             const lineToCenter = await getLineNumberFromBlock(irId, blockTitle, selectedFunction);
             setLineNumber(lineToCenter - 1);
-            console.log(lineToCenter);
+            console.log(lineToCenter, 'line');
         } catch (error) {
             console.error("Ошибка при получении номера строки:", error);
         }
@@ -175,7 +175,7 @@ function App() {
         } else if (selectedOption === "DomTree" && selectedFunction) {
             try {
                 const info = await getDomTreeChildren(irId, selectedFunction, "%" + blockNumber);
-                console.log(info);
+                console.log(info, 'dom3');
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о дереве:", error);
@@ -249,6 +249,15 @@ function App() {
         }
     };
 
+    const handleDomTreeSelect = async(blockLabel) => {
+        try {
+            setSelectedBlock(blockLabel);
+            console.log(selectedBlock);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const handleSelect = async(id, flags) => {
         try {
             setIrId(id);
@@ -291,6 +300,7 @@ function App() {
                 onBuildByPathRequest={handleBuildByPathRequest}
                 onAnalysChange={setSelectedOption}
                 onTreeSelect={handleSelect}
+                onDomTreeSelect={handleDomTreeSelect}
                 onDomTreeLoad={handleGetDomTree}
             />
             <div className="main-container">

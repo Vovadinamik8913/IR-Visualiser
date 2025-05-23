@@ -49,41 +49,6 @@ const TXTpart = ({
         }
     }, [line]);
 
-    const handleMemoryssa = (e) => {
-        let id1 = null;
-        let id2 = null;
-        console.log(e.target.value);
-        if(optionRef.current === "Memoryssa") {
-            if (infoContent.toString().includes("MemoryDef") ||
-                infoContent.toString().includes("MemoryUse")) {
-                id1 = infoContent.toString().indexOf("(");
-                id2 = infoContent.toString().indexOf(")");
-                const access = parseInt(infoContent.toString().charAt(id1 + 1));
-                console.log(access);
-                onMemoryssa(access);
-            }
-        }
-    }
-
-    const extractAccessList = () => {
-        const content = infoContent?.toString() || "";
-        const isPhi = content.includes("MemoryPhi");
-
-        if (isPhi) {
-            const matches = content.match(/\{[^\}]*?(\d+)[^\}]*?\}/g);
-            if (!matches) return [];
-
-            return matches.map(block => {
-                const num = block.match(/\d+/g);
-                return num ? num.map(n => parseInt(n)) : [];
-            }).flat();
-        }
-
-        const match = content.match(/\((\d+)\)/);
-        return match ? [parseInt(match[1])] : [];
-    };
-
-
     const handleEditorMount = (editor, monaco) => {
         editorRef.current = editor;
         monacoRef.current = monaco;

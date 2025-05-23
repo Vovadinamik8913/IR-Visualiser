@@ -267,10 +267,10 @@ const SVGpart = ({
             console.log(containerWidth, containerHeight);
             console.log(svgEl);
 
-            const scale = viewTransform.current.scale;
+            const scale = 0.5;
 
-            const translateX = -bbox.x * scale + 250;
-            const translateY = -bbox.y * scale - containerHeight/2 + 250;
+            const translateX = -bbox.x * scale + 200 * scale;
+            const translateY = -bbox.y  * scale - containerHeight/2 + 200;
 
             viewTransform.current.translateX = translateX;
             viewTransform.current.translateY = translateY;
