@@ -239,6 +239,7 @@ function App() {
              await generateSvg(id);
              const content = await getCode(id);
              setLlContent(content);
+             setSvgContent('');
              const svgsNames = await getFunctions(id);
              setListOfFunctions(svgsNames);
          } else {
