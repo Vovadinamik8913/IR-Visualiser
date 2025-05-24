@@ -96,6 +96,9 @@ public class LineToSvgController {
             return ResponseEntity.badRequest().build();
         }
         String label = module.getDot(function).getLabelBySvgId(svgId);
+        if (!label.startsWith("%")) {
+            label = "%" + label;
+        }
 
         FunctionIR functionIr = module.getFunction(function);
 
