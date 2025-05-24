@@ -17,7 +17,8 @@ const SVGpart = ({
     listOfLoopBlocks,
     listOfCurLoop,
     onGetLoopsInfo,
-    selectedBlock
+    selectedBlock,
+    onDomTree
 }) => {
     const [blockTitle, setBlockTitle] = useState('');
     const [popupVisible, setPopupVisible] = useState(false);
@@ -28,7 +29,6 @@ const SVGpart = ({
         translateX: 0,
         translateY: 0
     });
-    const lastHighlighted = useRef(null);
 
     const handleSvgClick = (event) => {
         const node = event.target.closest('.node');
@@ -54,7 +54,6 @@ const SVGpart = ({
             }
             onBlockClick(number, title, clickCounter);
 
-            const s = Snap(svgContainerRef.current.querySelector('svg'));
             const snapNode = Snap(node);
             const polygon = snapNode.select('polygon');
 
@@ -242,7 +241,7 @@ const SVGpart = ({
         allNodes.forEach(node => {
             const text = node.select('text');
             const number = text?.node.textContent.trim().replace(':', '');
-
+            const title = node.select('title')?.node.textContent;
             const polygon = node.select('polygon');
             polygon?.attr({
                 stroke: '#b70d28',
@@ -250,6 +249,9 @@ const SVGpart = ({
             })
 
             if ('%' + number === selectedBlock) {
+                if(selectedOption === "DomTree") {
+                    onDomTree(title);
+                }
                 targetNode = node;
                 const polygon = node.select('polygon');
                 polygon?.attr({
@@ -264,8 +266,6 @@ const SVGpart = ({
 
             const containerWidth = parseFloat(svgEl.getAttribute('width'));
             const containerHeight = parseFloat(svgEl.getAttribute('height'));
-            console.log(containerWidth, containerHeight);
-            console.log(svgEl);
 
             const scale = 0.5;
 
