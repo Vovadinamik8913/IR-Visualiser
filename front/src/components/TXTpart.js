@@ -55,7 +55,6 @@ const TXTpart = ({
                     options: {
                         isWholeLine: true,
                         className: 'highlighted-line',
-                        glyphMarginClassName: 'highlighted-line-glyph' // опционально, если нужно подсветить и на глифах
                     }
                 }
             ]);
