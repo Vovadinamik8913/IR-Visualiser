@@ -4,24 +4,37 @@ import {handleMount} from './MonacoMount'
 import '../styles/TXT.css';
 
 const TXTpart = ({
-  content,
-  compilerFlags,
-  setCompilerFlags,
-  generatingFlags,
-  handleProcessCode,
-  onLineClick, 
-  optionRef,
-  infoContent,
-  line,
-  onMemoryssa
-}) => {
-
+                     content,
+                     compilerFlags,
+                     setCompilerFlags,
+                     generatingFlags,
+                     handleProcessCode,
+                     onLineClick,
+                     optionRef,
+                     infoContent,
+                     line,
+                     onMemoryssa
+                 }) => {
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
     const visibleRef = useRef(popupVisible);
     const posRef = useRef(popupPosition);
     const editorRef = useRef(null);
     const monacoRef = useRef(null);
+
+    useEffect(() => {
+        const handleDocumentClick = () => {
+            setTooltipVisible(false);
+        };
+
+        document.addEventListener('click', handleDocumentClick);
+
+        return () => {
+            document.removeEventListener('click', handleDocumentClick);
+        };
+    }, []);
 
     useEffect(() => {
         visibleRef.current = popupVisible;
@@ -29,20 +42,25 @@ const TXTpart = ({
     }, [popupVisible, popupPosition]);
 
     useEffect(() => {
-        if (editorRef.current && line) {
+        if (editorRef.current && monacoRef.current && line) {
+            const oldDecorations = editorRef.current.getModel().getAllDecorations()
+                .filter(d => d.options.className === 'highlighted-line')
+                .map(d => d.id);
+            editorRef.current.deltaDecorations(oldDecorations, []);
             editorRef.current.revealLineInCenter(line);
-            const decorations = editorRef.current.deltaDecorations([], [
+
+            const newDecorations = editorRef.current.deltaDecorations([], [
                 {
                     range: new monacoRef.current.Range(line, 1, line, 1),
                     options: {
                         isWholeLine: true,
                         className: 'highlighted-line',
+                        glyphMarginClassName: 'highlighted-line-glyph' // опционально, если нужно подсветить и на глифах
                     }
                 }
             ]);
-
             const timeout = setTimeout(() => {
-                editorRef.current.deltaDecorations(decorations, []);
+                editorRef.current.deltaDecorations(newDecorations, []);
             }, 1000);
 
             return () => clearTimeout(timeout);
@@ -52,6 +70,7 @@ const TXTpart = ({
     const handleEditorMount = (editor, monaco) => {
         editorRef.current = editor;
         monacoRef.current = monaco;
+
         editor.onMouseDown((mouseEvent) => {
             if (!mouseEvent.target) return;
             const { lineNumber } = mouseEvent.target.position;
@@ -64,17 +83,33 @@ const TXTpart = ({
                         y: mouseEvent.event.posy
                     });
                     setPopupVisible(true);
+                }
             }
-          }
+        });
+
+        editor.onMouseMove((mouseEvent) => {
+            if (mouseEvent.target) {
+                setTooltipPosition({
+                    x: mouseEvent.event.posx + 10,
+                    y: mouseEvent.event.posy + 10
+                });
+                setTooltipVisible(true);
+            } else {
+                setTooltipVisible(false);
+            }
+        });
+
+        editor.onMouseLeave(() => {
+            setTooltipVisible(false);
         });
 
         editor.onDidScrollChange(() => {
             setPopupVisible(false);
         });
     };
-    
+
     const handleCompilerFlagsChange = (event) => {
-      setCompilerFlags(event.target.value);
+        setCompilerFlags(event.target.value);
     };
 
     const renderMemoryssaContent = () => {
@@ -150,36 +185,34 @@ const TXTpart = ({
         });
     };
 
-
-
     return (
         <div className="window">
             {generatingFlags && <div className="info">
-            <label className="text-input">
-              Скомпилирован с:
-            </label>
-            <div className="flex-grow">
-                <label
-                    value={generatingFlags}
-                    className="text-input"
-              />
-            </div>
+                <label className="text-input">
+                    Скомпилирован с:
+                </label>
+                <div className="flex-grow">
+                    <label
+                        value={generatingFlags}
+                        className="text-input"
+                    />
+                </div>
             </div>}
             <div className="info">
                 <div className="flex-grow">
                     <input
-                      id="compiler-flags"
-                      type="text"
-                      value={compilerFlags}
-                      onChange={handleCompilerFlagsChange}
-                      className="text-input"
-                      placeholder="Введите ключи для компилятора"
+                        id="compiler-flags"
+                        type="text"
+                        value={compilerFlags}
+                        onChange={handleCompilerFlagsChange}
+                        className="text-input"
+                        placeholder="Введите ключи для компилятора"
                     />
-            </div>
-            <div>
-                <button className="open-upload-button" onClick={handleProcessCode}>
-                    Применить</button>
-            </div>
+                </div>
+                <div>
+                    <button className="open-upload-button" onClick={handleProcessCode}>
+                        Применить</button>
+                </div>
             </div>
             {content ? (
                 <div className='txt-container'>
@@ -194,19 +227,35 @@ const TXTpart = ({
                         beforeMount={handleMount}
                         onMount={handleEditorMount}
                     />
-                {popupVisible && optionRef.current === "Scev" && (
-                    <div className="popup-info"
-                        style={{ top: popupPosition.y, left: popupPosition.x }}>
-                        {infoContent || "Нет данных"}
-                    </div>
-                )}
-                {popupVisible && optionRef.current === "Memoryssa" && (
-                    <div className="popup-info"
-                         style={{ top: popupPosition.y, left: popupPosition.x }}>
-                        <p>{renderMemoryssaContent()}</p>
-
-                    </div>
-                )}
+                    {popupVisible && optionRef.current === "Scev" && (
+                        <div className="popup-info"
+                             style={{ top: popupPosition.y, left: popupPosition.x }}>
+                            {infoContent || "Нет данных"}
+                        </div>
+                    )}
+                    {popupVisible && optionRef.current === "Memoryssa" && (
+                        <div className="popup-info"
+                             style={{ top: popupPosition.y, left: popupPosition.x }}>
+                            <p>{renderMemoryssaContent()}</p>
+                        </div>
+                    )}
+                    {tooltipVisible && (
+                        <div className="tooltip"
+                             style={{
+                                 position: 'absolute',
+                                 top: tooltipPosition.y,
+                                 left: tooltipPosition.x,
+                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                 color: 'white',
+                                 padding: '5px 10px',
+                                 borderRadius: '4px',
+                                 fontSize: '14px',
+                                 zIndex: 1000,
+                                 pointerEvents: 'none'
+                             }}>
+                            Для получения информации по анализу или СFG зажмите CTRL и кликните на нужную строку
+                        </div>
+                    )}
                 </div>
             ) : (
                 <div className="ir-placeholder">
