@@ -450,20 +450,20 @@ public class Parser {
                     currentFunction = memoryssaLines[memoryssaLine].substring(newFunction.length()).strip();
                 } else {
                     String firstWord = memoryssaLineString.split(" ")[0];
-                    while (moduleLines.size() < moduleLine && !moduleLines.get(moduleLine).startsWith(firstWord)) {
+                    while (moduleLine < moduleLines.size() && !moduleLines.get(moduleLine).startsWith(firstWord)) {
                         moduleLine += 1;
                     }
                     moduleLine += 1;
-                    if (commentForLine.length() != 0) {
+                    if (!commentForLine.isEmpty()) {
                         lineToMemoryssaString.put(moduleLine, commentForLine.toString());
                     }
                     for (String access : accessesForLine) {
                         accessToLine.put(access, moduleLine);
                     }
-                }
 
-                commentForLine.setLength(0);
-                accessesForLine.clear();
+                    commentForLine.setLength(0);
+                    accessesForLine.clear();
+                }
             }
 
             memoryssaLine += 1;
