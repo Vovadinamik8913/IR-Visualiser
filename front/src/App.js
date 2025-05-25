@@ -39,8 +39,11 @@ function App() {
 
     useEffect(() => {
       irIdRef.current = irId;
-      optionRef.current = selectedOption;
-    }, [irId, selectedOption]);
+    }, [irId]);
+
+    useEffect(() => {
+        optionRef.current = selectedOption;
+    }, [selectedOption]);
 
     const handleFileUpload = (file) => {
         if (file.name.endsWith('.ll')) { 
@@ -206,6 +209,7 @@ function App() {
                 try {
                     const scev = await getScevInfo(irIdRef.current, parseInt(index));
                     setInfo(scev);
+                    console.log(irIdRef.current, 'update');
                 } catch (error) {
                     console.error('Ошибка запроса getScevInfo:', error);
                     alert('Ошибка при получении Scev информации');
@@ -233,6 +237,7 @@ function App() {
          if (isNaN(id)) {
              throw new Error('Сервер вернул некорректный ID');
          }
+         console.log(irIdRef.current, 'norm');
          setIrId(id);
          if (id) {
              await generateSvg(id);
