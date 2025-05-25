@@ -44,7 +44,7 @@ const SVGpart = ({
             console.log("Информация о блоке:", blockTitle);
 
             if (selectedOption === "LoopsInfo" || selectedOption === "Scev") {
-                if(event.ctrlKey) {
+                if(clickCounter !== 2) {
                     setPopupVisible(true);
                     setPopupPosition({ x: event.clientX, y: event.clientY });
                 }

@@ -114,7 +114,7 @@ function App() {
 
     const handleGetLoopsInfo = async (funcName) => {
         try {
-            const svgBlockNums = await getSvgWithLoops(irId, funcName);
+            const svgBlockNums = await getSvgWithLoops(irIdRef.current, funcName);
             const nums = svgBlockNums.split('\n')
                 .map(s => s.trim())
                 .filter(s => s !== '');
@@ -143,7 +143,7 @@ function App() {
     const handleBlockClick = async (blockNumber, blockTitle, howManyClicks) => {
         console.log(selectedOption);
         try {
-            const lineToCenter = await getLineNumberFromBlock(irId, blockTitle, selectedFunction);
+            const lineToCenter = await getLineNumberFromBlock(irIdRef.current, blockTitle, selectedFunction);
             setLineNumber(lineToCenter - 1);
             console.log(lineToCenter, 'line');
         } catch (error) {
@@ -151,14 +151,14 @@ function App() {
         }
         if (selectedOption === "LoopsInfo" && selectedFunction) {
             try {
-                const info = await getLoopInfo(irId, selectedFunction, "%" + blockNumber);
+                const info = await getLoopInfo(irIdRef.current, selectedFunction, "%" + blockNumber);
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
                 setLoopInfo("Ошибка загрузки данных");
             }
             try {
-                const svgText = await getNestedLoops(irId, selectedFunction, "%" + blockNumber, howManyClicks);
+                const svgText = await getNestedLoops(irIdRef.current, selectedFunction, "%" + blockNumber, howManyClicks);
                 const nums = svgText.split('\n')
                     .map(s => s.trim())
                     .filter(s => s !== '');
@@ -169,7 +169,7 @@ function App() {
             }
         } else if (selectedOption === "Scev" && selectedFunction) {
             try {
-                const info = await getScevLoopInfo(irId, selectedFunction, blockNumber);
+                const info = await getScevLoopInfo(irIdRef.current, selectedFunction, blockNumber);
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о цикле:", error);
@@ -177,7 +177,7 @@ function App() {
             }
         } else if (selectedOption === "DomTree" && selectedFunction) {
             try {
-                const info = await getDomTreeChildren(irId, selectedFunction, "%" + blockNumber);
+                const info = await getDomTreeChildren(irIdRef.current, selectedFunction, "%" + blockNumber);
                 setLoopInfo(info);
             } catch (error) {
                 console.error("Ошибка при получении информации о дереве:", error);
@@ -232,7 +232,7 @@ function App() {
     
     const handleOptimize= async () => {
         try {
-         const newId = await optimize(irId, compilerFlags);
+         const newId = await optimize(irIdRef.current, compilerFlags);
          const id = parseInt(newId, 10);
          if (isNaN(id)) {
              throw new Error('Сервер вернул некорректный ID');
@@ -263,7 +263,7 @@ function App() {
     }
 
     const handleGetBlockTitle =async (blockTitle) => {
-        const lineToCenter = await getLineNumberFromBlock(irId, blockTitle, selectedFunction);
+        const lineToCenter = await getLineNumberFromBlock(irIdRef.current, blockTitle, selectedFunction);
         setLineNumber(lineToCenter - 1);
     }
 
