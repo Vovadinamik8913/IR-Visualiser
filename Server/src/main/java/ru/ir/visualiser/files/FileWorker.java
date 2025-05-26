@@ -10,6 +10,34 @@ import java.io.*;
  */
 public class FileWorker {
 
+
+    /**
+     * Gets next available filename by adding a number suffix if file already exists
+     *
+     * @param path Base directory path
+     * @param filename Original filename
+     * @return Modified filename with number suffix if needed
+     */
+    public static String getNextAvailableFilename(String path, String filename) {
+        String baseName = filename.substring(0, filename.lastIndexOf('.'));
+        String extension = filename.substring(filename.lastIndexOf('.'));
+        File file = new File(path + File.separator + baseName);
+
+        if (!file.exists()) {
+            return filename;
+        }
+
+        int count = 1;
+        while (true) {
+            String newFilename = baseName + "(" + count + ")";
+            file = new File(path + File.separator + newFilename);
+            if (!file.exists()) {
+                return newFilename + extension;
+            }
+            count++;
+        }
+    }
+
     /** init path.
      *
      * @param path path.
