@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: backend
+  datasource:
+    url: ${DATASOURCE_URL}
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10GB
+      max-request-size: 10GB
+      file-size-threshold: 0
+
+server:
+  netty:
+    connection-timeout: 120000
+
+app:
+  work-space: ${WORK_PATH}
+  opt-path: ${OPT_PATH}
+  front-path: ${FRONT_PATH}

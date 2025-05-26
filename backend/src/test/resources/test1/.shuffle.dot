@@ -1,0 +1,14 @@
+digraph "CFG for 'shuffle' function" {
+	label="CFG for 'shuffle' function";
+
+	Node0x561486dcd9d0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#d6524470" fontname="Courier",label="{2:\l|  %3 = alloca ptr, align 8\l  %4 = alloca i32, align 4\l  %5 = alloca i32, align 4\l  %6 = alloca i32, align 4\l  store ptr %0, ptr %3, align 8\l  store i32 %1, ptr %4, align 4\l  %7 = call i64 @time(ptr noundef null) #4\l  %8 = trunc i64 %7 to i32\l  call void @srand(i32 noundef %8) #4\l  store i32 0, ptr %5, align 4\l  br label %9\l}"];
+	Node0x561486dcd9d0 -> Node0x561486dcea60[tooltip="2 -> 9\nProbability 100.00%" ];
+	Node0x561486dcea60 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{9:\l|  %10 = load i32, ptr %5, align 4\l  %11 = load i32, ptr %4, align 4\l  %12 = icmp slt i32 %10, %11\l  br i1 %12, label %13, label %28\l|{<s0>T|<s1>F}}"];
+	Node0x561486dcea60:s0 -> Node0x561486dcec30[tooltip="9 -> 13\nProbability 96.88%" ];
+	Node0x561486dcea60:s1 -> Node0x561486dcec90[tooltip="9 -> 28\nProbability 3.12%" ];
+	Node0x561486dcec30 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{13:\l|  %14 = call i32 @rand() #4\l  %15 = load i32, ptr %4, align 4\l  %16 = srem i32 %14, %15\l  store i32 %16, ptr %6, align 4\l  %17 = load ptr, ptr %3, align 8\l  %18 = load i32, ptr %5, align 4\l  %19 = sext i32 %18 to i64\l  %20 = getelementptr inbounds i32, ptr %17, i64 %19\l  %21 = load ptr, ptr %3, align 8\l  %22 = load i32, ptr %6, align 4\l  %23 = sext i32 %22 to i64\l  %24 = getelementptr inbounds i32, ptr %21, i64 %23\l  call void @swap(ptr noundef %20, ptr noundef %24)\l  br label %25\l}"];
+	Node0x561486dcec30 -> Node0x561486dcf5e0[tooltip="13 -> 25\nProbability 100.00%" ];
+	Node0x561486dcf5e0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{25:\l|  %26 = load i32, ptr %5, align 4\l  %27 = add nsw i32 %26, 1\l  store i32 %27, ptr %5, align 4\l  br label %9, !llvm.loop !6\l}"];
+	Node0x561486dcf5e0 -> Node0x561486dcea60[tooltip="25 -> 9\nProbability 100.00%" ];
+	Node0x561486dcec90 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#d6524470" fontname="Courier",label="{28:\l|  ret void\l}"];
+}
