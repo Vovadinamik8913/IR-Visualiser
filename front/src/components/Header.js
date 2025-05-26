@@ -11,7 +11,8 @@ const Header = ({
   onAnalysChange,
   onTreeSelect,
   onDomTreeSelect,
-  onDomTreeLoad
+  onDomTreeLoad,
+  onBranchDelete
 }) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [isDropboxOpen, setIsDropboxOpen] = useState(false);
@@ -44,6 +45,7 @@ const Header = ({
                  isOpen={isOptTreeOpen} 
                  onClose={() => setIsOptTreeOpen(false)}
                  onSelect={onTreeSelect}
+                 onBranchDelete={onBranchDelete}
                  />
               </div>
               <div className="dropdown">

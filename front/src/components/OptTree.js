@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "../styles/OptTree.css";
 import { getTree, loadProjects, deleteTreeNode } from '../api/opttree-api';
 
-const OptTree = ({ isOpen, onClose, onSelect }) => {
+const OptTree = ({ isOpen, onClose, onSelect, onBranchDelete }) => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [projectTree, setProjectTree] = useState([]);
@@ -34,7 +34,7 @@ const OptTree = ({ isOpen, onClose, onSelect }) => {
 
   const deleteNode = async (nodeId) => {
     try {
-      await deleteTreeNode(nodeId);
+      await onBranchDelete(nodeId);
       setProjectTree(prev => removeNodeFromTree(prev, nodeId));
     } catch (error) {
       console.error('Ошибка удаления:', error);

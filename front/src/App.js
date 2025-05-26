@@ -10,6 +10,7 @@ import { getSvgWithLoops, getLoopInfo, getNestedLoops } from './api/loops-api';
 import { getScevInfo, getScevLoopInfo } from './api/scev-api';
 import { getDomTree, getDomTreeChildren } from './api/domtree-api';
 import { getMemInfo, getMemOfAccess} from "./api/mem-api";
+import { deleteTreeNode } from './api/opttree-api';
 
 function App() {
     const [llContent, setLlContent] = useState(null);
@@ -278,6 +279,7 @@ function App() {
             setSvgContent('');
             setSelectedFunction('');
             setCompilerFlags('');
+            setSelectedFunction('');
         } catch (error) {
             console.error('Ошибка при обработке кода:', error);
         }
@@ -301,6 +303,22 @@ function App() {
         }
     }
 
+    const handleBranchDelete = async(id) => {
+        try {
+            await deleteTreeNode(id);
+            if (irId === id) {
+                setIrId(0);
+                irIdRef.current = 0;
+                setLlContent('');
+                setSvgContent('');
+                setCompilerFlags('')
+                setListOfFunctions([]);
+            }
+        } catch (error) {
+            console.error('Ошибка при обработке кода:', error);
+        }
+    }
+
     return (
         <div className="App">
             <Header 
@@ -311,6 +329,7 @@ function App() {
                 onTreeSelect={handleSelect}
                 onDomTreeSelect={handleDomTreeSelect}
                 onDomTreeLoad={handleGetDomTree}
+                onBranchDelete={handleBranchDelete}
             />
             <div className="main-container">
                 <TXTpart
