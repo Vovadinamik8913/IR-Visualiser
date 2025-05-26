@@ -237,7 +237,6 @@ function App() {
          if (isNaN(id)) {
              throw new Error('Сервер вернул некорректный ID');
          }
-         console.log(irIdRef.current, 'norm');
          setIrId(id);
          if (id) {
              await generateSvg(id);
