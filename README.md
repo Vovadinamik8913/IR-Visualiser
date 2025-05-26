@@ -39,7 +39,7 @@ Step-by-step guide to running the project locally:
 1. **Clone the repository**  
    ```sh
    git clone git@github.com:Vovadinamik8913/IR-Visualiser.git
-2. **Set properties for Server in file backend/юутм**
+2. **Set properties for Server in file backend/.env**
    ```
    OPT_PATH - path to your opt
    WORK_PATH - folder where tree and files will be saved
