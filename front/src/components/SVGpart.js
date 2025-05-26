@@ -116,6 +116,7 @@ const SVGpart = ({
         viewTransform.current.scale = initialScale;
         viewTransform.current.translateX = 50;
         viewTransform.current.translateY = 50;
+        setPopupVisible(false);
 
         g.transform(`translate(0, 0) scale(${initialScale})`);
 
@@ -171,6 +172,7 @@ const SVGpart = ({
 
     useEffect(() => {
         if (selectedOption === 'LoopsInfo' && listOfCurLoop.length > 0) {
+            if(svgContainerRef.current === null) return;
             const svg = Snap(svgContainerRef.current.querySelector('svg'));
 
             svg.selectAll('.node').forEach(node => {
@@ -274,6 +276,7 @@ const SVGpart = ({
 
             viewTransform.current.translateX = translateX;
             viewTransform.current.translateY = translateY;
+            viewTransform.current.scale = scale;
 
             const g = s.select('g#zoom-layer');
             g.transform(`translate(${translateX}, ${translateY}) scale(${scale})`);

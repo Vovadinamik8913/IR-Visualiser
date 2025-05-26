@@ -87,14 +87,16 @@ const TXTpart = ({
         });
 
         editor.onMouseMove((mouseEvent) => {
-            if (mouseEvent.target) {
+            if (optionRef !== "LoopsInfo" &&
+                optionRef !== "Scev" &&
+                optionRef !== "Memoryssa" && mouseEvent.target){
                 setTooltipPosition({
                     x: mouseEvent.event.posx + 10,
                     y: mouseEvent.event.posy + 10
                 });
                 setTooltipVisible(true);
             } else {
-                setTooltipVisible(false);
+                setTooltipVisible(false)
             }
         });
 

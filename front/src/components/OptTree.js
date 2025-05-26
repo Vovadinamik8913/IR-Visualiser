@@ -90,7 +90,7 @@ const OptTree = ({ isOpen, onClose, onSelect, onBranchDelete }) => {
 
         {loading && <div className="loading">Загрузка дерева...</div>}
 
-        {projectTree && projectTree.length > 0 && (
+        {selectedProject?.id && projectTree && projectTree.length > 0 && (
           <div className="tree-container">
             {projectTree.map(node => (
               <TreeNode
