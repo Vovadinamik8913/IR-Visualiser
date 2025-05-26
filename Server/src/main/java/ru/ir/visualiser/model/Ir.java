@@ -30,7 +30,8 @@ public class Ir {
     @OneToOne(mappedBy = "ir")
     private ModuleIR moduleIR;
 
-    @ManyToOne(cascade = CascadeType.ALL) @JoinColumn(name = "project_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "project_id")
     private Project project;
 
     public Ir(String filename, String irPath, String svgPath, String dotPath, Project project) {
@@ -46,7 +47,6 @@ public class Ir {
 
     public Ir(Ir parent, String flags) {
         this.parent = parent;
-        //flags = flags.substring(flags.lastIndexOf("-passes=") + "-passes=".length());
         this.irPath = parent.getIrPath() + File.separator + flags;
         this.svgPath = irPath + File.separator + "svg_files";
         this.dotPath = irPath + File.separator + "dot_files";

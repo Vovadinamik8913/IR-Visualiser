@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
+
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.model.Ir;
 import ru.ir.visualiser.repository.IrRepository;
@@ -16,6 +18,7 @@ import ru.ir.visualiser.repository.IrRepository;
 public class IrService {
 
     private  final IrRepository irRepository;
+    private final ModuleService moduleService;
 
 
     public Ir create(Ir ir) {
@@ -25,6 +28,10 @@ public class IrService {
     @Nullable
     public Ir get(Long id) {
         return irRepository.findById(id).orElse(null);
+    }
+
+    public List<Ir> getAll() {
+        return irRepository.findAll();
     }
 
     @Transactional
@@ -47,6 +54,7 @@ public class IrService {
             FileWorker.deleteDirectory(ir.getDotPath());
             FileWorker.deleteDirectory(ir.getSvgPath());
             FileWorker.deleteDirectory(ir.getIrPath());
+            moduleService.delete(id);
             irRepository.delete(ir);
         }
     }

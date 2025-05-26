@@ -68,11 +68,17 @@ public class BuilderController {
     }
 
     private Ir create(Project project, String folder, String filename, InputStream stream) throws IOException {
-        String folderName = FileWorker.getFolderName(filename);
-        String path = FileWorker.absolutePath(config,folder + File.separator + folderName);
+        String originalFolderName = FileWorker.getFolderName(filename);
+        String path = FileWorker.absolutePath(config, folder + File.separator + originalFolderName);
 
+        String newFilename = FileWorker.getNextAvailableFilename(FileWorker.absolutePath(config, folder), filename);
+        String newFolderName = FileWorker.getFolderName(newFilename);
 
-        Ir ir = new Ir(filename,
+        if (!originalFolderName.equals(newFolderName)) {
+            path = FileWorker.absolutePath(config, folder + File.separator + newFolderName);
+        }
+
+        Ir ir = new Ir(newFilename,
                 path,
                 path + File.separator + "svg_files",
                 path + File.separator + "dot_files",
@@ -81,7 +87,7 @@ public class BuilderController {
         FileWorker.createPath(ir.getSvgPath());
         FileWorker.createPath(ir.getDotPath());
         FileWorker.copy(ir.getIrPath(),
-                filename,
+                newFilename,
                 stream
         );
         ir = irService.create(ir);
