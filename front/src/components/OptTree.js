@@ -62,7 +62,9 @@ const OptTree = ({ isOpen, onClose, onSelect, onBranchDelete }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <h2 className="title">Оптимизационное дерево</h2>
-        <button onClick={onClose} className="close-btn">X</button>
+        <button onClick={() => { onClose(); setSelectedProject(null); }} className="close-btn">
+          X
+        </button>
         
         <div className="project-selector">
           <select
