@@ -39,11 +39,10 @@ Step-by-step guide to running the project locally:
 1. **Clone the repository**  
    ```sh
    git clone git@github.com:Vovadinamik8913/IR-Visualiser.git
-2. **Set properties for Server in file backend/run.sh**
+2. **Set properties for Server in file backend/юутм**
    ```
    OPT_PATH - path to your opt
    WORK_PATH - folder where tree and files will be saved
-   DATASOURCE_URL - path to your db file
 3. **Execute backend/run.sh and front/run.sh**
 4. **Open in browser localhost:3000 - you are welcome**
 
@@ -52,11 +51,5 @@ Step-by-step guide to running the project in container:
 1. **Clone the repository**  
    ```sh
    git clone git@github.com:Vovadinamik8913/IR-Visualiser.git
-2. **Set properties for Server in file compose.yml**
-   ```
-   OPT_PATH - path to your opt
-   WORK_PATH - folder where tree and files will be saved
-   DATASOURCE_URL - path to your db file
-   and change connected volumes
-3. **Run docker compose up --build**
-4. **Open in browser localhost:3000 - you are welcome**
+2. **Run docker compose up --build**
+3. **Open in browser localhost:3000 - you are welcome**
