@@ -288,7 +288,19 @@ function App() {
         try {
             const line = await getMemOfAccess(irIdRef.current, selectedFunction, access);
             setLineNumber(line);
-            console.log(line);
+            const info = await getSvgByLine(irIdRef.current, line);
+            if (!info || info.length === 0) {
+                console.error("Ошибка: getSvgByLine не вернул данные.");
+                return;
+            }
+
+            const functionName = info[0];
+            setSelectedFunction(functionName);
+
+            const blockLabel = info[2];
+            setSelectedBlock(blockLabel);
+
+            await handleGetRequest(functionName);
         } catch (error) {
             console.error(error);
         }
