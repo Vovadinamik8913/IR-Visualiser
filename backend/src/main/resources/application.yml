@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Server
+    name: backend
   datasource:
     url: ${DATASOURCE_URL}
     driver-class-name: org.sqlite.JDBC

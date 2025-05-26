@@ -1,7 +1,7 @@
 FROM gradle:8.5-jdk21-alpine AS build
 WORKDIR /app
 RUN apk add --no-cache llvm clang
-COPY Server .
+COPY backend .
 RUN gradle build -x test
 
 FROM openjdk:21-slim
