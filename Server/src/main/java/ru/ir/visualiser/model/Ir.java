@@ -30,7 +30,8 @@ public class Ir {
     @OneToOne(mappedBy = "ir")
     private ModuleIR moduleIR;
 
-    @ManyToOne(cascade = CascadeType.ALL) @JoinColumn(name = "project_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "project_id")
     private Project project;
 
     public Ir(String filename, String irPath, String svgPath, String dotPath, Project project) {
