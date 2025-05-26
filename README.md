@@ -16,11 +16,15 @@ A client-server project for a better view and navigation between ir and svg
 LLVM IR Analyzer & Optimizer
 
 Our project is a web-based tool designed for viewing, analyzing, and optimizing LLVM Intermediate Representation (IR) with an intuitive graphical interface.
+
 ✨ Key Features
 
 ✅ Cross-Navigation – Easily jump between functions, basic blocks, and instructions.
+
 ✅ Project Management – Save and load IR projects for later analysis.
+
 ✅ Optimization Pipeline – Generate optimized IR from an input module with customizable passes.
+
 ✅ Advanced Analyses – Interactive visualization for:
 
     Dominator Trees (DomTree)
