@@ -1,5 +1,0 @@
-digraph "CFG for 'swap' function" {
-	label="CFG for 'swap' function";
-
-	Node0x56e38e31d1d0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{2:\l|  %3 = load i32, ptr %0, align 4, !tbaa !5\l  %4 = load i32, ptr %1, align 4, !tbaa !5\l  store i32 %4, ptr %0, align 4, !tbaa !5\l  store i32 %3, ptr %1, align 4, !tbaa !5\l  ret void\l}"];
-}
