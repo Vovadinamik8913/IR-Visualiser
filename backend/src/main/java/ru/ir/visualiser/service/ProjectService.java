@@ -3,6 +3,7 @@ package ru.ir.visualiser.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ir.visualiser.model.Project;
 import ru.ir.visualiser.repository.ProjectRepository;
 
@@ -28,5 +29,10 @@ public class ProjectService {
 
     public List<Project> getAll() {
         return projectRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        projectRepository.deleteById(id);
     }
 }
