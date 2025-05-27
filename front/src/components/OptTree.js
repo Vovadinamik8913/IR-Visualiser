@@ -121,7 +121,7 @@ const TreeNode = ({ node, onDelete, level, onSelect }) => {
   }
 
   return (
-    <div className="tree-node" style={{ marginLeft: `${level * 25}px` }}>
+    <div className="tree-node" style={{ marginLeft: `${level * 10}px` }}>
       <div className="node-header">
         <button className="node-button" onClick={handleSelect}>
           {node.children?.length > 0 && (
