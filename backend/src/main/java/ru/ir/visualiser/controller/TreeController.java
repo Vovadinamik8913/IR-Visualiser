@@ -48,7 +48,6 @@ public class TreeController {
         if (parent == null) {
             return ResponseEntity.notFound().build();
         }
-        parent.getProject().setChanged(LocalDate.now());
         Ir child = new Ir(parent, flags);
         FileWorker.createPath(child.getDotPath());
         FileWorker.createPath(child.getSvgPath());

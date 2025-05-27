@@ -1,0 +1,14 @@
+digraph "CFG for 'SiftUp' function" {
+	label="CFG for 'SiftUp' function";
+
+	Node0x5dad61aa7380 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#cc403a70" fontname="Courier",label="{2:\l|  %3 = icmp sgt i32 %1, 0\l  br i1 %3, label %4, label %29\l|{<s0>T|<s1>F}}"];
+	Node0x5dad61aa7380:s0 -> Node0x5dad61aa7470[tooltip="2 -> 4\nProbability 62.50%" ];
+	Node0x5dad61aa7380:s1 -> Node0x5dad61aa74d0[tooltip="2 -> 29\nProbability 37.50%" ];
+	Node0x5dad61aa7470 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{4:\l|  %5 = phi i32 [ %13, %21 ], [ %1, %2 ]\l  %6 = zext nneg i32 %5 to i64\l  %7 = getelementptr inbounds [100001 x i32], ptr %0, i64 0, i64 %6\l  %8 = load i32, ptr %7, align 4, !tbaa !5\l  %9 = sext i32 %8 to i64\l  %10 = getelementptr inbounds [100001 x i64], ptr @dist1, i64 0, i64 %9\l  %11 = load i64, ptr %10, align 8, !tbaa !9\l  %12 = add nsw i32 %5, -1\l  %13 = lshr i32 %12, 1\l  %14 = zext nneg i32 %13 to i64\l  %15 = getelementptr inbounds [100001 x i32], ptr %0, i64 0, i64 %14\l  %16 = load i32, ptr %15, align 4, !tbaa !5\l  %17 = sext i32 %16 to i64\l  %18 = getelementptr inbounds [100001 x i64], ptr @dist1, i64 0, i64 %17\l  %19 = load i64, ptr %18, align 8, !tbaa !9\l  %20 = icmp ult i64 %11, %19\l  br i1 %20, label %21, label %29\l|{<s0>T|<s1>F}}"];
+	Node0x5dad61aa7470:s0 -> Node0x5dad61aa7610[tooltip="4 -> 21\nProbability 96.88%" ];
+	Node0x5dad61aa7470:s1 -> Node0x5dad61aa74d0[tooltip="4 -> 29\nProbability 3.12%" ];
+	Node0x5dad61aa7610 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{21:\l|  %22 = getelementptr inbounds [100001 x i32], ptr @num, i64 0, i64 %9\l  store i32 %13, ptr %22, align 4, !tbaa !5\l  %23 = load i32, ptr %15, align 4, !tbaa !5\l  %24 = sext i32 %23 to i64\l  %25 = getelementptr inbounds [100001 x i32], ptr @num, i64 0, i64 %24\l  store i32 %5, ptr %25, align 4, !tbaa !5\l  %26 = load i32, ptr %7, align 4, !tbaa !5\l  %27 = load i32, ptr %15, align 4, !tbaa !5\l  store i32 %27, ptr %7, align 4, !tbaa !5\l  store i32 %26, ptr %15, align 4, !tbaa !5\l  %28 = icmp ult i32 %12, 2\l  br i1 %28, label %29, label %4, !llvm.loop !11\l|{<s0>T|<s1>F}}"];
+	Node0x5dad61aa7610:s0 -> Node0x5dad61aa74d0[tooltip="21 -> 29\nProbability 3.12%" ];
+	Node0x5dad61aa7610:s1 -> Node0x5dad61aa7470[tooltip="21 -> 4\nProbability 96.88%" ];
+	Node0x5dad61aa74d0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#cc403a70" fontname="Courier",label="{29:\l|  ret void\l}"];
+}
